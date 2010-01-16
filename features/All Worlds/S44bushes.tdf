@@ -1,0 +1,107 @@
+[S44bushes_01a]
+	{
+	world=allworld;
+	description=Bush;
+	category=Plants;
+	object=S44bushes_01a.S3O;
+	footprintx=2;
+	footprintz=2;
+	height=2;
+	blocking=1;
+	hitdensity=0;
+	energy=1;
+      	damage=100;
+	reclaimable=1;
+	featurereclamate=smudge01; 
+  	seqnamereclamate=tree1reclamate;
+	}
+
+[S44bushes_01b]
+	{
+	world=allworld;
+	description=Bush;
+	category=Plants;
+	object=S44bushes_01b.S3O;
+	footprintx=2;
+	footprintz=2;
+	height=2;
+	blocking=1;
+	hitdensity=0;
+	energy=1;
+      	damage=100;
+	reclaimable=1;
+	featurereclamate=smudge01; 
+  	seqnamereclamate=tree1reclamate;
+	}
+
+[S44bushes_01c]
+	{
+	world=allworld;
+	description=Bush;
+	category=Plants;
+	object=S44bushes_01c.S3O;
+	footprintx=2;
+	footprintz=2;
+	height=2;
+	blocking=1;
+	hitdensity=0;
+	energy=1;
+      	damage=100;
+	reclaimable=1;
+	featurereclamate=smudge01; 
+  	seqnamereclamate=tree1reclamate;
+	}
+
+[S44bushes_02a]
+	{
+	world=allworld;
+	description=Bush;
+	category=Plants;
+	object=S44bushes_02a.S3O;
+	footprintx=2;
+	footprintz=2;
+	height=2;
+	blocking=0;
+	hitdensity=0;
+	energy=1;
+      	damage=100;
+	reclaimable=1;
+	featurereclamate=smudge01; 
+  	seqnamereclamate=tree1reclamate;
+	}
+
+[S44bushes_02b]
+	{
+	world=allworld;
+	description=Bush;
+	category=Plants;
+	object=S44bushes_02b.S3O;
+	footprintx=2;
+	footprintz=2;
+	height=2;
+	blocking=0;
+	hitdensity=0;
+	energy=1;
+      	damage=100;
+	reclaimable=1;
+	featurereclamate=smudge01; 
+  	seqnamereclamate=tree1reclamate;
+	}
+
+[S44bushes_02c]
+	{
+	world=allworld;
+	description=Bush;
+	category=Plants;
+	object=S44bushes_02c.S3O;
+	footprintx=1;
+	footprintz=1;
+	height=2;
+	blocking=0;
+	hitdensity=0;
+	energy=1;
+      	damage=100;
+	reclaimable=1;
+	featurereclamate=smudge01; 
+  	seqnamereclamate=tree1reclamate;
+	}

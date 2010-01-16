@@ -1,0 +1,19 @@
+[S44haybale] 
+   { 
+   world=allworld; 
+   description=Hay Bale; 
+   category=Rural; 
+   object=S44haybale.S3O; 
+   footprintx=2; 
+   footprintz=2; 
+   height=5; 
+   blocking=1; 
+   hitdensity=9; 
+   energy=100;
+   damage=250; 
+   flammable=1; 
+   reclaimable=1; 
+   autoreclaimable=1; 
+   featurereclamate=smudge01; 
+   seqnamereclamate=tree1reclamate; 
+   }

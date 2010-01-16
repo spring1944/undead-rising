@@ -1,0 +1,46 @@
+[unitinfo] {
+  unitname=ZOMSprinter;
+  name=Sprinter;
+  description=FAST Inevitable Doom;
+  acceleration=0.375;
+  airSightDistance=2500;
+  brakeRate=0.9;
+  buildCostEnergy=0;
+  buildCostMetal=50;
+  buildTime=50;
+  canMove=1;
+  category=INFANTRY MINETRIGGER;
+  corpse=zombieCorpse;
+  [customParams] {
+	undead=1;
+  }
+  footprintX=1;
+  footprintZ=1;
+  iconType=rifle;
+  mass=50;
+  maxDamage=500;
+  maxSlope=15;
+  maxVelocity=2;
+  maxWaterDepth=10;
+  movementClass=KBOT_Infantry;
+  noChaseCategory=FLAG AIR MINE;
+  objectName=GERRifle.S3O;
+  repairable=0;
+  seismicSignature=0;
+  showNanoFrame=0;
+  side=ZOM;
+  sightDistance=840;
+  smoothAnim=0;
+  soundcategory=GERInf;
+  stealth=1;
+  TEDClass=KBOT;
+  turnRate=1010;
+  upright=1;
+  badTargetCategory=FLAG;
+
+  weapon1=bite;
+  maxAngleDif1=170;
+  onlyTargetCategory1=INFANTRY CIVILIAN DEPLOYED BUILDING BUNKER SOFTVEH HARDVEH;
+  weaponMainDir1=0 0 1;
+}
+

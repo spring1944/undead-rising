@@ -1,0 +1,397 @@
+[S44tree_01a] 
+   { 
+   world=allworld; 
+   description=Tree; 
+   category=Trees; 
+   object=S44tree_01a.s3o; 
+   footprintx=1; 
+   footprintz=1; 
+   height=36; 
+   blocking=1; 
+   hitdensity=0; 
+   energy=0;
+   metal=1; 
+   damage=500; 
+   flammable=0; 
+   reclaimable=1; 
+   autoreclaimable=1; 
+   featurereclamate=smudge01; 
+   seqnamereclamate=tree1reclamate; 
+	upright=1;
+	mass=1500;
+   } 
+
+[S44tree_01b] 
+   { 
+   world=allworld; 
+   description=Tree; 
+   category=Trees; 
+   object=S44tree_01b.s3o; 
+   footprintx=1; 
+   footprintz=1; 
+   height=36; 
+   blocking=1; 
+   hitdensity=0; 
+   energy=0;
+   metal=1; 
+   damage=500; 
+   flammable=0; 
+   reclaimable=1; 
+   autoreclaimable=1; 
+   featurereclamate=smudge01; 
+   seqnamereclamate=tree1reclamate; 
+	upright=1;
+	mass=1500;
+   } 
+
+[S44tree_01c] 
+   { 
+   world=allworld; 
+   description=Tree; 
+   category=Trees; 
+   object=S44tree_01c.s3o; 
+   footprintx=1; 
+   footprintz=1; 
+   height=36; 
+   blocking=1; 
+   hitdensity=0; 
+   energy=0;
+   metal=1; 
+   damage=500; 
+   flammable=0; 
+   reclaimable=1; 
+   autoreclaimable=1; 
+   featurereclamate=smudge01; 
+   seqnamereclamate=tree1reclamate; 
+	upright=1;
+	mass=1500;
+   } 
+
+[S44tree_02a] 
+   { 
+   world=allworld; 
+   description=Tree; 
+   category=Trees; 
+   object=S44tree_02a.s3o; 
+   footprintx=1; 
+   footprintz=1; 
+   height=36; 
+   blocking=1; 
+   hitdensity=0; 
+   energy=0;
+   metal=1; 
+   damage=500; 
+   flammable=0; 
+   reclaimable=1; 
+   autoreclaimable=1; 
+   featurereclamate=smudge01; 
+   seqnamereclamate=tree1reclamate; 
+	upright=1;
+	mass=1500;
+   } 
+
+[S44tree_02b] 
+   { 
+   world=allworld; 
+   description=Tree; 
+   category=Trees; 
+   object=S44tree_02b.s3o; 
+   footprintx=1; 
+   footprintz=1; 
+   height=36; 
+   blocking=1; 
+   hitdensity=0; 
+   energy=0;
+   metal=1; 
+   damage=500; 
+   flammable=0; 
+   reclaimable=1; 
+   autoreclaimable=1; 
+   featurereclamate=smudge01; 
+   seqnamereclamate=tree1reclamate; 
+	upright=1;
+	mass=1500;
+   } 
+
+[S44tree_02c] 
+   { 
+   world=allworld; 
+   description=Tree; 
+   category=Trees; 
+   object=S44tree_02c.s3o; 
+   footprintx=1; 
+   footprintz=1; 
+   height=36; 
+   blocking=1; 
+   hitdensity=0; 
+   energy=0;
+   metal=1; 
+   damage=500; 
+   flammable=0; 
+   reclaimable=1; 
+   autoreclaimable=1; 
+   featurereclamate=smudge01; 
+   seqnamereclamate=tree1reclamate; 
+	upright=1;
+	mass=1500;
+   } 
+
+[S44tree_sprucea] 
+   { 
+   world=allworld; 
+   description=Spruce tree; 
+   category=Trees; 
+   object=S44tree_sprucea.s3o; 
+   footprintx=1; 
+   footprintz=1; 
+   height=36; 
+   blocking=1; 
+   hitdensity=0; 
+   energy=0;
+   metal=1; 
+   damage=500; 
+   flammable=0; 
+   reclaimable=1; 
+   autoreclaimable=1; 
+   featurereclamate=smudge01; 
+   seqnamereclamate=tree1reclamate; 
+	upright=1;
+	mass=1500;
+   } 
+
+[S44tree_spruceb] 
+   { 
+   world=allworld; 
+   description=Spruce tree; 
+   category=Trees; 
+   object=S44tree_spruceb.s3o; 
+   footprintx=1; 
+   footprintz=1; 
+   height=36; 
+   blocking=1; 
+   hitdensity=0; 
+   energy=0;
+   metal=1; 
+   damage=500; 
+   flammable=0; 
+   reclaimable=1; 
+   autoreclaimable=1; 
+   featurereclamate=smudge01; 
+   seqnamereclamate=tree1reclamate; 
+	upright=1;
+	mass=1500;
+   } 
+
+[S44tree_sprucec] 
+   { 
+   world=allworld; 
+   description=Spruce tree; 
+   category=Trees; 
+   object=S44tree_sprucec.s3o; 
+   footprintx=1; 
+   footprintz=1; 
+   height=36; 
+   blocking=1; 
+   hitdensity=0; 
+   energy=0;
+   metal=1; 
+   damage=500; 
+   flammable=0; 
+   reclaimable=1; 
+   autoreclaimable=1; 
+   featurereclamate=smudge01; 
+   seqnamereclamate=tree1reclamate; 
+	upright=1;
+	mass=1500;
+   } 
+
+[S44tree_spruced] 
+   { 
+   world=allworld; 
+   description=Spruce tree; 
+   category=Trees; 
+   object=S44tree_spruced.s3o; 
+   footprintx=1; 
+   footprintz=1; 
+   height=36; 
+   blocking=1; 
+   hitdensity=0; 
+   energy=0;
+   metal=1; 
+   damage=500; 
+   flammable=0; 
+   reclaimable=1; 
+   autoreclaimable=1; 
+   featurereclamate=smudge01; 
+   seqnamereclamate=tree1reclamate; 
+	upright=1;
+	mass=1500;
+   } 
+[nix1] 
+   { 
+   world=allworld; 
+   description=Spruce tree; 
+   category=Trees; 
+   object=nixtree1.s3o; 
+   footprintx=1; 
+   footprintz=1; 
+   height=36; 
+   blocking=1; 
+   hitdensity=5; 
+   energy=0;
+   metal=1; 
+   damage=500; 
+   flammable=0; 
+   reclaimable=1; 
+   autoreclaimable=1; 
+   featurereclamate=smudge01; 
+   seqnamereclamate=tree1reclamate; 
+	upright=1;
+   } 
+[nix2] 
+   { 
+   world=allworld; 
+   description=Spruce tree; 
+   category=Trees; 
+   object=nixtree2.s3o; 
+   footprintx=2; 
+   footprintz=2; 
+   height=36; 
+   blocking=1; 
+   hitdensity=5; 
+   energy=0;
+   metal=1; 
+   damage=500; 
+   flammable=0; 
+   reclaimable=1; 
+   autoreclaimable=1; 
+   featurereclamate=smudge01; 
+   seqnamereclamate=tree1reclamate; 
+	upright=1;
+   } 
+[nix3] 
+   { 
+   world=allworld; 
+   description=Spruce tree; 
+   category=Trees; 
+   object=nixtree3.s3o; 
+   footprintx=1; 
+   footprintz=1; 
+   height=36; 
+   blocking=1; 
+   hitdensity=5; 
+   energy=0;
+   metal=1; 
+   damage=500; 
+   flammable=0; 
+   reclaimable=1; 
+   autoreclaimable=1; 
+   featurereclamate=smudge01; 
+   seqnamereclamate=tree1reclamate; 
+	upright=1;
+   } 
+[nix4] 
+   { 
+   world=allworld; 
+   description=Spruce tree; 
+   category=Trees; 
+   object=nixtree4.s3o; 
+   footprintx=1; 
+   footprintz=1; 
+   height=36; 
+   blocking=1; 
+   hitdensity=5; 
+   energy=0;
+   metal=1; 
+   damage=500; 
+   flammable=0; 
+   reclaimable=1; 
+   autoreclaimable=1; 
+   featurereclamate=smudge01; 
+   seqnamereclamate=tree1reclamate; 
+	upright=1;
+   } 
+[nix5] 
+   { 
+   world=allworld; 
+   description=Spruce tree; 
+   category=Trees; 
+   object=nixtree5.s3o; 
+   footprintx=2; 
+   footprintz=2; 
+   height=36; 
+   blocking=1; 
+   hitdensity=5; 
+   energy=0;
+   metal=1; 
+   damage=500; 
+   flammable=0; 
+   reclaimable=1; 
+   autoreclaimable=1; 
+   featurereclamate=smudge01; 
+   seqnamereclamate=tree1reclamate; 
+	upright=1;
+   } 
+[nix6] 
+   { 
+   world=allworld; 
+   description=Spruce tree; 
+   category=Trees; 
+   object=nixtree6.s3o; 
+   footprintx=1; 
+   footprintz=1; 
+   height=36; 
+   blocking=1; 
+   hitdensity=5; 
+   energy=0;
+   metal=1; 
+   damage=500; 
+   flammable=0; 
+   reclaimable=1; 
+   autoreclaimable=1; 
+   featurereclamate=smudge01; 
+   seqnamereclamate=tree1reclamate; 
+	upright=1;
+   } 
+[nix7] 
+   { 
+   world=allworld; 
+   description=Spruce tree; 
+   category=Trees; 
+   object=nixtree7.s3o; 
+   footprintx=1; 
+   footprintz=1; 
+   height=36; 
+   blocking=1; 
+   hitdensity=5; 
+   energy=0;
+   metal=1; 
+   damage=500; 
+   flammable=0; 
+   reclaimable=1; 
+   autoreclaimable=1; 
+   featurereclamate=smudge01; 
+   seqnamereclamate=tree1reclamate; 
+	upright=1;
+   } 
+[nix8] 
+   { 
+   world=allworld; 
+   description=Spruce tree; 
+   category=Trees; 
+   object=nixtree8.s3o; 
+   footprintx=1; 
+   footprintz=1; 
+   height=36; 
+   blocking=1; 
+   hitdensity=5; 
+   energy=0;
+   metal=1; 
+   damage=500; 
+   flammable=0; 
+   reclaimable=1; 
+   autoreclaimable=1; 
+   featurereclamate=smudge01; 
+   seqnamereclamate=tree1reclamate; 
+	upright=1;
+   } 

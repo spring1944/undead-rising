@@ -1,0 +1,324 @@
+//Farmhouse #1
+
+[S44Farmhouse1]
+	{
+	world=allworld;
+	description=Farmhouse;
+	category=Rural;
+	object=S44Farmhouse1.S3O;
+	featuredead=S44Farmhouse1_Destroyed;
+	footprintx=3;
+	footprintz=3;
+	height=5;
+	blocking=1;
+	hitdensity=75;
+	energy=250;
+      	damage=5000;
+	reclaimable=0;
+	featurereclamate=smudge01; 
+  	seqnamereclamate=tree1reclamate;
+	BuildingGroundDecalType=Dirt2.dds;
+	BuildingGroundDecalSizeX=5;
+	BuildingGroundDecalSizeY=5;
+	//flammable=1;
+	upright=1;
+	metal=1;
+	}
+
+[S44Farmhouse1_Destroyed]
+	{
+	world=allworld;
+	description=Destroyed Farmhouse;
+	category=Rural;
+	object=S44Farmhouse1_Destroyed.S3O;
+	footprintx=3;
+	footprintz=3;
+	height=5;
+	blocking=1;
+	hitdensity=55;
+	energy=250;
+      	damage=15000;
+	reclaimable=0;
+	featurereclamate=smudge01; 
+  	seqnamereclamate=tree1reclamate;
+	BuildingGroundDecalType=Scorchedfootprint.dds;
+	BuildingGroundDecalSizeX=5;
+	BuildingGroundDecalSizeY=5;
+	upright=1;
+	metal=1;
+	}
+
+//Farmhouse #2 -- Alluminum roof
+
+[S44Farmhouse2]
+	{
+	world=allworld;
+	description=Farmhouse;
+	category=Rural;
+	object=S44Farmhouse2.S3O;
+	//featuredead=S44Farmhouse2_Destroyed;
+	footprintx=5;
+	footprintz=5;
+	height=5;
+	blocking=1;
+	hitdensity=85;
+	energy=250;
+      	damage=5000;
+	reclaimable=0;
+	featurereclamate=smudge01; 
+  	seqnamereclamate=tree1reclamate;
+	BuildingGroundDecalType=Dirt2.dds;
+	BuildingGroundDecalSizeX=5;
+	BuildingGroundDecalSizeY=5;
+	//flammable=1;
+	upright=1;
+	metal=1;
+	}
+
+//Farmhouse #3; two story
+
+[S44Farmhouse3]
+	{
+	world=allworld;
+	description=Farmhouse;
+	category=Rural;
+	object=S44Farmhouse3.S3O;
+	//featuredead=S44Farmhouse3_Destroyed;
+	footprintx=4;
+	footprintz=4;
+	height=5;
+	blocking=1;
+	hitdensity=85;
+	energy=250;
+      	damage=5000;
+	reclaimable=0;
+	featurereclamate=smudge01; 
+  	seqnamereclamate=tree1reclamate;
+	BuildingGroundDecalType=Dirt2.dds;
+	BuildingGroundDecalSizeX=5;
+	BuildingGroundDecalSizeY=5;
+	//flammable=1;
+	upright=1;
+	metal=1;
+	}
+
+
+//Barn #1
+[S44Barn1]
+	{
+	world=allworld;
+	description=Barn;
+	category=Rural;
+	object=S44Barn1.S3O;
+	//featuredead=S44Barn1_Destroyed;
+	footprintx=6;
+	footprintz=5;
+	height=5;
+	blocking=1;
+	hitdensity=85;
+	energy=250;
+      	damage=5000;
+	reclaimable=0;
+	featurereclamate=smudge01; 
+  	seqnamereclamate=tree1reclamate;
+	BuildingGroundDecalType=Dirt2.dds;
+	BuildingGroundDecalSizeX=5;
+	BuildingGroundDecalSizeY=5;
+	//flammable=1;
+	upright=1;
+	metal=1;
+	}
+
+//Old crappy farmhouses
+
+[OldFarmhouse1]
+	{
+	world=allworld;
+	description=Farmhouse;
+	category=Rural;
+	object=OldFarmhouse1.S3O;
+	featuredead=OldFarmhouse1_Destroyed;
+	footprintx=3;
+	footprintz=3;
+	height=5;
+	blocking=1;
+	hitdensity=75;
+	energy=250;
+      	damage=5000;
+	reclaimable=0;
+	featurereclamate=smudge01; 
+  	seqnamereclamate=tree1reclamate;
+	BuildingGroundDecalType=Dirt2.dds;
+	BuildingGroundDecalSizeX=5;
+	BuildingGroundDecalSizeY=5;
+	//flammable=1;
+	upright=1;
+	metal=1;
+	}
+
+[OldFarmhouse1_Destroyed]
+	{
+	world=allworld;
+	description=Destroyed Farmhouse;
+	category=Rural;
+	object=OldFarmhouse1_Destroyed.S3O;
+	footprintx=3;
+	footprintz=3;
+	height=5;
+	blocking=1;
+	hitdensity=25;
+	energy=250;
+      	damage=15000;
+	reclaimable=0;
+	featurereclamate=smudge01; 
+  	seqnamereclamate=tree1reclamate;
+	BuildingGroundDecalType=Scorchedfootprint.dds;
+	BuildingGroundDecalSizeX=5;
+	BuildingGroundDecalSizeY=5;
+	upright=1;
+	metal=1;
+	}
+
+[OldFarmhouse2]
+	{
+	world=allworld;
+	description=Farmhouse;
+	category=Rural;
+	object=OldFarmhouse2.S3O;
+	featuredead=OldFarmhouse2_Destroyed;
+	footprintx=3;
+	footprintz=3;
+	height=5;
+	blocking=1;
+	hitdensity=75;
+	energy=250;
+      	damage=5000;
+	reclaimable=0;
+	featurereclamate=smudge01; 
+  	seqnamereclamate=tree1reclamate;
+	BuildingGroundDecalType=Dirt2.dds;
+	BuildingGroundDecalSizeX=5;
+	BuildingGroundDecalSizeY=5;
+	//flammable=1;
+	upright=1;
+	metal=1;	
+	}
+
+[OldFarmhouse2_Destroyed]
+	{
+	world=allworld;
+	description=Destroyed Farmhouse;
+	category=Rural;
+	object=OldFarmhouse1_Destroyed.S3O;
+	footprintx=3;
+	footprintz=3;
+	height=5;
+	blocking=1;
+	hitdensity=25;
+	energy=250;
+      	damage=15000;
+	reclaimable=0;
+	featurereclamate=smudge01; 
+  	seqnamereclamate=tree1reclamate;
+	BuildingGroundDecalType=Scorchedfootprint.dds;
+	BuildingGroundDecalSizeX=5;
+	BuildingGroundDecalSizeY=5;
+	upright=1;
+	metal=1;
+	}
+
+[OldFarmhouse3]
+	{
+	world=allworld;
+	description=Farmhouse;
+	category=Rural;
+	object=OldFarmhouse3.S3O;
+	featuredead=OldFarmhouse3_Destroyed;
+	footprintx=3;
+	footprintz=3;
+	height=5;
+	blocking=1;
+	hitdensity=75;
+	energy=250;
+      	damage=5000;
+	reclaimable=0;
+	featurereclamate=smudge01; 
+  	seqnamereclamate=tree1reclamate;
+	BuildingGroundDecalType=Dirt2.dds;
+	BuildingGroundDecalSizeX=5;
+	BuildingGroundDecalSizeY=5;
+	//flammable=1;
+	upright=1;
+	metal=1;
+	}
+
+[OldFarmhouse3_Destroyed]
+	{
+	world=allworld;
+	description=Destroyed Farmhouse;
+	category=Rural;
+	object=OldFarmhouse1_Destroyed.S3O;
+	footprintx=3;
+	footprintz=3;
+	height=5;
+	blocking=1;
+	hitdensity=25;
+	energy=250;
+      	damage=15000;
+	reclaimable=0;
+	featurereclamate=smudge01; 
+  	seqnamereclamate=tree1reclamate;
+	BuildingGroundDecalType=Scorchedfootprint.dds;
+	BuildingGroundDecalSizeX=5;
+	BuildingGroundDecalSizeY=5;
+	upright=1;
+	metal=1;
+	}
+
+[OldFarmhouse4]
+	{
+	world=allworld;
+	description=Farmhouse;
+	category=Rural;
+	object=OldFarmhouse4.S3O;
+	featuredead=OldFarmhouse4_Destroyed;
+	footprintx=3;
+	footprintz=3;
+	height=5;
+	blocking=1;
+	hitdensity=75;
+	energy=250;
+      	damage=5000;
+	reclaimable=0;
+	featurereclamate=smudge01; 
+  	seqnamereclamate=tree1reclamate;
+	BuildingGroundDecalType=Dirt2.dds;
+	BuildingGroundDecalSizeX=5;
+	BuildingGroundDecalSizeY=5;
+	//flammable=1;
+	upright=1;
+	metal=1;
+	}
+
+[OldFarmhouse4_Destroyed]
+	{
+	world=allworld;
+	description=Destroyed Farmhouse;
+	category=Rural;
+	object=OldFarmhouse1_Destroyed.S3O;
+	footprintx=3;
+	footprintz=3;
+	height=5;
+	blocking=1;
+	hitdensity=25;
+	energy=250;
+      	damage=15000;
+	reclaimable=0;
+	featurereclamate=smudge01; 
+  	seqnamereclamate=tree1reclamate;
+	BuildingGroundDecalType=Scorchedfootprint.dds;
+	BuildingGroundDecalSizeX=5;
+	BuildingGroundDecalSizeY=5;
+	upright=1;
+	metal=1;
+	}

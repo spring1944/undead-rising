@@ -1,0 +1,17 @@
+[S44cornrow]
+	{
+	world=allworld;
+	description=Corn;
+	category=corpse;
+	object=s44cornrow.S3O;
+	footprintx=2;
+	footprintz=1;
+	height=20;
+	blocking=0;
+	hitdensity=1;
+	energy=20;
+      	damage=150;
+	reclaimable=1;
+	featurereclamate=smudge01; 
+  	seqnamereclamate=tree1reclamate;
+	}

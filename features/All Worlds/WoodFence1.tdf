@@ -1,0 +1,17 @@
+[WoodFence1]
+	{
+	world=allworld;
+	description=Fence;
+	category=Rural;
+	object=WoodFence1.S3O;
+	footprintx=2;
+	footprintz=1;
+	height=2;
+	blocking=1;
+	hitdensity=5;
+	energy=20;
+      	damage=500;
+	reclaimable=1;
+	featurereclamate=smudge01; 
+  	seqnamereclamate=tree1reclamate;
+	}

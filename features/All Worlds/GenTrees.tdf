@@ -1,0 +1,71 @@
+[Gentree_01]
+	{
+	world=allworld;
+	description=Tree;
+	category=corpse;
+	object=Gentree_01.S3O;
+	footprintx=1;
+	footprintz=1;
+	height=20;
+	blocking=1;
+	hitdensity=5;
+	energy=20;
+      	damage=500;
+	reclaimable=1;
+	featurereclamate=smudge01; 
+  	seqnamereclamate=tree1reclamate;
+	}
+
+[Gentree_02]
+	{
+	world=allworld;
+	description=Tree;
+	category=corpse;
+	object=Gentree_02.S3O;
+	footprintx=1;
+	footprintz=1;
+	height=20;
+	blocking=1;
+	hitdensity=5;
+	energy=20;
+      	damage=500;
+	reclaimable=1;
+	featurereclamate=smudge01; 
+  	seqnamereclamate=tree1reclamate;
+	}
+
+[Gentree_03]
+	{
+	world=allworld;
+	description=Tree;
+	category=corpse;
+	object=Gentree_03.S3O;
+	footprintx=1;
+	footprintz=1;
+	height=20;
+	blocking=1;
+	hitdensity=5;
+	energy=20;
+      	damage=500;
+	reclaimable=1;
+	featurereclamate=smudge01; 
+  	seqnamereclamate=tree1reclamate;
+	}
+
+[Gentree_04]
+	{
+	world=allworld;
+	description=Tree;
+	category=corpse;
+	object=Gentree_04.S3O;
+	footprintx=1;
+	footprintz=1;
+	height=20;
+	blocking=1;
+	hitdensity=5;
+	energy=20;
+      	damage=500;
+	reclaimable=1;
+	featurereclamate=smudge01; 
+  	seqnamereclamate=tree1reclamate;
+	}

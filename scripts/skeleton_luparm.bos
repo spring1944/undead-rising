@@ -1,0 +1,11 @@
+#include "constants.h"
+piece luparm;
+
+Create()
+{
+ var myId;
+ myId = GET MY_ID;
+ var height;
+ height = GET UNIT_HEIGHT (myId);
+ get PRINT(5, height)
+}

@@ -1,0 +1,17 @@
+[Wheelbarrow1]
+	{
+	world=allworld;
+	description=Wheelbarrow;
+	category=Rural;
+	object=Wheelbarrow1.S3O;
+	footprintx=2;
+	footprintz=2;
+	height=2;
+	blocking=1;
+	hitdensity=5;
+	energy=20;
+      	damage=500;
+	reclaimable=1;
+	featurereclamate=smudge01; 
+  	seqnamereclamate=tree1reclamate;
+	}

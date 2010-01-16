@@ -1,0 +1,271 @@
+#define TAK //this is a TAK script
+
+#include "constants.h"
+
+piece  torso, flare, pelvis, rthigh, lthigh, lleg, rleg, rfoot, 
+		lfoot, luparm, lloarm, ground, gun, ruparm, rloarm, head;
+		
+
+//signals to handle control of..everything
+#define SIG_RUN					8
+#define SIG_AIMRUN				16
+#define SIG_CRAWL				32
+#define SIG_AIM1				64
+#define SIG_AIM2				128 //no inf has more than 2 weapons except commando, something of a special exception
+#define SIG_PINNEDCTRL			256
+#define SIG_FEARRECOVERY		512
+#define SIG_RESTOREFROMCRAWL	1024
+#define SIG_IDLE				2048
+
+/*
+Defs that are shared among inf
+the numbers that control pinned levels, how scary various weapons are, ect.
+*/
+#include "inf_sharedDefs.h"
+
+//individual unit definitions
+#define RIFLE
+#define WEAPON_GRENADE
+#define FLAGKILLER
+#define GUN_QUERY_PIECENUM		flare
+#define IdleDelay				10000
+#define RestoreDelay			5000
+#define StanceNumber			3 //number of WeaponReady stances
+#define BurstRate				80 //marginally less than the actual so there's visible movement
+
+/* --Var defs:
+-----Boolean
+---
+bAiming - is the unit currently aiming at anything? or was it recently aiming at anything (time controlled by restoreafterdelay)
+	Controls: timing of idle animations, the usage of AimRunControl over RunControl
+	Set by: Aimweapon, unset over time by AimRunControl and StartMoving/StopMoving
+---
+bNading - is the unit currently in the process of throwing a grenade?
+	Controls: locks out weaponready, and X
+	Set by: fireweapon of the nade script, unset by same at the end
+---
+bMoving - is the unit currently moving? 
+	Controls: various animations.
+	Set by: StartMoving, unset by StopMoving
+---
+-----Integer
+---
+iState - what the unit is currently doing //todo: add states for being in a transport, update killed and aimweapon accordingly
+	Controls: which aiming anim to use, among others.
+	 Set by: everything that changes the state of the unit. *Control, HitbyWeapon, RestoreFromCrawl, ect
+	  Values:
+		standing idle - 0
+		standing at attention - 1
+		standing aiming rifle/SMG - 2
+		kneeling aiming rifle/SMG - 3
+		-		
+		running - 4
+		running aiming - 5
+		-
+		prone 'idle' - 6
+		prone aiming - 7
+		crawling - 8
+		-
+		pinned - 9 
+---
+iFear - how 'afraid' unit currently is. 
+	Controls: if unit is crawling/prone or standing.
+	Controls: pinned status.
+	 Set by: increased by HitbyWeapon on impact of suitable weapon, decreased by FearRecovery
+	  Values: 0-20
+	  iFear = 0-14 = prone/crawling
+	  iFear >= 15 = pinned, unable to fire or crawl.
+---
+	
+*/
+#ifndef WEAPON_GRENADE
+static-var bAiming, bMoving, iState, iFear, iSpeed;
+#endif
+#ifdef WEAPON_GRENADE
+static-var bAiming, bMoving, iSpeed;
+#endif
+
+//FX definitions
+	//frivolous
+#define BLOOD_SM 1024+1
+#define BLOOD_LG 1024+2
+#define CLIP 1024+3
+#define SHELL 1024+4
+#define PISS 1024+5
+#define CIG 1024+6
+#define MUZZLEFLASH 1024+7
+//end FX
+Stand()
+{
+	if (bAiming == 0)
+	{
+		move pelvis to x-axis [0.0] now;
+		turn rthigh to x-axis <0> now;
+		turn rthigh to y-axis <0> now;
+		turn rthigh to z-axis <0> now;
+		turn lthigh to x-axis <0> now;
+		turn lthigh to y-axis <0> now;
+		turn lthigh to z-axis <0> now;
+		turn lleg to x-axis <0> now;
+		turn rleg to x-axis <0> now;
+		turn torso to y-axis <0> now;
+		turn torso to x-axis <0> now;
+		turn torso to z-axis <0> now;
+		turn pelvis to y-axis <0> now;
+		turn pelvis to x-axis <0> now;
+		turn pelvis to z-axis <0> now;	
+		}
+}
+
+Run(mult1, mult2, mult3) //basic jog when there is no fear or aiming
+{
+//set-signal-mask SIG_RUN;
+var pelviswait;
+pelviswait = rand(145, 160); 
+		turn ground to y-axis <0> now;
+		turn pelvis to y-axis <0> now;
+		turn pelvis to z-axis <0> now;
+		
+		turn torso to y-axis <0> now;
+		turn torso to z-axis <0> now;
+	
+		turn rthigh to y-axis <0> now;
+		turn rthigh to z-axis <0> now;
+		
+		turn lthigh to y-axis <0> now;
+		turn lthigh to z-axis <0> now;
+		
+		turn lleg to y-axis <0> now;
+		turn lleg to y-axis <0> now;
+		
+		turn rleg to y-axis <0> now;
+		turn rleg to z-axis <0> now;
+
+
+		//turn torso to x-axis <7> now;
+		//if (bMoving==0) sleep 200;	
+		if (bMoving==1)
+			{
+			turn ruparm to x-axis <-100>*mult3  speed <270>;
+			turn ruparm to y-axis <15>*mult1  speed <270>;
+			turn ruparm to z-axis <15>*mult2  speed <270>;
+			turn rloarm to x-axis <15>*mult1  speed <270>;
+			turn rloarm to y-axis <15>*mult3  speed <270>;
+			turn rloarm to z-axis <15>*mult1  speed <270>;
+			turn luparm to x-axis <-110>*mult2  speed <270>;
+			turn luparm to y-axis <15>*mult2  speed <270>;
+			turn luparm to z-axis <15>*mult3  speed <270>;
+			turn lloarm to x-axis <15>*mult1  speed <270>;
+			turn lloarm to y-axis <15>*mult2  speed <270>;
+			turn lloarm to z-axis <15>*mult2  speed <270>;
+			turn rleg to x-axis <85> speed <540>; //85	
+			turn rthigh to x-axis <-60> speed <270>;
+			turn lthigh to x-axis <30> speed <270>;
+			turn head to z-axis <10>*mult3 speed <150>;
+			turn torso to x-axis <10>*mult1 speed <90>;
+			turn torso to y-axis <10>*mult2 speed <90>;
+			turn torso to z-axis <10>*mult1 speed <90>;
+		sleep pelviswait;
+			move pelvis to y-axis [0.4] speed <2800>;
+		sleep pelviswait;
+			turn rleg to x-axis <10> speed <630>;
+			move pelvis to y-axis [0] speed <2800>;
+			}
+		//if (bMoving==0) sleep 200;
+		if (bMoving==1)
+			{
+			turn lleg to x-axis <85> speed <540>;
+			turn lthigh to x-axis <-60> speed <270>;
+			turn rthigh to x-axis <30> speed <270>;
+			turn torso to y-axis <-10> speed <90>;
+		sleep pelviswait;
+			move pelvis to y-axis [0.4] speed <2800>;	
+		sleep pelviswait;
+			turn lleg to x-axis <10> speed <630>;
+			move pelvis to y-axis [0] speed <2800>;
+			}
+		//	sleep Desync;
+}
+		
+
+RunControl() 
+{
+	signal SIG_RUN;
+	set-signal-mask SIG_RUN;
+	signal SIG_CRAWL;
+	signal SIG_AIMRUN;
+	var pickStance;
+	pickStance = rand(1,StanceNumber);
+	set MAX_SPEED to iSpeed;
+	
+	while(1)
+	{
+		if (bMoving == 0)
+		{
+		start-script Stand(pickStance);
+		sleep 200;
+		//call-script StandingIdle();
+		}
+		
+		if (bMoving == 1)
+		{
+		var mult1;
+		var mult2;
+		var mult3;
+		mult1 = rand(-5,5);
+		mult2 = rand(-5,5);
+		mult3 = rand(-5,5);
+		call-script Run(mult1, mult2, mult3);
+		}
+	}
+}
+
+//transport state handling
+#include "inf_transportHandling.h"
+
+StartMoving()
+{
+	signal SIG_IDLE;
+	bAiming = 0;
+	bMoving = 1;
+}
+
+StopMoving()
+{
+	signal SIG_IDLE;
+	bAiming = 0;
+	bMoving = 0;
+}
+
+Create()
+{
+	hide gun;
+	bMoving = 0;
+	bAiming = 0;
+	iSpeed = GET MAX_SPEED;
+	start-script RunControl();
+}
+
+RestoreAfterDelay()
+{
+	sleep RestoreDelay;
+}
+
+AimWeapon1() {
+	return 1;
+}
+
+AimFromWeapon1(piecenum) {
+	piecenum = head;
+}
+
+QueryWeapon1(piecenum) {
+	piecenum = head;
+}
+
+FireWeapon1() {
+return 0;
+}
+
+
+#include "inf_Death.h"

@@ -1,0 +1,30 @@
+[molotov] {
+  name=Molotov Cocktail;
+  accuracy=1250;
+  areaOfEffect=32;
+  canAttackGround=0;
+  cegTag=Flametrail;
+  [customParams] {
+    damagetype=fire;
+  }
+  [damage] {
+    default=1000;
+  }
+  edgeEffectiveness=0.8;
+  explosionGenerator=custom:Molotov;
+  explosionSpeed=30;
+  id=31;
+  impulseFactor=1e-05;
+  model=MortarShell.S3O;
+  movingAccuracy=500;
+  range=180;
+  reloadTime=8;
+  rendertype=3;
+  soundHit=GEN_Molotov;
+  targetBorder=1;
+  tolerance=10000;
+  turret=1;
+  weaponTimer=5;
+  weaponVelocity=210;
+}
+

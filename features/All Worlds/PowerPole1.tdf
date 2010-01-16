@@ -1,0 +1,17 @@
+[PowerPole1EW]
+	{
+	world=allworld;
+	description=Pole;
+	category=Rural;
+	object=PowerPole1.S3O;
+	footprintx=1;
+	footprintz=1;
+	height=20;
+	blocking=1;
+	hitdensity=5;
+	energy=20;
+      	damage=500;
+	reclaimable=1;
+	featurereclamate=smudge01; 
+  	seqnamereclamate=tree1reclamate;
+	}

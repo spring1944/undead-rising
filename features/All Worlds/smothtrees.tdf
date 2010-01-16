@@ -1,0 +1,59 @@
+[smothtree1]
+	{
+	world=allworld;
+	description=Tree;
+	category=Rural;
+	object=smothtree1.s3o;
+	footprintx=1;
+	footprintz=1;
+	height=10;
+	blocking=1;
+	hitdensity=5;
+	metal=1;
+	energy=25;
+	damage=500;
+	flammable=0;
+	reclaimable=1;
+	autoreclaimable=1;
+	upright=1;
+	}
+
+[smothtree2]
+	{
+	world=allworld;
+	description=Tree;
+	category=Rural;
+	object=smothtree2.s3o;
+	footprintx=1;
+	footprintz=1;
+	height=10;
+	blocking=1;
+	hitdensity=5;
+	metal=1;
+	energy=25;
+	damage=500;
+	flammable=0;
+	reclaimable=1;
+	autoreclaimable=1;
+	upright=1;
+	}
+
+[smothtree3]
+	{
+	world=allworld;
+	description=Tree;
+	category=Rural;
+	object=smothtree3.s3o;
+	footprintx=1;
+	footprintz=1;
+	height=10;
+	blocking=1;
+	hitdensity=5;
+	metal=1;
+	energy=25;
+	damage=500;
+	flammable=0;
+	reclaimable=1;
+	autoreclaimable=1;
+	upright=1;
+	}

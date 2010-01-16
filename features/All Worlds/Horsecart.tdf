@@ -1,0 +1,17 @@
+[Horsecart1]
+	{
+	world=allworld;
+	description=Cart;
+	category=Rural;
+	object=Horsecart1.S3O;
+	footprintx=3;
+	footprintz=3;
+	height=2;
+	blocking=1;
+	hitdensity=25;
+	energy=20;
+      	damage=1000;
+	reclaimable=1;
+	featurereclamate=smudge01; 
+  	seqnamereclamate=tree1reclamate;
+	}

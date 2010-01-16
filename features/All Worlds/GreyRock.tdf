@@ -1,0 +1,125 @@
+[GreyRock1] 
+   { 
+   world=allworld; 
+   description=GreyRock; 
+   category=Rocks; 
+   object=GreyRock1.s3o; 
+   footprintx=9; 
+   footprintz=8; 
+   height=36; 
+   blocking=1; 
+   hitdensity=5; 
+   energy=0;
+   metal=350; 
+   damage=7000; 
+   flammable=0; 
+   reclaimable=1; 
+   autoreclaimable=1; 
+   featurereclamate=smudge01; 
+   seqnamereclamate=tree1reclamate; 
+   } 
+
+[GreyRock2] 
+   { 
+   world=allworld; 
+   description=GreyRock; 
+   category=Rocks; 
+   object=GreyRock2.s3o; 
+   footprintx=3; 
+   footprintz=3; 
+   height=21; 
+   blocking=1; 
+   hitdensity=5; 
+   energy=0;
+   metal=75; 
+   damage=1000; 
+   flammable=0; 
+   reclaimable=1; 
+   autoreclaimable=1; 
+   featurereclamate=smudge01; 
+   seqnamereclamate=tree1reclamate; 
+   } 
+
+[GreyRock3] 
+   { 
+   world=allworld; 
+   description=GreyRock; 
+   category=Rocks; 
+   object=GreyRock3.s3o; 
+   footprintx=4; 
+   footprintz=3; 
+   height=22; 
+   blocking=1; 
+   hitdensity=5; 
+   energy=0;
+   metal=80; 
+   damage=1000; 
+   flammable=0; 
+   reclaimable=1; 
+   autoreclaimable=1; 
+   featurereclamate=smudge01; 
+   seqnamereclamate=tree1reclamate; 
+   } 
+
+[GreyRock4] 
+   { 
+   world=allworld; 
+   description=GreyRock; 
+   category=Rocks; 
+   object=GreyRock4.s3o; 
+   footprintx=4; 
+   footprintz=3; 
+   height=20; 
+   blocking=1; 
+   hitdensity=5; 
+   energy=0;
+   metal=85; 
+   damage=800; 
+   flammable=0; 
+   reclaimable=1; 
+   autoreclaimable=1; 
+   featurereclamate=smudge01; 
+   seqnamereclamate=tree1reclamate; 
+   } 
+
+[GreyRock5] 
+   { 
+   world=allworld; 
+   description=GreyRock; 
+   category=Rocks; 
+   object=GreyRock5.s3o; 
+   footprintx=3; 
+   footprintz=2; 
+   height=9; 
+   blocking=1; 
+   hitdensity=5; 
+   energy=0;
+   metal=25; 
+   damage=800; 
+   flammable=0; 
+   reclaimable=1; 
+   autoreclaimable=1; 
+   featurereclamate=smudge01; 
+   seqnamereclamate=tree1reclamate; 
+   } 
+
+[GreyRock6] 
+   { 
+   world=allworld; 
+   description=GreyRock; 
+   category=Rocks; 
+   object=GreyRock6.s3o; 
+   footprintx=2; 
+   footprintz=1; 
+   height=4; 
+   blocking=1; 
+   hitdensity=5; 
+   energy=0;
+   metal=10; 
+   damage=500; 
+   flammable=0; 
+   reclaimable=1; 
+   autoreclaimable=1; 
+   featurereclamate=smudge01; 
+   seqnamereclamate=tree1reclamate; 
+   }
