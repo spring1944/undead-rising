@@ -16,7 +16,7 @@
   }
   footprintX=1;
   footprintZ=1;
-  iconType=rifle;
+  iconType=zombiea;
   mass=50;
   maxDamage=500;
   maxSlope=15;

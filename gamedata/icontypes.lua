@@ -325,6 +325,16 @@ local iconTypes = {
 		size			=	2.25,
 		distance	=	0.2,
 	},
+	zombiea = {
+		bitmap		=	"icons/zombiea.tga",
+		size			=	2,
+		distance	=	0.15,
+	},
+	zombieb = {
+		bitmap		=	"icons/zombieb.tga",
+		size			=	2,
+		distance	=	0.15,
+	},
 }
 
 return iconTypes
