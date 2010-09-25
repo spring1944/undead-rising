@@ -10,6 +10,8 @@ function gadget:GetInfo()
 	}
 end
 
+local modOptions = Spring.GetModOptions()
+
 -- function localisations
 -- Synced Read
 local AreTeamsAllied						=	Spring.AreTeamsAllied
@@ -28,13 +30,18 @@ local GAIA_TEAM_ID							=	Spring.GetGaiaTeamID()
 local BLOCK_SIZE							=	32	-- size of map to check at once
 local METAL_THRESHOLD						=	1 -- Handy for creating profiles, set to just less than the lowest metal spot you want to include. ALWAYS REVERT TO 1
 local PROFILE_PATH							=	"maps/" .. string.sub(Game.mapName, 1, string.len(Game.mapName) - 4) .. "_profile.lua"
-local civilianMult							=	2 --# of civies per house
+
 local rectDimMin							=	100
 local rectDimMax							=	100 
 local civilianCheckDist						=	200
-local MAX_SPREAD							=	600
-local SPREAD_MULT							=	1.01
+local MAX_SPREAD							=	300
+local SPREAD_MULT							=	1.005
 local maxCivSpread							=	600
+--mod Option defined values
+local zombieTeam 							= tonumber(modOptions.zombie_team) or 1
+local zombieCount 							= tonumber(modOptions.zombie_count) or 5
+local civilianCount 						= tonumber(modOptions.civilian_count) or 15
+local respawnPeriod							= (tonumber(modOptions.respawn_period) or 5) * 60 * 30 --minutes-> seconds-> frames
 -- Minimum distance between any two spawned units/features.
 local CLEARANCE								=	40
 
@@ -45,17 +52,15 @@ local minMetalLimit 						=	0	-- minimum metal to place a flag at
 local numSpots								=	0 -- number of spots found
 local spots 								=	{} -- table of flag locations
 local initFrame
-local modOptions
-if (Spring.GetModOptions) then
-  modOptions = Spring.GetModOptions()
-end
+
 
 if (gadgetHandler:IsSyncedCode()) then
 -- SYNCED
+
 local function IsPositionValid(unitDefID, x, z)
 	-- Don't place units underwater. (this is also checked by TestBuildOrder
 	-- but that needs proper maxWaterDepth/floater/etc. in the UnitDef.)
-	local y = Spring.GetGroundHeight(x, z)
+	local y = GetGroundHeight(x, z)
 	if (y <= 0) then
 		return false
 	end
@@ -64,20 +69,13 @@ local function IsPositionValid(unitDefID, x, z)
 	if (test ~= 2) then
 		return false
 	end
-	-- Don't place units too close together.
-	local ud = UnitDefs[unitDefID]
-	local units = Spring.GetUnitsInCylinder(x, z, CLEARANCE)
-	if (units[1] ~= nil) then
-		return false
-	end
 	return true
 end
 	
 local function PlaceHouse(spot)
 	local spread = 100
-	local civSpread = 70
 	local udid = UnitDefNames["civilian"].id 
-	local houseDensity = tonumber(modOptions.houseDensity) or 3
+	local houseDensity = 2
 	local unitClear = GetUnitsInCylinder(spot.x, spot.z, civilianCheckDist)
 	if (#unitClear == 0) then
 		for i = 1, houseDensity do
@@ -106,29 +104,8 @@ local function PlaceHouse(spot)
 				local x = spot.x + dx
 				local z = spot.z + dz
 				local featureClear2 = Spring.GetFeaturesInRectangle(x - rectDimMin, z - rectDimMin, x + rectDimMin, z + rectDimMin)
-				if #featureClear2 == 0 then
+				if #featureClear2 == 0 and IsPositionValid(udid, x, z) == true then
 					CreateFeature(newHouse, x, 0, z, 0)
-					local civilianCount = civilianMult * houseDensity
-						--Spring.Echo("civilianCount", civilianCount)
-					for i=1, civilianCount do
-						local dxciv = math.random(-civSpread, civSpread)
-						local dzciv = math.random(-civSpread, civSpread)
-						local xciv = x + dxciv
-						local zciv = z + dzciv
-						y = GetGroundHeight(xciv, zciv)
-						local zombieSpawn = math.random(1,80)
-							if (zombieSpawn == 10) then
-							local teams = Spring.GetTeamList()
-								local zombieTeam = 1--modOptions.zombie_team or 1
-								if (teams[zombieTeam] ~= nil) then
-								CreateUnit("zomsprinter", xciv, y, zciv, 0, zombieTeam)
-								end
-							else
-							CreateUnit("civilian", xciv, y, zciv, 0, GAIA_TEAM_ID)
-							end
-						civSpread = civSpread * SPREAD_MULT
-					end
-					break
 				else
 				spread = spread * SPREAD_MULT
 				end
@@ -170,13 +147,57 @@ function gadget:GameFrame(n)
 					spots = onlyHouseSpots
 					PlaceHouse(spot)							
 				end
-			end			
+			end
 		else -- load the flag positions from profile
 			Spring.Echo("Map Flag Profile found. Loading flag positions.")
 			spots = VFS.Include(PROFILE_PATH)
 			for _, spot in pairs(spots) do
 				PlaceHouse(spot)
 			end
+		end
+	end
+	if n % respawnPeriod < 0.1 and n > (initFrame+10) then
+		local spawnSpread = 70
+		local civSpawnSpot = math.random(0, (table.maxn(spots)-1))
+		local zombieSpawnSpot = math.random(0, (table.maxn(spots) - 1))
+		local civcounter = 0
+		while civcounter < civilianCount do
+			local dxciv = math.random(-spawnSpread, spawnSpread)
+			local dzciv = math.random(-spawnSpread, spawnSpread)
+			local xciv = spots[civSpawnSpot].x + dxciv
+			local zciv = spots[civSpawnSpot].z + dzciv
+			local yciv = GetGroundHeight(xciv, zciv)
+			local udid = UnitDefNames["civilian"].id
+			local featureClear = Spring.GetFeaturesInRectangle(xciv - rectDimMin, zciv - rectDimMin, xciv + rectDimMin, zciv + rectDimMin)
+			if #featureClear == 0 and IsPositionValid(udid, xciv, zciv) == true then
+				local zombieSpawn = math.random(1,80)
+					if (zombieSpawn == 10) then
+					local teams = Spring.GetTeamList()
+						if (teams[zombieTeam] ~= nil) then
+						CreateUnit("zomsprinter", xciv, yciv, zciv, 0, zombieTeam)
+						end
+					else
+					CreateUnit("civilian", xciv, yciv, zciv, 0, GAIA_TEAM_ID)
+					civcounter = civcounter + 1
+					end
+			end
+			spawnSpread = spawnSpread * SPREAD_MULT
+		end
+		spawnSpread = 70
+		local zomcounter = 0
+		while zomcounter < zombieCount do
+			local dxzom = math.random(-spawnSpread, spawnSpread)
+			local dzzom = math.random(-spawnSpread, spawnSpread)
+			local x = spots[zombieSpawnSpot].x + dxzom
+			local z = spots[zombieSpawnSpot].z + dzzom
+			local y = GetGroundHeight(x, z)
+			local udid = UnitDefNames["zomsprinter"].id
+			local featureClear = Spring.GetFeaturesInRectangle(x - rectDimMin, z - rectDimMin, x + rectDimMin, z + rectDimMin)
+			if #featureClear == 0 and IsPositionValid(udid, x, z) == true then
+				CreateUnit("zomsprinter", x, y, z, 0, zombieTeam)
+				zomcounter = zomcounter + 1
+			end
+			spawnSpread = spawnSpread * SPREAD_MULT
 		end
 	end
 end

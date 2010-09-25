@@ -46,97 +46,8 @@ local options = {
     max    = 10,
     step   = 0.1,
   },]]--
-  
-  {
-	key    = '2gamemode',
-	name   = 'Game Mode Settings',
-	desc   = 'Sets Normal vs Deployment Mode, as well as Point vs Traditional Victory',
-	type   = 'section',
-  },
-	
-  {
-		key = "navies",
-		name = "Naval Units",
-		desc = "Enable the production of naval units",
-		type = "bool",
-		def = false,
-	},
-	
-      {
-	key		= "gametype",
-	name	= "Game Modes",
-	desc	= "Change the game mode (key = 'gametype')",
-	type  	= "list",
-	section	= '2gamemode',
-	def		= "0",
-	items	= {
-		{ 
-		key  = "0",
-		name = "Traditional",
-		desc = "Traditional RTS style unit construction",
-		},
-		{
-		key  = "1",
-		name = "Deployment",
-		desc = "Place your army on the map and fight it out with limited resources",
-		},
-	  },
-  },
- {
-      key="scoremode",
-      name="Victory Condition",
-      desc="What leads to victory? (key = 'scoremode')",
-      type="list",
-      def="disabled",
-	  section	= '2gamemode',
-      items = {
-         {
-		 key = "disabled",
-		 name = "Annihilation",
-		 desc = "Only goal is complete and total annihilation of the enemy",
-		 },
-         {
-		 key = "tugowar",
-		 name = "Victory Points",
-		 desc = "Owning more flags than the enemy causes them to lose tickets. When a team hits zero, they are eliminated." ,
-		 },
-         {
-		 key = "multidomination",
-		 name = "Multi-Domination Victory Points",
-		 desc = "Hold all points for 20 seconds to score",
-		 },
-      },
-   },
-  {
-      key="starttime",
-      name="Start Time",
-      desc="When the capturing of points can begin in Victory Point mode. (key = 'starttime')",
-      type="list",
-	  section	= '2gamemode',
-      def="5",
-      items = {
-         { key = "0", name = "0", desc = "0 minutes", },
-         { key = "2", name = "2", desc = "2 minutes", },
-         { key = "3", name = "3", desc = "3 minutes", },
-         { key = "5", name = "5", desc = "5 minutes", },
-         { key = "10", name = "10", desc = "10 minutes", },
-      },
-   },
-   {
-      key="limitscore",
-      name="Score Limit",
-      desc="The Winning Amount for Victory Point Mode",
-      type="list",
-	  section	= '2gamemode',
-      def="1000",
-      items = {
-         { key = "200", name = "200", desc = "Very Short", },
-         { key = "500", name = "500", desc = "Short", },
-         { key = "1000", name = "1000", desc = "Average", },
-         { key = "2000", name = "2000", desc = "Long", },
-         { key = "3000", name = "3000", desc = "Insane!", },
-      },
-   },
+ 
+
    
   {
 	key    = '3resources',
@@ -245,18 +156,6 @@ local options = {
 	type   = 'section',
   },
   
-     {
-    key    = "weapon_apdamage_mult",
-    name   = "AP damage multiplier",
-    desc   = "Applies a multiplier to all the AP damage values",
-    type   = "number",
-    def    = 0.75,
-    min	   = 0.01,
-    max    = 2,
-	section= '1balance',
-    step   = 0.05,
-  },
-  
   	{
 		key = "civilian_income",
 		name = "Command Income per tick per civilian protected",
@@ -277,6 +176,42 @@ local options = {
 		def    = 3,
 		min    = 0,
 		max    = 64,
+		section= '1balance',
+		step   = 1,
+	},
+	
+	{
+		key = "zombie_count",
+		name = "how many zombies spawn in at once?",
+		desc = "how many zombies spawn in at once?? (key = 'zombie_count')",
+	    type   = "number",
+		def    = 5,
+		min    = 0,
+		max    = 64,
+		section= '1balance',
+		step   = 1,
+	},
+	
+	{
+		key = "civilian_count",
+		name = "how many civs spawn in at once?",
+		desc = "how many civs spawn in at once? (key = 'civilian_count')",
+	    type   = "number",
+		def    = 15,
+		min    = 0,
+		max    = 64,
+		section= '1balance',
+		step   = 1,
+	},
+	
+	{
+		key = "respawn_period",
+		name = "How often do things spawn in?",
+		desc = "How often do things spawn in (in minutes)? (key = 'respawn_period')",
+	    type   = "number",
+		def    = 5,
+		min    = 1,
+		max    = 10,
 		section= '1balance',
 		step   = 1,
 	},

@@ -193,6 +193,8 @@ function gadget:GameFrame(n)
 							if ud.canMove and armedGuard then
 								GiveOrderToUnit(unitID, CMD_GUARD, {nearestEnemy}, {})
 								if scaredUnits[unitID] == 0 then
+									local px, py, pz = GetTeamStartPosition(guardTeam)
+									GiveOrderToUnit(unitID, CMD_MOVE, {px, py, pz + 200}, {})
 									AddTeamResource(guardTeam, "m", modOptions.civilian_income or 1)
 								end
 							end

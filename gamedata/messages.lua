@@ -1,9 +1,9 @@
 local messages = {
 	["Team%i(%s) is no more"] = {
-		"Team%i(%s) has been routed",
-		"Team%i(%s) has been driven from the combat area",
-		"Team%i(%s) has been eliminated",
-		"Team%i(%s) surrendered to your forces",
+		"Team%i(%s) let the brainjuice spill out the headhole...",
+		"OM NOM NOM Team%i(%s)",
+		"Team%i(%s), it's what's for dinner!",
+		"Team%i(%s) has been EATEN.",
 	}
 }
 

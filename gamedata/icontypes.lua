@@ -51,7 +51,7 @@ local iconTypes = {
 	},
 	engineervehicle = {
 		bitmap		=	"icons/engineervehicle.tga",
-		size			=	2.5,
+		size			=	2.25,
 		distance	=	0.2,
 	},
 	lightmg = {
@@ -84,9 +84,19 @@ local iconTypes = {
 		size			=	3,
 		distance	=	0.2,
 	},
+	aacar = {
+		bitmap		=	"icons/AAcar.tga",
+		size			=	2,
+		distance	=	0.2,
+	},
 	aatruck = {
 		bitmap		=	"icons/AAtruck.tga",
-		size			=	3,
+		size			=	2,
+		distance	=	0.2,
+	},
+	attruck = {
+		bitmap		=	"icons/ATtruck.tga",
+		size			=	2,
 		distance	=	0.2,
 	},
 	armoredcar = {
@@ -182,6 +192,16 @@ local iconTypes = {
 	},
 	truck = {
 		bitmap		=	"icons/truck.tga",
+		size			=	2,
+		distance	=	0.2,
+	},
+	htruck = {
+		bitmap		=	"icons/Htruck.tga",
+		size			=	2,
+		distance	=	0.2,
+	},
+	rtruck = {
+		bitmap		=	"icons/Rtruck.tga",
 		size			=	2,
 		distance	=	0.2,
 	},

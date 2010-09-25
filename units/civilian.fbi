@@ -25,7 +25,7 @@
   iconType=rifle;
   mass=50;
   maxDamage=110;
-  maxSlope=15;
+  maxSlope=1;
   maxVelocity=1.6;
   maxWaterDepth=10;
   movementClass=KBOT_Infantry;
