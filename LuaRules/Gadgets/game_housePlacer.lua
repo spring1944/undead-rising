@@ -37,6 +37,8 @@ local civilianCheckDist						=	200
 local MAX_SPREAD							=	300
 local SPREAD_MULT							=	1.005
 local maxCivSpread							=	600
+
+local spawnBuffer							=	1700
 --mod Option defined values
 local zombieTeam 							= tonumber(modOptions.zombie_team) or 1
 local zombieCount 							= tonumber(modOptions.zombie_count) or 5
@@ -51,6 +53,7 @@ local totalMetal							=	0 -- total metal found
 local minMetalLimit 						=	0	-- minimum metal to place a flag at
 local numSpots								=	0 -- number of spots found
 local spots 								=	{} -- table of flag locations
+local teamStartPos							=	{}
 local initFrame
 
 
@@ -116,6 +119,18 @@ end
 
 function gadget:Initialize()
 	initFrame = Spring.GetGameFrame()
+	for _, teamID in ipairs(Spring.GetTeamList()) do
+		teamStartPos[teamID] = {
+		x = nil,
+		z = nil,
+		}
+	end
+	for teamID, value in pairs(teamStartPos) do
+		local x, _, z = Spring.GetTeamStartPosition(teamID)
+		Spring.Echo(teamID)
+		teamStartPos[teamID].x = x
+		teamStartPos[teamID].z = z
+	end	
 end
 
 function gadget:GameFrame(n)
@@ -158,8 +173,38 @@ function gadget:GameFrame(n)
 	end
 	if n % respawnPeriod < 0.1 and n > (initFrame+10) then
 		local spawnSpread = 70
+		local okSpot = false
+		local countOks = 0
 		local civSpawnSpot = math.random(0, (table.maxn(spots)-1))
 		local zombieSpawnSpot = math.random(0, (table.maxn(spots) - 1))
+		while okSpot == false do
+			for teamID, values in pairs(teamStartPos) do
+				if math.abs(spots[civSpawnSpot].x - teamStartPos[teamID].x) > spawnBuffer and math.abs(spots[civSpawnSpot].z - teamStartPos[teamID].z) > spawnBuffer then
+					countOks = countOks + 1
+				end
+			end
+			if countOks == #teamStartPos then
+				okSpot = true
+			else
+				countOks = 0
+				civSpawnSpot = math.random(0, (table.maxn(spots)-1))
+			end
+		end
+		countOks = 0
+		okSpot = false
+		while okSpot == false do
+			for teamID, values in pairs(teamStartPos) do
+				if math.abs(spots[zombieSpawnSpot].x - teamStartPos[teamID].x) > spawnBuffer and math.abs(spots[zombieSpawnSpot].z - teamStartPos[teamID].z) > spawnBuffer then
+					countOks = countOks + 1
+				end
+			end
+			if countOks == #teamStartPos then
+				okSpot = true
+			else
+				countOks = 0
+				zombieSpawnSpot = math.random(0, (table.maxn(spots)-1))
+			end
+		end
 		local civcounter = 0
 		while civcounter < civilianCount do
 			local dxciv = math.random(-spawnSpread, spawnSpread)
