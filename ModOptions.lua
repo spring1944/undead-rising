@@ -168,17 +168,6 @@ local options = {
 		step   = 0.25,
 	},
 	
-	  	{
-		key = "zombie_team",
-		name = "what team do zombies spawn to?",
-		desc = "what team do zombies spawn to? (key = 'zombie_team')",
-	    type   = "number",
-		def    = 3,
-		min    = 0,
-		max    = 64,
-		section= '1balance',
-		step   = 1,
-	},
 	
 	{
 		key = "zombie_count",

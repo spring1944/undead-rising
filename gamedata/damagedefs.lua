@@ -19,6 +19,7 @@ local damagedefs = {
     default = 0,
   },
   smallarm = {
+	zombies = 1.25,
     infantry = 1.25,
     guns = 1,
     unarmouredvehicles = 1/5,
@@ -30,6 +31,7 @@ local damagedefs = {
     mines = 0,
   },
   explosive = {
+	zombies = 9,
     infantry = 9,
     unarmouredvehicles = 2,
     armouredvehicles = 1/2,
@@ -50,6 +52,7 @@ local damagedefs = {
     flag = 0,
   },
   fire = {
+	zombies = 3,
     bunkers = 4,
     unarmouredvehicles = 2,
     tanks = 1/2,
@@ -61,7 +64,7 @@ local damagedefs = {
     unarmouredvehicles = 1/5,
     default = 1/4,
     lightbuildings = 1/4,
-    bunkers = 0,
+    bunkers = 1/2,
     tanks = 1/6,
     flag = 0,
     mines = 0,

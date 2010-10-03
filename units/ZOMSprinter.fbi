@@ -31,7 +31,7 @@
   side=ZOM;
   sightDistance=840;
   smoothAnim=0;
-  soundcategory=GERInf;
+  soundcategory=zom;
   stealth=1;
   TEDClass=KBOT;
   turnRate=1010;

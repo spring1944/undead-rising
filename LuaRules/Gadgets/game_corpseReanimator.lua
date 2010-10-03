@@ -23,9 +23,12 @@ if (Spring.GetModOptions) then
   modOptions = Spring.GetModOptions()
 end
 
-local GetGaiaTeamID			=	Spring.GetGaiaTeamID
+local GetSideData				=	Spring.GetSideData
+local GetGaiaTeamID				=	Spring.GetGaiaTeamID
 
-local zombificationRadius	=	100
+local zombificationRadius		=	100
+local zombieTeam
+
 
 function gadget:GameFrame(n)
 
@@ -51,9 +54,8 @@ function gadget:GameFrame(n)
 									zombieName = "zomsprinter"
 								end
 								local teams = Spring.GetTeamList()
-								local zombieTeam = tonumber(modOptions.zombie_team) or 1
 								if (teams[zombieTeam] ~= nil) then
-									Spring.CreateUnit(zombieName, x, y, z, 0, zombieTeam)
+									Spring.CreateUnit(zombieName, x, y, z, 0, GG.zombieTeam)
 									Spring.DestroyFeature(fid)
 									break
 								end

@@ -1,6 +1,9 @@
 local armorDefs = {
+  zombies = {
+  "zomsprinter",
+  },
   infantry  =  {
-	"zomsprinter",
+	
     --**Germany**--
     "GERAirEngineer",
     "GERObserv",

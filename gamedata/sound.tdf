@@ -1,5 +1,16 @@
 // unit sounds
 
+
+[zom]
+	{
+	select1=zomgrowl;
+	select2=zomack;
+	select3=zomack2;
+	ok1=zomblood;
+	ok2=zomvoice1;
+      	} 
+	
+	
 [Nothing]
 	{
 	count5=GEN_alarm;

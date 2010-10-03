@@ -40,7 +40,6 @@ local maxCivSpread							=	600
 
 local spawnBuffer							=	1700
 --mod Option defined values
-local zombieTeam 							= tonumber(modOptions.zombie_team) or 1
 local zombieCount 							= tonumber(modOptions.zombie_count) or 5
 local civilianCount 						= tonumber(modOptions.civilian_count) or 15
 local respawnPeriod							= (tonumber(modOptions.respawn_period) or 5) * 60 * 30 --minutes-> seconds-> frames
@@ -171,7 +170,7 @@ function gadget:GameFrame(n)
 			end
 		end
 	end
-	if n % respawnPeriod < 0.1 and n > (initFrame+10) then
+	if n % respawnPeriod < 0.1 and n > (initFrame+10) or n == (initFrame + 15) then
 		local spawnSpread = 70
 		local okSpot = false
 		local countOks = 0
@@ -218,8 +217,8 @@ function gadget:GameFrame(n)
 				local zombieSpawn = math.random(1,80)
 					if (zombieSpawn == 10) then
 					local teams = Spring.GetTeamList()
-						if (teams[zombieTeam] ~= nil) then
-						CreateUnit("zomsprinter", xciv, yciv, zciv, 0, zombieTeam)
+						if (teams[GG.zombieTeam[0]] ~= nil) then
+						CreateUnit("zomsprinter", xciv, yciv, zciv, 0, GG.zombieTeam[0])
 						end
 					else
 					CreateUnit("civilian", xciv, yciv, zciv, 0, GAIA_TEAM_ID)
@@ -239,7 +238,7 @@ function gadget:GameFrame(n)
 			local udid = UnitDefNames["zomsprinter"].id
 			local featureClear = Spring.GetFeaturesInRectangle(x - rectDimMin, z - rectDimMin, x + rectDimMin, z + rectDimMin)
 			if #featureClear == 0 and IsPositionValid(udid, x, z) == true then
-				CreateUnit("zomsprinter", x, y, z, 0, zombieTeam)
+				CreateUnit("zomsprinter", x, y, z, 0, GG.zombieTeam[0])
 				zomcounter = zomcounter + 1
 			end
 			spawnSpread = spawnSpread * SPREAD_MULT

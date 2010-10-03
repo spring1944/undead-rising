@@ -1,5 +1,5 @@
 local modinfo = {
-		name					= "Spring: 1944 Zombies",
+		name					= "Spring: 1944 Zombies Dev",
 		shortName				= "S44",
 		game					= "Spring 1944",
 		shortGame				= "S44",
