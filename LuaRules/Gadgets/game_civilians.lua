@@ -11,6 +11,7 @@ function gadget:GetInfo()
     }
 end
 
+local zombieTeam
 if (gadgetHandler:IsSyncedCode()) then
 --------------------------------------------------------------------------------
 --  SYNCED
@@ -148,7 +149,8 @@ function gadget:Initialize()
 end
 
 function gadget:GameFrame(n)
-	if n == 5 then
+	if n == 15 then
+		Spring.SetGameRulesParam('zombieteam', GG.zombieTeam[0])
 		SendToUnsynced('allytogaia')
 	end
 	
@@ -189,14 +191,11 @@ function gadget:GameFrame(n)
 						else
 							local unitDefID = Spring.GetUnitDefID(nearestEnemy)
 							local ud = UnitDefs[unitDefID]
-							local armedGuard = ud.weapons[1]
-							if ud.canMove and armedGuard then
-								GiveOrderToUnit(unitID, CMD_GUARD, {nearestEnemy}, {})
-								if scaredUnits[unitID] == 0 then
-									local px, py, pz = GetTeamStartPosition(guardTeam)
-									GiveOrderToUnit(unitID, CMD_MOVE, {px, py, pz + 200}, {})
-									AddTeamResource(guardTeam, "m", modOptions.civilian_income or 1)
-								end
+							GiveOrderToUnit(unitID, CMD_GUARD, {nearestEnemy}, {})
+							if scaredUnits[unitID] == 0 then
+								local px, py, pz = GetTeamStartPosition(guardTeam)
+								GiveOrderToUnit(unitID, CMD_MOVE, {px, py, pz + 200}, {})
+								AddTeamResource(guardTeam, "m", modOptions.civilian_income or 1)
 							end
 						end
 					end
@@ -214,12 +213,17 @@ local LocalTeamID			=	Spring.GetLocalTeamID()
 local GAIA_TEAM_ID			=	Spring.GetGaiaTeamID()
 local GetTeamInfo			=	Spring.GetTeamInfo
 local _, _, _, _, _, GAIA_ALLY_ID = GetTeamInfo(GAIA_TEAM_ID)
+
 local function allytogaia()
+	local zombieTeam = Spring.GetGameRulesParam('zombieteam')
 	sendCommands({'ally '.. GAIA_ALLY_ID ..' 1'})
+	sendCommands({'ally '.. zombieTeam ..' 0'})
 	--Spring.Echo(LocalTeamID, "Allied!")
 end
+
 
 function gadget:Initialize()
 	gadgetHandler:AddSyncAction("allytogaia", allytogaia)
 end
+
 end
