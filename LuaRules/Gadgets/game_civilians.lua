@@ -212,13 +212,17 @@ local sendCommands			=	Spring.SendCommands
 local LocalTeamID			=	Spring.GetLocalTeamID()
 local GAIA_TEAM_ID			=	Spring.GetGaiaTeamID()
 local GetTeamInfo			=	Spring.GetTeamInfo
-local _, _, _, _, _, GAIA_ALLY_ID = GetTeamInfo(GAIA_TEAM_ID)
+
 
 local function allytogaia()
 	local zombieTeam = Spring.GetGameRulesParam('zombieteam')
-	sendCommands({'ally '.. GAIA_ALLY_ID ..' 1'})
-	sendCommands({'ally '.. zombieTeam ..' 0'})
-	--Spring.Echo(LocalTeamID, "Allied!")
+	local _, _, _, _, _, GAIA_ALLY_ID = GetTeamInfo(GAIA_TEAM_ID)
+	local _, _, _, _, _, zombie_ally_ID	= GetTeamInfo(zombieTeam)
+	if LocalTeamID == zombieTeam then
+		sendCommands({'ally '.. zombie_ally_ID ..' 0'})
+	else
+		sendCommands({'ally '.. GAIA_ALLY_ID ..' 1'})
+	end
 end
 
 
