@@ -31,8 +31,8 @@ local BLOCK_SIZE							=	32	-- size of map to check at once
 local METAL_THRESHOLD						=	1 -- Handy for creating profiles, set to just less than the lowest metal spot you want to include. ALWAYS REVERT TO 1
 local PROFILE_PATH							=	"maps/" .. string.sub(Game.mapName, 1, string.len(Game.mapName) - 4) .. "_profile.lua"
 
-local rectDimMin							=	100
-local rectDimMax							=	100 
+local rectDimMin							=	200
+local rectDimMax							=	200 
 local civilianCheckDist						=	200
 local MAX_SPREAD							=	300
 local SPREAD_MULT							=	1.005
@@ -42,7 +42,7 @@ local spawnBuffer							=	1700
 --mod Option defined values
 local zombieCount 							= tonumber(modOptions.zombie_count) or 5
 local civilianCount 						= tonumber(modOptions.civilian_count) or 15
-local respawnPeriod							= (tonumber(modOptions.respawn_period) or 5) * 60 * 30 --minutes-> seconds-> frames
+local respawnPeriod							= (tonumber(modOptions.respawn_period) or 1) * 60 * 30 --minutes-> seconds-> frames
 -- Minimum distance between any two spawned units/features.
 local CLEARANCE								=	40
 

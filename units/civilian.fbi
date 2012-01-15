@@ -1,6 +1,6 @@
 [unitinfo] {
   unitname=civilian;
-  name=Civilian;
+  name=civilian;
   description=FRESH MEATS;
   acceleration=0.375;
   airSightDistance=2500;
@@ -30,7 +30,7 @@
   maxWaterDepth=10;
   movementClass=KBOT_Infantry;
   noChaseCategory=FLAG AIR MINE;
-  objectName=USCommander.S3O;
+  objectName=USEngineer.S3O;
   repairable=0;
   seismicSignature=0;
   [sfxtypes] {
