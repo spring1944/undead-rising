@@ -39,6 +39,8 @@ local maxCivSpread							=	400
 
 local SEARCH_LIMIT							=   500
 
+local CIV_SPAWN_WARNINGTIME					=  (tonumber(modOptions.respawn_period) or 1) * 60
+
 local spawnBuffer							=	800
 --mod Option defined values
 local zombieCount 							= tonumber(modOptions.zombie_count) or 5
@@ -199,31 +201,35 @@ function gadget:GameFrame(n)
 		local zombieSpawnSpot = math.random(1, #spots)
 		local failsafe = 0
 		local civcounter = 0
+		local sx = spots[civSpawnSpot].x
+		local sz = spots[civSpawnSpot].z
+		local sy = GetGroundHeight(sx, sz)
 		while (civcounter < civilianCount and failsafe < SEARCH_LIMIT) do
 			local dxciv = math.random(-spawnSpread, spawnSpread)
 			local dzciv = math.random(-spawnSpread, spawnSpread)
-			local xciv = spots[civSpawnSpot].x + dxciv
-			local zciv = spots[civSpawnSpot].z + dzciv
+			local xciv = sx + dxciv
+			local zciv = sz + dzciv
 			local yciv = GetGroundHeight(xciv, zciv)
 			local udid = UnitDefNames["civilian"].id
 			local featureClear = Spring.GetFeaturesInCylinder(xciv, zciv, featureCheckRadius)
 			if #featureClear == 0 and IsPositionValid(udid, xciv, zciv) == true then
-				local zombieSpawn = math.random(1,80)
-					if (zombieSpawn == 10) then
-					local teams = Spring.GetTeamList()
-						if (teams[GG.zombieTeam[0]] ~= nil) then
-						CreateUnit("zomsprinter", xciv, yciv, zciv, 0, GG.zombieTeam[0])
-						failsafe = 0
-						end
-					else
+				if n == (initFrame + 15) then
 					CreateUnit("civilian", xciv, yciv, zciv, 0, GAIA_TEAM_ID)
-					failsafe = 0
-					civcounter = civcounter + 1
-					end
+				else
+					GG.Delay.DelayCall(CreateUnit, {"civilian", xciv, yciv, zciv, 0, GAIA_TEAM_ID}, CIV_SPAWN_WARNINGTIME*30)
+				end
+				failsafe = 0
+				civcounter = civcounter + 1
 			end
 			failsafe = failsafe + 1
 			spawnSpread = spawnSpread * SPREAD_MULT
 		end
+		if n == (initFrame + 15) then
+			Spring.MarkerAddPoint(sx, sy, sz, "Civilians coming out of hiding!")
+		else
+			Spring.MarkerAddPoint(sx, sy, sz, "Civilians coming out of hiding in "..CIV_SPAWN_WARNINGTIME.." seconds!")
+		end
+		
 		spawnSpread = 70
 		failsafe = 0
 		local zomcounter = 0

@@ -6,7 +6,7 @@ function gadget:GetInfo()
 		date      = "June 2008",
 		license   = "CC by-nc, version 3.0",
 		layer     = 0,
-		enabled   = false
+		enabled   = true
 	}
 end
 
@@ -19,7 +19,7 @@ function gadget:GameFrame(n)
 			local fdid = Spring.GetFeatureDefID(fid)
 			local fname = FeatureDefs[fdid].name
 			local fmetal = FeatureDefs[fdid].metal
-			if fname and (string.find(fname, "soldier") or string.find(fname, "shoulder")) ~= nil then
+			if fname and (string.find(fname, "Zombie")) then
 				local fhp, fmaxhp = Spring.GetFeatureHealth(fid)
 				local subtract = fmaxhp * 0.01 --always make it take about 90 seconds regardless of the feature
 				local fhp = fhp - subtract

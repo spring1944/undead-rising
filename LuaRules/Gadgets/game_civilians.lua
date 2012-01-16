@@ -50,8 +50,15 @@ local scaryTeams			=	{}
 local scaryTeamDuration		=	15
 local fearDuration			=	15
 local stationaryScaredTime	=	5
+local BASE_RADIUS			= 	800
+
+
+local function InRadius(x1, z1, x2, z2, radius)
+	return (math.abs(x1-x2) < radius or math.abs(z1-z1) < radius)
+end
 
 local function Flee(scaryX, scaryZ, unitID, attackerTeam) --RUN AWWAAAAAY!
+	Spring.SetUnitAlwaysVisible(unitID, true)
 	--Spring.Echo("Fleeee", unitID, "fleee!")
 	scaredUnits[unitID] = fearDuration
 	scaryTeams[attackerTeam] = scaryTeamDuration
@@ -138,6 +145,7 @@ end
 function gadget:UnitCreated(unitID, unitDefID, teamID)
 	local ud = UnitDefs[unitDefID]
 	if (ud.customParams.civilian) then
+		Spring.SetUnitAlwaysVisible(unitID, true)
 		scaredUnits[unitID] = 0
 	end
 end
@@ -192,9 +200,10 @@ function gadget:GameFrame(n)
 							local unitDefID = Spring.GetUnitDefID(nearestEnemy)
 							local ud = UnitDefs[unitDefID]
 							GiveOrderToUnit(unitID, CMD_GUARD, {nearestEnemy}, {})
-							if scaredUnits[unitID] == 0 then
-								local px, py, pz = GetTeamStartPosition(guardTeam)
+							local px, py, pz = GetTeamStartPosition(guardTeam)
+							if scaredUnits[unitID] == 0 or InRadius(px, pz, civX, civZ, BASE_RADIUS) then
 								GiveOrderToUnit(unitID, CMD_MOVE, {px, py, pz + 200}, {})
+								Spring.SetUnitAlwaysVisible(unitID, false)
 								AddTeamResource(guardTeam, "m", modOptions.civilian_income or 1)
 							end
 						end
