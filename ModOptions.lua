@@ -22,74 +22,11 @@
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
 local options = {
-	--[[{
-		key = "simple_tanks",
-		name = "Simplified Tank Buildtree",
-		desc = "Different german tank buildtree",
-		type = "bool",
-		def = true,
-	},]]--
-	--[[{
-		key = "always_visible_flags",
-		name = "Always Visible Flags",
-		desc = "Flags and their capping status can be seen without LOS",
-		type = "bool",
-		def = true,
-	},]]--
-	--[[{
-    key    = "maxammo_mult",
-    name   = "Vehicle maxammmo multiplier",
-    desc   = "Applies a multiplier to all the vehicle maxammo values",
-    type   = "number",
-    def    = 1.0,
-    min	   = 0.1,
-    max    = 10,
-    step   = 0.1,
-  },]]--
- 
-
-   
   {
 	key    = '3resources',
 	name   = 'Resource Settings',
 	desc   = 'Sets various options related to the in-game resources, Command and Logistics',
 	type   = 'section',
-  },
-  {
-    key    = "command_mult",
-    name   = "Command Point Income/Battle Significance",
-    desc   = "Sets level of Command Point income - use to adjust maps that provide too much or too little command points (key = 'command_mult')",
-    type   = "list",
-	section= '3resources',
-    def    = "2",
-    items  =
-    {
-	  {
-        key  = "0",
-        name = "Very Low",
-        desc = "Very limited resources. Nothing but a minor skirmish, you must make the most of what resources you have.",
-      },
-      {
-        key  = "1",
-        name = "Low",
-        desc = "Limited Command Points. This battle is insignificant, and you will be struggling to maintain infantry battalions",
-      },
-      {
-        key  = "2",
-        name = "Normal",
-        desc = "Standard Command Points. The supreme commanders are keeping an eye on the outcome of this engagement. Expect medium numbers of infantry with considerable vehicle support, with armor and gun batteries appearing later.",
-      },
-      {
-        key  = "3",
-        name = "High",
-        desc = "Abundant Command Points. The command has deemed this battle vital. You must win at all costs, and your available resources reflect that urgency.",
-      },
-	  {
-        key  = "4",
-        name = "Very High",
-        desc = "Excessive Command Points. High command has an emotional attachment to your skirmish, and they want it won.",
-      },
-    },
   },
 
     {
@@ -127,29 +64,12 @@ local options = {
     type   = "number",
     def    = 10000,
     min    = 1000,
-    max    = 1944000,
+    max    = 50000,
 	section= '3resources',
     step   = 1000,
   },
   
   {
-    key    = "map_command_per_player",
-    name   = "Map Command Per Player",
-    desc   = "Sets the total command on the map to some number per player (negative to disable). (key = 'map_command_per_player')",
-    type   = "number",
-    def    = -10,
-    min    = -10,
-    max    = 1000,
-	section= '3resources',
-    step   = 10,
-  },
-
-
-
-	
-
-	
-	  {
 	key    = '1balance',
 	name   = 'Balance Settings. REMOVE BEFORE RELEASE',
 	desc   = "Sets experimental balance options.",
@@ -231,22 +151,21 @@ local options = {
     max    = 8.0,
 	section = '4other',
     step   = 0.1,
-},
+	},
 
-
-  --[[ 
-
-  {
-    key    = "weapon_reload_mult",
-    name   = "Weapon reload multiplier",
-    desc   = "Applies a multiplier to all the weapon reloadtimes ingame",
+	{
+    key    = "weapon_bulletdamage_mult",
+    name   = "Bullet Damage Multiplier",
+    desc   = 'Multiplies the damage of smallarms (high smallarms damage best used with high range multipliers)',
     type   = "number",
     def    = 1.0,
     min	   = 0.1,
-    max    = 10,
+    max    = 10.0,
+	section = '4other',
     step   = 0.1,
-  },
-  {
+	},
+	
+	 {
     key    = "unit_los_mult",
     name   = "Unit sight (los/airLoS) multiplier",
     desc   = "Applies a multiplier to all the LoS ranges ingame",
@@ -254,60 +173,10 @@ local options = {
     def    = 1.0,
     min	   = 0.1,
     max    = 10,
+	section = '4other',
     step   = 0.1,
   },
-  {
-    key    = "unit_speed_mult",
-    name   = "Unit speed multiplier",
-    desc   = "Applies a multiplier to all the unit speeds and acceleration values ingame",
-    type   = "number",
-    def    = 1.0,
-    min	   = 0.1,
-    max    = 10,
-    step   = 0.1,
-  },
-    {
-    key    = "weapon_aoe_mult",
-    name   = "AoE multiplier",
-    desc   = "Applies a multiplier to all the weapon AoE values",
-    type   = "number",
-    def    = 1.0,
-    min	   = 0.1,
-    max    = 10,
-    step   = 0.05,
-  },
-
-   {
-    key    = "weapon_hedamage_mult",
-    name   = "HE damage multiplier",
-    desc   = "Applies a multiplier to all the HE damage values",
-    type   = "number",
-    def    = 1.0,
-    min	   = 0.1,
-    max    = 10,
-    step   = 0.05,
-  },
-  {
-    key    = "weapon_edgeeffectiveness_mult",
-    name   = "Weapon edgeeffectiveness multiplier",
-    desc   = "Applies a multiplier to all the weapon edgeeffectiveness ingame",
-    type   = "number",
-    def    = 1.0,
-    min	   = 0.01,
-    max    = 10,
-    step   = 0.1,
-  }
-  {
-    key    = "unit_hq_platoon",
-    name   = "HQ-centric infantry game",
-    desc   = "Removes rifle/assault squads from barracks, puts them in HQ",
-    type   = "number",
-    def    = 0,
-    min	   = 0,
-    max    = 1,
-    step   = 1,
-  }]]--
-
+  
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
 --

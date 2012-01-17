@@ -229,6 +229,7 @@ function gadget:GameFrame(n)
 		else
 			Spring.MarkerAddPoint(sx, sy, sz, "Civilians coming out of hiding in "..CIV_SPAWN_WARNINGTIME.." seconds!")
 		end
+		GG.Delay.DelayCall(Spring.MarkerErasePosition, {sx, sy, sz}, CIV_SPAWN_WARNINGTIME*30)
 		
 		spawnSpread = 70
 		failsafe = 0

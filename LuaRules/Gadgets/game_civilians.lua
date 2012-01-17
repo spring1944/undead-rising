@@ -48,8 +48,7 @@ local civilianAwareRadius	=	450 --how far around them civilians are aware of thi
 local scaredUnits			=	{}
 local scaryTeams			=	{}
 local scaryTeamDuration		=	15
-local fearDuration			=	15
-local stationaryScaredTime	=	5
+local fearDuration			=	5
 local BASE_RADIUS			= 	800
 
 
@@ -64,15 +63,15 @@ local function Flee(scaryX, scaryZ, unitID, attackerTeam) --RUN AWWAAAAAY!
 	scaryTeams[attackerTeam] = scaryTeamDuration
 	local civX,_,civZ = GetUnitPosition(unitID)
 	--Spring.Echo("civX:", civX,"civZ:", civZ)
-	local nearbyUnits = GetUnitsInCylinder(civX, civZ, civilianAwareRadius)
+	--local nearbyUnits = GetUnitsInCylinder(civX, civZ, civilianAwareRadius)
 	--Spring.Echo("and all of your little friends, all", #nearbyUnits, "of them!")
-	if nearbyUnits ~= nil then
+	--[[if nearbyUnits ~= nil then
 		for _,unit in ipairs(nearbyUnits) do
 			if (unit ~= unitID) and (scaredUnits[unit] == 0) then
 				Flee(scaryX, scaryZ, unit, attackerTeam)
 			end
 		end
-	end
+	end]]--
 	local xDest
 	local zDest	
 	local x1
@@ -176,6 +175,7 @@ function gadget:GameFrame(n)
 			if scaredUnits[unitID] > 0 then
 				scaredUnits[unitID] = scaredUnits[unitID] - 1
 			else
+				GiveOrderToUnit(unitID, CMD_STOP, {}, {})
 				scaredUnits[unitID] = 0
 			end
 			local nearestEnemy = GetUnitNearestEnemy(unitID, civilianAwareRadius, 0)
@@ -192,7 +192,7 @@ function gadget:GameFrame(n)
 				else
 					local guardTeam = GetUnitTeam(nearestEnemy)
 					if (scaryTeams[guardTeam]) then
-						if (scaryTeams[guardTeam] > 0 and scaredUnits[unitID] > stationaryScaredTime) then
+						if (scaryTeams[guardTeam] > 0) then
 							local enemyX,_,enemyZ = GetUnitPosition(nearestEnemy)
 							--Spring.Echo("they're the ones who shot at us!")
 							Flee(enemyX, enemyZ, unitID, guardTeam)

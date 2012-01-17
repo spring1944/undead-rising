@@ -19,15 +19,17 @@ function gadget:GameFrame(n)
 			local fdid = Spring.GetFeatureDefID(fid)
 			local fname = FeatureDefs[fdid].name
 			local fmetal = FeatureDefs[fdid].metal
-			if fname and (string.find(fname, "Zombie")) then
-				local fhp, fmaxhp = Spring.GetFeatureHealth(fid)
-				local subtract = fmaxhp * 0.01 --always make it take about 90 seconds regardless of the feature
-				local fhp = fhp - subtract
-				if(fhp ~= nil) then
-					if(fhp <= 0) then
-						Spring.DestroyFeature(fid)
-					else
-						Spring.SetFeatureHealth(fid,fhp)
+			if fname then
+				if fname == "zombiecorpse" then
+					local fhp, fmaxhp = Spring.GetFeatureHealth(fid)
+					local subtract = fmaxhp * 0.01 --always make it take about 90 seconds regardless of the feature
+					local fhp = fhp - subtract
+					if(fhp ~= nil) then
+						if(fhp <= 0) then
+							Spring.DestroyFeature(fid)
+						else
+							Spring.SetFeatureHealth(fid,fhp)
+						end
 					end
 				end
 			end

@@ -1,5 +1,5 @@
-[zombieCorpse] {
-  description=Dead Zombie;
+[zombiecorpse] {
+  description=dead zombie;
   blocking=0;
   damage=1000;
   footprintX=1;
