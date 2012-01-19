@@ -165,7 +165,7 @@ local function SpawnStartUnit(teamID)
 		
 		-- only spawn start unit if not already spawned by engine (backwards compat)
 		if not (#GetTeamUnits(teamID) > 0) then
-			if teamID == GG.zombieTeam[0] then
+			if teamID == GG.zombieTeam then
 				local unitID = CreateUnit("zomsprinter", x, y, z, facing, teamID)
 			else
 				local unitID = CreateUnit(startUnit, x, y, z, facing, teamID)
@@ -185,7 +185,7 @@ local function SpawnStartUnit(teamID)
 		end
 		
 		ClearUnitPosition(Spring.GetTeamUnits(teamID)[1]) -- simplify to CUP(unitID) when removing backwards compat
-		if teamID ~= GG.zombieTeam[0] then
+		if teamID ~= GG.zombieTeam then
 			SpawnBaseUnits(teamID, startUnit, x, z)
 		end
 	end
@@ -212,11 +212,11 @@ function gadget:GameStart()
 	--it is not trivial to find out the side of a team using Spring's API.
 	-- data set in GetStartUnit function. NB. The only use for this currently is flags
 	GG.teamSide = {}
-	GG.zombieTeam = {}
+	GG.zombieTeam = 0
 	-- spawn start units
 	local zombiePick = math.random(0, #teams-2)
 	Spring.Echo("zombie team is ", zombiePick)
-	GG.zombieTeam[0] = zombiePick
+	GG.zombieTeam = zombiePick
 	for i = 1,#teams do
 		local teamID = teams[i]
 		

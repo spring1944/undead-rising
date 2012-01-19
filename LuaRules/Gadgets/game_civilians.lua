@@ -157,7 +157,7 @@ end
 
 function gadget:GameFrame(n)
 	if n == 15 then
-		Spring.SetGameRulesParam('zombieteam', GG.zombieTeam[0])
+		Spring.SetGameRulesParam('zombieteam', GG.zombieTeam)
 		SendToUnsynced('allytogaia')
 	end
 	

@@ -243,7 +243,7 @@ function gadget:GameFrame(n)
 			local udid = UnitDefNames["zomsprinter"].id
 			local featureClear = Spring.GetFeaturesInCylinder(x, z, featureCheckRadius)
 			if #featureClear == 0 and IsPositionValid(udid, x, z) == true then
-				CreateUnit("zomsprinter", x, y, z, 0, GG.zombieTeam[0])
+				CreateUnit("zomsprinter", x, y, z, 0, GG.zombieTeam)
 				failsafe = 0
 				zomcounter = zomcounter + 1
 			end
