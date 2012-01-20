@@ -27,25 +27,7 @@
 
 local options = 
 {
-  {
-    key    = "StartingResources",
-    name   = "Starting Resources",
-    desc   = "Sets storage and amount of resources that players will start with (key = 'StartingResources')",
-    type   = "section",
-  },
-  
-  {
-    key    = "StartMetal",
-    name   = "Starting Command",
-    desc   = "Sets the starting Command Point level for all players (key = 'StartMetal')",
-    type   = "number",
-    section= "StartingResources",
-    def    = 1000,
-    min    = 0,
-    max    = 50000,
-    step   = 10,  -- quantization is aligned to the def value
-                    -- (step <= 0) means that there is no quantization
-  },
+
   --[[{
     key    = "StartEnergy",
     name   = "Starting Logistics",
@@ -58,26 +40,6 @@ local options =
     step   = 10,  -- quantization is aligned to the def value
                     -- (step <= 0) means that there is no quantization
   },]]--
-  
-  {
-    key    = "MaxUnits",
-    name   = "Max units",
-    desc   = "Determines the ceiling of how many units and buildings a player is allowed  to own at the same time (key = 'MaxUnits')",
-    type   = "number",
-    def    = 1000,
-    min    = 1,
-    max    = 10000,
-    step   = 1,  -- quantization is aligned to the def value
-                    -- (step <= 0) means that there is no quantization
-  },
-  
-  {
-    key    = "GhostedBuildings",
-    name   = "Ghosted buildings",
-    desc   = "Once an enemy building will be spotted\n a ghost trail will be placed to memorize location even after the loss of the line of sight (key = 'GhostedBuildings')",
-    type   = "bool",
-    def    = true,
-  },
 
   {
     key    = "FixedAllies",

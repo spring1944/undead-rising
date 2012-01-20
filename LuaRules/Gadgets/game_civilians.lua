@@ -156,13 +156,16 @@ function gadget:Initialize()
 end
 
 function gadget:GameStart()
-	Spring.SetGameRulesParam('zombieteam', GG.zombieTeam)
-	SendToUnsynced('allytogaia')
+	if Spring.GetGameRulesParam("shopmode") == 0 then
+		SendToUnsynced('allytogaia')
+	end
 end
 
 function gadget:GameFrame(n)
-
-	
+	if Spring.GetGameRulesParam("shopmode") == 1 then
+		gadgetHandler:RemoveGadget()
+		return
+	end	
 	if(n % 30 < 1) then
 		for teamID, someThing in pairs(scaryTeams) do
 			--Spring.Echo("scary teamID:",teamID, "fear factor:", scaryTeams[teamID])
@@ -226,7 +229,7 @@ local GetTeamInfo			=	Spring.GetTeamInfo
 
 
 local function allytogaia()
-	local zombieTeam = Spring.GetGameRulesParam('zombieteam')
+	local zombieTeam = Spring.GetGameRulesParam("zombieteam")
 	local _, _, _, _, _, GAIA_ALLY_ID = GetTeamInfo(GAIA_TEAM_ID)
 	local _, _, _, _, _, zombie_ally_ID	= GetTeamInfo(zombieTeam)
 	if LocalTeamID == zombieTeam then

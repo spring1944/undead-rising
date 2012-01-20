@@ -1,6 +1,6 @@
 local modinfo = {
-		name					= "Spring: 1944 Zombies Dev",
-		shortName				= "S44",
+		name					= "Spring: 1944 UNDEAD RISING",
+		shortName				= "A UNIQUE SHORTNAME",
 		game					= "Spring 1944",
 		shortGame				= "S44",
 		mutator					= "Official",

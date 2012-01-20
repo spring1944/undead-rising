@@ -23,51 +23,83 @@
 --------------------------------------------------------------------------------
 local options = {
   {
-	key    = '3resources',
-	name   = 'Resource Settings',
-	desc   = 'Sets various options related to the in-game resources, Command and Logistics',
+	key    = '2gamemode',
+	name   = 'Game Mode Settings',
+	desc   = 'Game pacing and duration',
 	type   = 'section',
   },
-
-    {
-    key    = "logistics_period",
-    name   = "Logistics Resupply Frequency",
-    desc   = "Sets the gap between Logistics Resupply (key = 'logistics_period')",
-    type   = "list",
-	section= '3resources',
-    def    = "450",
-    items  =
-    {
-      {
-        key  = "675",
-        name = "Low - 11.25 minute gap",
-        desc = "Limited logistics supply. Conservative play - storage buildings and well supplied infantry are the order of the day.",
+	
+  {
+      key="starttime",
+      name="Start Time",
+      desc="When the capturing of points can begin in Victory Point mode. (key = 'starttime')",
+      type="list",
+	  section	= '2gamemode',
+      def="2",
+      items = {
+         { key = "0", name = "0", desc = "0 minutes", },
+         { key = "2", name = "2", desc = "2 minutes", },
+         { key = "3", name = "3", desc = "3 minutes", },
+         { key = "5", name = "5", desc = "5 minutes", },
+         { key = "10", name = "10", desc = "10 minutes", },
       },
-      {
-        key  = "450",
-        name = "Normal - 7.5 minute gap",
-        desc = "Normal logistics supply. Supplies come on a frequent enough basis to keep the warmachine rumbling, but beware of large artillery batteries or armored thrusts.",
-      },
-      {
-        key  = "225",
-        name = "High - 3.75 minute gap",
-        desc = "Abundant logistics supply. Supply deliveries arrive early and often, allowing for much more aggressive play.",
-      },
-	 },
-    },
-  
-
+   },
    {
-    key    = "command_storage",
-    name   = "Fixed Command Storage",
-    desc   = "Fixes the command storage of all players. (key = 'command_storage')",
-    type   = "number",
-    def    = 10000,
-    min    = 1000,
-    max    = 50000,
-	section= '3resources',
-    step   = 1000,
-  },
+      key="limitscore",
+      name="Score Limit",
+      desc="The Winning Amount for Victory Point Mode",
+      type="list",
+	  section	= '2gamemode',
+      def="500",
+      items = {
+         { key = "200", name = "200", desc = "Very Short", },
+         { key = "500", name = "500", desc = "Short", },
+         { key = "1000", name = "1000", desc = "Average", },
+         { key = "2000", name = "2000", desc = "Long", },
+         { key = "3000", name = "3000", desc = "Insane!", },
+      },
+   },
+   
+	{
+	key    = '4other',
+	name   = 'Other Settings',
+	desc   = 'Various other settings',
+	type   = 'section',
+    },
+	
+	{
+		key = "initial_cash",
+		name = "Start of round cash",
+		desc = "Determines how much Command players receive at the start of a game period (key = 'initial_cash')",
+		type   = "number",
+		def    = 80000,
+		min    = 5000,
+		max    = 200000,
+		section= '4other',
+		step   = 5000,
+	},
+
+	{
+		key = "logistics_reserve",
+		name = "Logistics reserve",
+		desc = "Determines how much Logistics players have to work with in each game (key = 'logistics_reserve')",
+		type   = "number",
+		def    = 5000,
+		min    = 1000,
+		max    = 20000,
+		section= '4other',
+		step   = 500,
+	},
+	
+	{
+		key = "shop_mode",
+		name = "Enable unit purchasing mode",
+		desc = "Disables normal gameplay and allows players to spend money to add to their army (key = 'shop_mode')",
+		type = "bool",
+		section = '4other',
+		def = false,
+	},
+  
   
   {
 	key    = '1balance',
@@ -124,95 +156,7 @@ local options = {
 		section= '1balance',
 		step   = 1,
 	},
-
-	{
-	key    = '4other',
-	name   = 'Other Settings',
-	desc   = 'Various other settings',
-	type   = 'section',
-  },
-	
-	{
-		key = "gm_team_enable",
-		name = "Enable Sandbox/GM tools faction",
-		desc = "Allows the sandbox/game master tools faction to spawn, rather than changing to a random team (key = 'gm_team_enable')",
-		type = "bool",
-		section = '4other',
-		def = false,
-	},
-
-	{
-    key    = "weapon_range_mult",
-    name   = "Range multiplier",
-    desc   = 'Multiplies the range of all weapons, adjusting accuracy and weapon velocity as well. 1 is default, 8 is "realistic".',
-    type   = "number",
-    def    = 1.0,
-    min	   = 0.1,
-    max    = 8.0,
-	section = '4other',
-    step   = 0.1,
-	},
-
-	{
-    key    = "weapon_bulletdamage_mult",
-    name   = "Bullet Damage Multiplier",
-    desc   = 'Multiplies the damage of smallarms (high smallarms damage best used with high range multipliers)',
-    type   = "number",
-    def    = 1.0,
-    min	   = 0.1,
-    max    = 10.0,
-	section = '4other',
-    step   = 0.1,
-	},
-	
-	 {
-    key    = "unit_los_mult",
-    name   = "Unit sight (los/airLoS) multiplier",
-    desc   = "Applies a multiplier to all the LoS ranges ingame",
-    type   = "number",
-    def    = 1.0,
-    min	   = 0.1,
-    max    = 10,
-	section = '4other',
-    step   = 0.1,
-  },
-  
---------------------------------------------------------------------------------
---------------------------------------------------------------------------------
---
---  C.R.A.I.G. specific option(s)
---
-  {
-	key    = '5ai',
-	name   = 'A.I. Settings',
-	desc   = "Sets C.R.A.I.G's options",
-	type   = 'section',
-  },
-	{
-		key    = "craig_difficulty",
-		name   = "C.R.A.I.G. difficulty level",
-		desc   = "Sets the difficulty level of the C.R.A.I.G. bot. (key = 'craig_difficulty')",
-		type   = "list",
-		section = "5ai",
-		def    = "2",
-		items = {
-			{
-				key = "1",
-				name = "Easy",
-				desc = "No resource cheating."
-			},
-			{
-				key = "2",
-				name = "Medium",
-				desc = "Little bit of resource cheating."
-			},
-			{
-				key = "3",
-				name = "Hard",
-				desc = "Infinite resources."
-			},
-		}
-	},
+ 
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
 }
