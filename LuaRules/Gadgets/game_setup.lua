@@ -5,7 +5,7 @@ function gadget:GetInfo()
 		author    = "Tobi Vollebregt, Craig Lawrence (FLOZi), B. Tyler (Nemo)",
 		date      = "January, 2010",
 		license   = "GNU GPL, v2 or later",
-		layer     = 0,
+		layer     = -2,
 		enabled   = true  --  loaded by default?
 	}
 end

@@ -6,7 +6,7 @@ function gadget:GetInfo()
         author    = "B. Tyler (Nemo)",
         date      = "December 2009",
         license   = "LGPL v2.1 or later",
-        layer     = 0,
+        layer     = 1,
         enabled   = true --  loaded by default?
     }
 end
@@ -155,11 +155,13 @@ function gadget:Initialize()
 	end
 end
 
+function gadget:GameStart()
+	Spring.SetGameRulesParam('zombieteam', GG.zombieTeam)
+	SendToUnsynced('allytogaia')
+end
+
 function gadget:GameFrame(n)
-	if n == 15 then
-		Spring.SetGameRulesParam('zombieteam', GG.zombieTeam)
-		SendToUnsynced('allytogaia')
-	end
+
 	
 	if(n % 30 < 1) then
 		for teamID, someThing in pairs(scaryTeams) do
