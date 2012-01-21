@@ -36,6 +36,8 @@ local SendLuaRulesMsg		=	Spring.SendLuaRulesMsg
 local MOD_NAME				=	Game.modName
 local gameID				=	Game.gameID
 
+local CMD_RETREAT			=	35725
+
 local REQUIRED_MOD_SHORT_NAME = "A UNIQUE SHORTNAME"
 
 local LOGFILE = "S44/playeraccounts.lua"
@@ -53,6 +55,7 @@ Note! the table that gets written to disc lacks the teamID entry.
 Otherwise it is the same (just with more player entries, probably)
 ]]--
 local playerTable	=	{} 
+local teamIDToName	=	{}
 
 --these players are allowed to record data
 local TRUSTEDNAMES = "[S44]Nemo".." ".."[S44]Autohost"
@@ -70,11 +73,11 @@ VFS.Include("LuaUI/lib/tableToString.lua")
 --local functions
 ----------------------------------------------------------------
 
-local function ProcessTeamUnits(teamID, playerName)
-	local teamUnits = GetTeamUnits(teamID)
-	playerTable[playerName].units = {}
-	for i=1, #teamUnits do
-		local unitID = teamUnits[i]
+--expects a table with sequential numeric indices (ie [1] = x, [2] = x, etc) where
+--each index corresponds to a unitID belonging to playerName
+local function ProcessUnits(unitTable, playerName)
+	for i=1, #unitTable do
+		local unitID = unitTable[i]
 		
 		local xp = GetUnitExperience(unitID)
 		local health, maxHealth, _, _, buildProgress = GetUnitHealth(unitID)
@@ -105,12 +108,14 @@ local function SaveData()
 	local zombieTeamID = GetGameRulesParam("zombieteam")
 	for playerName, playerData in pairs(playerTable) do	
 		local teamID = playerData.teamID
-				
+		local teamUnits = GetTeamUnits(teamID)
+			
 		--teamID of 'inactive' means the team retreated or was killed
 		--these teams update their tables on death or retreat
 		if teamID ~= "inactive" and teamID ~= zombieTeamID then
-		--this updates the player's units before saving them
-			ProcessTeamUnits(teamID, playerName)
+			--wipe the active player's table of units and their stats and rebuild it
+			--using the units that are still alive and their current states
+			ProcessUnits(teamUnits, playerName)
 		end
 		
 		--if the player doesn't have an account, create a spot to save their data
@@ -153,8 +158,9 @@ local function NameToTeamID()
 			playerTable[playerName] = {
 				teamID = teamID,
 				money = "uninitialized",
-				units = {},		
+				units = {},
 			}
+			teamIDToName[teamID] = playerName
 		end
 	end
 end
@@ -206,8 +212,18 @@ function widget:Initialize()
 			playerData.units = savedPlayerData.units or {}
 			playerData.money = savedPlayerData.money
 		end	
+		
+		--these things are only used on the synced side (and aren't saved at the moment)
+		--but this saves looping through the player table after sending it over to synced
+		-- and adding these things (they're for the various win conditions)
+		playerData.rescuedCivilians = 0
+		playerData.territoryControlTime = 0
+		playerData.destroyedHotzones = 0
+		
 		--if anybody doesn't have units (but is not the zombie team), flip to shop mode
-		if #playerData.units == 0 and playerData.teamID ~= zombieTeamID then emergencyShopMode = true end
+		if #playerData.units == 0 and playerData.teamID ~= zombieTeamID then
+			emergencyShopMode = true
+		end
 	end
 	
 	--wipe out this particular reference to the huge player account database
@@ -218,11 +234,25 @@ function widget:Initialize()
 	local stringPlayerTable = table.save(playerTable)
 	SendLuaRulesMsg("ad:"..stringPlayerTable) --ad as in account data
 	
+	--now that the units have been passed into synced, no need to keep them here
+	--but it shouldn't be nil, since it'll be filled up with units later as a player
+	--retreats them or the game ends
+	for player, playerData in pairs(playerTable) do
+		playerData.units = {}
+	end
+	
 	if emergencyShopMode == true then
 		Spring.Echo("EMERGENCY SHOP MODE ACTIVATE!")
 		SendLuaRulesMsg("shopmodeENABLE")
 	end
 end
+
+function widget:UnitCommand(unitID, unitDefID, unitTeam, cmdID)
+	if cmdID == CMD_RETREAT then
+		ProcessUnits({[1] = unitID}, teamIDToName[unitTeam])	
+	end
+end
+
 function widget:Shutdown()
 	if (okToSave == true) then
 		SaveData()

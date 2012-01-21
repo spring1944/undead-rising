@@ -16,12 +16,7 @@ local TRUSTEDNAMES = "[S44]Nemo".." ".."[S44]Autohost"
 if (gadgetHandler:IsSyncedCode()) then
 VFS.Include("LuaRules/lib/tableToString.lua")
 VFS.Include("LuaRules/lib/spawnFunctions.lua")
---[[
-local GetGroundHeight			=	Spring.GetGroundHeight
-local GetUnitsInCylinder		=	Spring.GetUnitsInCylinder
-local GetSideData				=	Spring.GetSideData
-local GetTeamUnits				=	Spring.GetTeamUnits
-local GAIA_TEAM_ID				=	Spring.GetGaiaTeamID()]]--
+
 local GetTeamStartPosition		=	Spring.GetTeamStartPosition
 local GetTeamInfo				=	Spring.GetTeamInfo
 local GetGameRulesParam			=	Spring.GetGameRulesParam
@@ -59,7 +54,9 @@ local function ShopModeSpawn(teams)
 	end
 end
 
---goes through each unit in the spawn table, spawns it to the appropriate team with the appropriate stats
+--goes through each player in (synced side of) active players, spawns their units and wipes their unit tables
+--(we don't care about what happens to units during the game, only what condition they're in at 
+--the end, and the widget will record that)
 local function SpawnArmies()
 	for playerName, playerData in pairs(GG.activeAccounts) do
 		local playerUnits = playerData.units
@@ -96,6 +93,7 @@ local function SpawnArmies()
 		else
 			CreateUnit("zomsprinter", px, py, pz, 0, teamID)		
 		end
+		playerData.units = nil
 	end
 end
 
