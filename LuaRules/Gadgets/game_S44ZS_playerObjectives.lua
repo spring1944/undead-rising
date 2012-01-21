@@ -55,7 +55,7 @@ local function teamWonObjRound(teamID)
 	if teamID ~= GG.zombieTeamID then
 		local teamUnits = GetTeamUnits(teamID)
 		for i=1, #teamUnits do
-			GG.Delay.DelayCall(GG.Retreat, {teamUnits[i]}, reinforcementDelay*30 + 2)
+			GG.Retreat(teamUnits[i])
 		end
 	else
 		side = "zom"

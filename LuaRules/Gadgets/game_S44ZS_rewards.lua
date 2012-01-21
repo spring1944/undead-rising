@@ -41,19 +41,21 @@ function GG.Reward(teamID, achievement, bounty)
 	
 	local playerName = GG.teamIDToPlayerName[teamID]
 	local pd = GG.activeAccounts[playerName]
-	if pd.teamID ~= "inactive" then		
-		if prizes[achievement] ~= nil then
-			--Spring.Echo("Reward for "..achievement.." for team "..teamID.."!")
-			local currentMoney = Spring.GetTeamResources(teamID, "metal")
-			Spring.SetTeamResource(teamID, "m", currentMoney + prizes[achievement] + bounty)
-			
-			if achievement == "civiliansave" then
-				pd.rescuedCivilians = pd.rescuedCivilians + 1
-				Spring.SendMessage("\255\255\001\001"..playerName.." has rescued "..pd.rescuedCivilians .." civvies!")
-				--Spring.Echo(saviorPlayerName, pd.rescuedCivilians)
+	if pd then
+		if pd.teamID ~= "inactive" then		
+			if prizes[achievement] ~= nil then
+				--Spring.Echo("Reward for "..achievement.." for team "..teamID.."!")
+				local currentMoney = Spring.GetTeamResources(teamID, "metal")
+				Spring.SetTeamResource(teamID, "m", currentMoney + prizes[achievement] + bounty)
+				
+				if achievement == "civiliansave" then
+					pd.rescuedCivilians = pd.rescuedCivilians + 1
+					Spring.SendMessage("\255\255\001\001"..playerName.." has rescued "..pd.rescuedCivilians .." civvies!")
+					--Spring.Echo(saviorPlayerName, pd.rescuedCivilians)
+				end
+			else
+				Spring.Echo("BAD ACHIEVEMENT PARAM TO GG.Reward - "..achievement)
 			end
-		else
-			Spring.Echo("BAD ACHIEVEMENT PARAM TO GG.Reward - "..achievement)
 		end
 	end
 end

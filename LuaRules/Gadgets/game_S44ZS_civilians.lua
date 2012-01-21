@@ -70,7 +70,7 @@ local function Flee(scaryX, scaryZ, unitID, attackerTeam) --RUN AWWAAAAAY!
 	Spring.SetUnitAlwaysVisible(unitID, true)
 	--Spring.Echo("Fleeee", unitID, "fleee!")
 	scaredUnits[unitID] = fearDuration
-	scaryTeams[attackerTeam] = scaryTeamDuration
+	scaryTeams[attackerTeam] = 0
 	local civX,_,civZ = GetUnitPosition(unitID)
 	--Spring.Echo("civX:", civX,"civZ:", civZ)
 	--local nearbyUnits = GetUnitsInCylinder(civX, civZ, civilianAwareRadius)
