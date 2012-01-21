@@ -20,6 +20,8 @@ if (Spring.GetModOptions) then
   modOptions = Spring.GetModOptions()
 end
 
+VFS.Include("LuaRules/lib/spawnFunctions.lua")
+
 
 local CMD_FIRESTATE		=	CMD.FIRE_STATE
 local CMD_MOVESTATE		=	CMD.MOVE_STATE
@@ -54,6 +56,14 @@ local BASE_RADIUS			= 	800
 
 local function InRadius(x1, z1, x2, z2, radius)
 	return (math.abs(x1-x2) < radius or math.abs(z1-z1) < radius)
+end
+
+local function RescuedCheck(civUnitID, civX, civZ, rescuerTeamID)
+	local safeX, _, safeZ = Spring.GetTeamStartPosition(rescuerTeamID)
+	if Distance(civX, civZ, safeX, safeZ, "civilians.lua") < 400 then
+		GG.Retreat(civUnitID)
+		GG.Reward(rescuerTeamID, "civiliansave")
+	end
 end
 
 local function Flee(scaryX, scaryZ, unitID, attackerTeam) --RUN AWWAAAAAY!
@@ -204,6 +214,7 @@ function gadget:GameFrame(n)
 						else
 							if scaredUnits[unitID] == 0 then
 								GiveOrderToUnit(unitID, CMD_GUARD, {nearestEnemy}, {})
+								RescuedCheck(unitID, civX, civZ, guardTeam)
 							end
 						end
 					end

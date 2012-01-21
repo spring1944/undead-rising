@@ -135,12 +135,14 @@ function gadget:GameStart()
 	--it is not trivial to find out the side of a team using Spring's API.
 	-- data set in GetStartUnit function. NB. The only use for this currently is flags
 	GG.teamSide = {}
+	GG.teamIDToPlayerName = {}
 	local shopMode = (GetGameRulesParam("shopmode") == 1)
 	for playerName, playerData in pairs(GG.activeAccounts) do
 		local teamID = playerData.teamID
 		SetStartResources(teamID)
 		local side = select(5, GetTeamInfo(teamID))
 		GG.teamSide[teamID] = side
+		GG.teamIDToPlayerName[teamID] = playerName
 	end
 	
 	if shopMode == false then

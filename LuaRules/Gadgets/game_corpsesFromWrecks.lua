@@ -29,17 +29,18 @@ local function SpawnCorpses(x, y, z, side)
 		Spring.CreateFeature(corpse, x, Spring.GetGroundHeight(x, z), z)
 	end
 end
-function gadget:UnitDestroyed(unitID, unitDefID, teamID)
-	local ud = UnitDefs[unitDefID]
-	if ud.customParams then
-		local udcp = ud.customParams
-		if udcp.hasturnbutton or (udcp.maxammo and udcp.armor_front) then -- vehicle or 
-			local side = GG.teamSide[teamID]
-			local x, y, z = Spring.GetUnitPosition(unitID)
-			SpawnCorpses(x, y, z, side)
+function gadget:UnitDestroyed(unitID, unitDefID, teamID, attackerID)
+	if attackerID ~= nil then
+		local ud = UnitDefs[unitDefID]
+		if ud.customParams then
+			local udcp = ud.customParams
+			if udcp.hasturnbutton or (udcp.maxammo and udcp.armor_front) then -- vehicle or 
+				local side = GG.teamSide[teamID]
+				local x, y, z = Spring.GetUnitPosition(unitID)
+				SpawnCorpses(x, y, z, side)
+			end
 		end
-	end
-	
+	end	
 end
 
 

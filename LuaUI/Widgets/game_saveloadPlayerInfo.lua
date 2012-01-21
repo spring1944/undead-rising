@@ -248,7 +248,7 @@ function widget:Initialize()
 end
 
 function widget:UnitCommand(unitID, unitDefID, unitTeam, cmdID)
-	if cmdID == CMD_RETREAT then
+	if cmdID == CMD_RETREAT and unitTeam ~= GetGaiaTeamID() then
 		ProcessUnits({[1] = unitID}, teamIDToName[unitTeam])	
 	end
 end

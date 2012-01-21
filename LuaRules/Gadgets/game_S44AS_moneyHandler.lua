@@ -56,6 +56,7 @@ function gadget:GameFrame(n)
 			local teamID = playerData.teamID
 			if teamID ~= "inactive" then --killed or retreated
 				local currentMoney = GetTeamResources(teamID, "metal")
+				playerData.money = currentMoney
 				SetTeamRulesParam(teamID, "money", currentMoney)
 			end
 		end	
