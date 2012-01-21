@@ -20,7 +20,7 @@ VFS.Include("LuaRules/lib/spawnFunctions.lua")
 local GetTeamStartPosition		=	Spring.GetTeamStartPosition
 local GetTeamInfo				=	Spring.GetTeamInfo
 local GetGameRulesParam			=	Spring.GetGameRulesParam
-
+local GetUnitDefID				=	Spring.GetUnitDefID
 
 local SetGameRulesParam			=	Spring.SetGameRulesParam
 local SetTeamResource			=	Spring.SetTeamResource
@@ -38,6 +38,21 @@ local SPREAD_MULT = 1.025
 local modOptions = Spring.GetModOptions()
 
 --------------------------------------------------------------------------- 
+
+local function calculateNetWorth(playerName)
+	local netWorth = 0
+	local pd = GG.activeAccounts[playerName]
+	netWorth = pd.money
+	for i=1,#pd.units do
+		local unitID = pd.units[i]
+		local udid = GetUnitDefID(unitID)
+		local ud = UnitDefs[udid]
+		netWorth = netWorth + ud.metalCost
+	end
+return netWorth
+
+end
+
 
 local function SetStartResources(teamID)
 	SetTeamResource(teamID, "es", tonumber(modOptions.logistics_reserve) or 5000)
@@ -127,22 +142,26 @@ function gadget:GameStart()
 	-- data set in GetStartUnit function. NB. The only use for this currently is flags
 	GG.teamSide = {}
 	GG.teamIDToPlayerName = {}
+	local poorestPlayerTeamID = 1
+	local lowestNetWorthSeen = 99999999999
 	local shopMode = (GetGameRulesParam("shopmode") == 1)
 	for playerName, playerData in pairs(GG.activeAccounts) do
 		local teamID = playerData.teamID
 		SetStartResources(teamID)
 		local side = select(5, GetTeamInfo(teamID))
 		GG.teamSide[teamID] = side
-		GG.teamIDToPlayerName[teamID] = playerName
+		GG.teamIDToPlayerName[teamID] = playerName		
+		local playerNetWorth = calculateNetWorth(playerName)
+		if playerNetWorth < lowestNetWorthSeen then
+			poorestPlayerTeamID = teamID
+			lowestNetWorthSeen = playerNetWorth
+		end		
 	end
 	
 	if shopMode == false then
 		GG.zombieTeamID = 0
-		-- spawn start units
-		local zombiePick = math.random(0, #teams-2)
-		Spring.Echo("zombie team is ", zombiePick)
-		GG.zombieTeamID = zombiePick
-		SetGameRulesParam("zombieteam", zombiePick)
+		GG.zombieTeamID = poorestPlayerTeamID
+		SetGameRulesParam("zombieteam", poorestPlayerTeamID)
 	else
 		GG.zombieTeamID = "shop mode active, no zombies"
 	end
