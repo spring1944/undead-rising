@@ -91,6 +91,19 @@ local damagedefs = {
 	heavytanks = 8/7,
     flag = 0,
   },
+  melee = {
+	bunkers = 1/2,
+	zombies = 1,
+    infantry = 1,
+    unarmouredvehicles = 1,
+    armouredvehicles = 1/3,
+    lightbuildings = 2/3,
+    guns = 3/4,
+    lighttanks = 1/3,
+	mediumtanks = 1/4,
+	heavytanks = 1/5,
+    flag = 0,
+  },
 }
 
 return damagedefs

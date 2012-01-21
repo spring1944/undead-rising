@@ -212,8 +212,9 @@ function gadget:GameFrame(n)
 							--Spring.Echo("they're the ones who shot at us!")
 							Flee(enemyX, enemyZ, unitID, guardTeam)
 						else
+							local px, py, pz = GetTeamStartPosition(guardTeam)
 							if scaredUnits[unitID] == 0 then
-								GiveOrderToUnit(unitID, CMD_GUARD, {nearestEnemy}, {})
+								GiveOrderToUnit(unitID, CMD_MOVE, {px, py, pz}, {})
 								RescuedCheck(unitID, civX, civZ, guardTeam)
 							end
 						end
