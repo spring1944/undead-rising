@@ -44,9 +44,9 @@ local function calculateNetWorth(playerName)
 	local pd = GG.activeAccounts[playerName]
 	netWorth = pd.money
 	for i=1,#pd.units do
-		local unitID = pd.units[i]
+		local unitName = pd.units[i].name
 		local udid = GetUnitDefID(unitID)
-		local ud = UnitDefs[udid]
+		local ud = UnitDefNames[unitName]
 		netWorth = netWorth + ud.metalCost
 	end
 return netWorth
@@ -179,7 +179,7 @@ function gadget:Initialize()
 	local localPID = Spring.GetMyPlayerID()
 	local instanceName = Script.GetName()
 	local name, _, spec, teamID = Spring.GetPlayerInfo(localPID)
-	Spring.Echo(name, spec, localPID)
+	--Spring.Echo(name, spec, localPID)
 	
 	if (string.find(TRUSTEDNAMES, name, 1, true) == nil) or (spec == false) then
 		Spring.Echo("untrusted source of save info: "..name)
