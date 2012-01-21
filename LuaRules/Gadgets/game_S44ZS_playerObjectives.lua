@@ -89,7 +89,7 @@ end
 function gadget:GameStart()
 --assign teams to win conditions
 --make sure they know? >_>
-	Spring.Echo(table.save(reinforcementDefs))
+	--Spring.Echo(table.save(reinforcementDefs))
 	local teams = GetTeamList()
 	for i=1, #teams do
 		local teamID = teams[i]

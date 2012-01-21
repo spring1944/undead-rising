@@ -31,7 +31,6 @@ local function SetStartResources(teamID, amount)
 end
 
 function gadget:GameStart()
-	Spring.Echo("buymode playerFinances loop! length this much: ", #playerFinances)
 	for playerName, playerData in pairs(GG.activeAccounts) do		
 		local playerMoney = playerData.money
 		local teamID = playerData.teamID
