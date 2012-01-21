@@ -62,7 +62,7 @@ for name, ud in pairs(UnitDefs) do
 			end
 		end
 	end
-	if (ud.workertime and ud.maxvelocity) then
+	if (ud.workertime and ud.maxvelocity and ud.name ~= "gbrcommando") then
 		ud["buildoptions"] = {"apminesign", "atminesign", "tankobstacle"}
 	end
 	

@@ -35,15 +35,15 @@ function gadget:GameStart()
 	for playerName, playerData in pairs(GG.activeAccounts) do		
 		local playerMoney = playerData.money
 		local teamID = playerData.teamID
-		Spring.Echo("moneyHandler teamID gameSTart", playerName, teamID)
-		Spring.Echo("Setting up the player's ingame money!", teamID)			
+		--Spring.Echo("moneyHandler teamID gameSTart", playerName, teamID)
+		--Spring.Echo("Setting up the player's ingame money!", teamID)			
 		local amount = 0
 		if playerMoney == "new player" then
 			amount = tonumber(modOptions.initial_cash) or 80000
 		else
 			amount = playerMoney
 		end
-		Spring.Echo("this player has this much money!", amount)
+		--Spring.Echo("this player has this much money!", amount)
 		SetStartResources(teamID, amount)
 		SetTeamRulesParam(teamID, "money", amount)
 	end

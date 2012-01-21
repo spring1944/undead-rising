@@ -53,7 +53,7 @@ function gadget:GameFrame(n)
 								end
 								local teams = Spring.GetTeamList()
 								--if (teams[GG.zombieTeam] ~= nil) then
-									Spring.CreateUnit(zombieName, x, y, z, 0, GG.zombieTeam)
+									Spring.CreateUnit(zombieName, x, y, z, 0, GG.zombieTeamID)
 									Spring.DestroyFeature(fid)
 									break
 								--end

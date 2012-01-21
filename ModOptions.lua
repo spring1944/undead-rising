@@ -78,7 +78,17 @@ local options = {
 		section= '4other',
 		step   = 5000,
 	},
-
+	{
+		key = "objective_phase_length",
+		name = "Objective Phase Length",
+		desc = "Length of the objective phase of the game in minutes (key = 'objective_phase_length')",
+		type   = "number",
+		def    = 10,
+		min    = 2,
+		max    = 20,
+		section= '4other',
+		step   = 1,
+	},
 	{
 		key = "logistics_reserve",
 		name = "Logistics reserve",
@@ -99,7 +109,18 @@ local options = {
 		section = '4other',
 		def = false,
 	},
-  
+	{
+		key = "civilian_goal",
+		name = "Civilian Rescue Goal",
+		desc = "Determines how much Logistics players have to work with in each game (key = 'civilian_goal')",
+		type   = "number",
+		def    = 50,
+		min    = 15,
+		max    = 100,
+		section= '4other',
+		step   = 5,
+	},
+
   
   {
 	key    = '1balance',

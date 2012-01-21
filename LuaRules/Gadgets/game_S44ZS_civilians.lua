@@ -60,7 +60,7 @@ end
 
 local function RescuedCheck(civUnitID, civX, civZ, rescuerTeamID)
 	local safeX, _, safeZ = Spring.GetTeamStartPosition(rescuerTeamID)
-	if Distance(civX, civZ, safeX, safeZ, "civilians.lua") < 400 then
+	if Distance(civX, civZ, safeX, safeZ, "civilians.lua") < 400 and GetUnitTransporter(civUnitID) == nil then
 		GG.Retreat(civUnitID)
 		GG.Reward(rescuerTeamID, "civiliansave")
 	end
@@ -234,10 +234,10 @@ local GetTeamInfo			=	Spring.GetTeamInfo
 
 
 local function allytogaia()
-	local zombieTeam = Spring.GetGameRulesParam("zombieteam")
+	local zombieTeamID = Spring.GetGameRulesParam("zombieteam")
 	local _, _, _, _, _, GAIA_ALLY_ID = GetTeamInfo(GAIA_TEAM_ID)
-	local _, _, _, _, _, zombie_ally_ID	= GetTeamInfo(zombieTeam)
-	if LocalTeamID == zombieTeam then
+	local _, _, _, _, _, zombie_ally_ID	= GetTeamInfo(zombieTeamID)
+	if LocalTeamID == zombieTeamID then
 		sendCommands({'ally '.. zombie_ally_ID ..' 0'})
 	else
 		sendCommands({'ally '.. GAIA_ALLY_ID ..' 1'})

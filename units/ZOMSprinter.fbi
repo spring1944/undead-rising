@@ -2,7 +2,7 @@
   unitname=ZOMSprinter;
   name=Sprinter;
   description=FAST Inevitable Doom;
-  acceleration=0.375;
+  acceleration=0.575;
   airSightDistance=2500;
   brakeRate=0.9;
   buildCostEnergy=0;
@@ -35,6 +35,7 @@
   stealth=1;
   TEDClass=KBOT;
   turnRate=1010;
+  turnInPlace=0;
   upright=1;
   badTargetCategory=FLAG;
 

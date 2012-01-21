@@ -62,7 +62,7 @@ local function SpawnArmies()
 		local playerUnits = playerData.units
 		local teamID = playerData.teamID
 		local px, py, pz = GetTeamStartPosition(teamID)
-		if teamID ~= GG.zombieTeam then
+		if teamID ~= GG.zombieTeamID then
 			for i=1, #playerUnits do
 				local unitStats = playerUnits[i]
 				local name = unitStats.name
@@ -71,18 +71,9 @@ local function SpawnArmies()
 				local ammo = unitStats.ammo
 				--Spring.Echo(name, health, xp, ammo)
 				local udid = UnitDefNames[name].id
-				local spread = 100
-				local unitID
-				while (spread < MAX_SPREAD) do
-					local x = px + math.random(-spread, spread)
-					local z = pz + math.random(-spread, spread)
-					if IsPositionValid(udid, x, z) then
-							unitID = CreateUnit(name, x, py, z, 0, teamID)
-						break
-					end
-					spread = spread * SPREAD_MULT
-				end
-				if unitID ~= nil then --they might not spawn; need better algo
+				local unitID = unitSpawnRandomPos(name, px, pz, false, 1, teamID, 0)
+				local unitID = unitID[1]
+				if unitID ~= nil then
 					SetUnitHealth(unitID, health)
 					SetUnitExperience(unitID, xp)
 					if ammo ~= -1 then
@@ -146,14 +137,14 @@ function gadget:GameStart()
 	end
 	
 	if shopMode == false then
-		GG.zombieTeam = 0
+		GG.zombieTeamID = 0
 		-- spawn start units
 		local zombiePick = math.random(0, #teams-2)
 		Spring.Echo("zombie team is ", zombiePick)
-		GG.zombieTeam = zombiePick
+		GG.zombieTeamID = zombiePick
 		SetGameRulesParam("zombieteam", zombiePick)
 	else
-		GG.zombieTeam = "shop mode active, no zombies"
+		GG.zombieTeamID = "shop mode active, no zombies"
 	end
 	
 	SpawnArmies()

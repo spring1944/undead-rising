@@ -106,13 +106,15 @@ end
 local function SaveData()
 	local masterSaveInfo = table.load(LOGFILE) or {} 
 	local zombieTeamID = GetGameRulesParam("zombieteam")
+	
+	--the team that won already retreated its units. so we update its money but not its units
+	local winningTeamID = GetGameRulesParam("obj_win_team")
 	for playerName, playerData in pairs(playerTable) do	
 		local teamID = playerData.teamID
 		local teamUnits = GetTeamUnits(teamID)
-			
 		--teamID of 'inactive' means the team retreated or was killed
 		--these teams update their tables on death or retreat
-		if teamID ~= "inactive" and teamID ~= zombieTeamID then
+		if teamID ~= "inactive" and teamID ~= zombieTeamID and teamID ~= winningTeamID then
 			--wipe the active player's table of units and their stats and rebuild it
 			--using the units that are still alive and their current states
 			ProcessUnits(teamUnits, playerName)

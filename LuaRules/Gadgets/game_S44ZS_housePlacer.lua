@@ -48,6 +48,8 @@ local SEARCH_LIMIT							=   500
 
 local CIV_SPAWN_WARNINGTIME					=  (tonumber(modOptions.respawn_period) or 1) * 60
 
+local objectivePhaseLength					= tonumber(modOptions.objective_phase_length) or 10 --minutes
+
 local spawnBuffer							=	800
 --mod Option defined values
 local ZOMBIE_COUNT 							= tonumber(modOptions.zombie_count) or 5
@@ -85,40 +87,6 @@ local function randomHouse()
 		newHouse = "oldfarmhouse4"
 	end
 	return newHouse
-end
-
-local function unitSpawn(unitname, message, count, teamID, delay)
-	local spawnSpread = 10
-	local spawnSpot = math.random(1, #spots)
-	local failsafe = 0
-	local counter = 0
-	local sx = spots[spawnSpot].x
-	local sz = spots[spawnSpot].z
-	local sy = GetGroundHeight(sx, sz)
-	while (counter < count and failsafe < SEARCH_LIMIT) do
-		local dxciv = math.random(-spawnSpread, spawnSpread)
-		local dzciv = math.random(-spawnSpread, spawnSpread)
-		local xciv = sx + dxciv
-		local zciv = sz + dzciv
-		local yciv = GetGroundHeight(xciv, zciv)
-		local udid = UnitDefNames[unitname].id
-		local featureClear = Spring.GetFeaturesInCylinder(xciv, zciv, featureCheckRadius)
-		if #featureClear == 0 and IsPositionValid(udid, xciv, zciv) == true then
-			if delay > 0 then
-				GG.Delay.DelayCall(Spring.MarkerErasePosition, {sx, sy, sz}, delay*30)
-				GG.Delay.DelayCall(CreateUnit, {unitname, xciv, yciv, zciv, 0, teamID}, delay*30)
-			else
-				CreateUnit(unitname, xciv, yciv, zciv, 0, teamID)				
-			end
-			failsafe = 0
-			counter = counter + 1
-		end
-		failsafe = failsafe + 1
-		spawnSpread = spawnSpread * SPREAD_MULT
-	end
-	if message ~= false then
-		Spring.MarkerAddPoint(sx, sy, sz, message)
-	end
 end
 
 local function PlaceHouse(spotX, spotZ)
@@ -211,9 +179,14 @@ function gadget:GameFrame(n)
 		end
 	end
 	--civilian and zombie periodical spawn
-	if n % respawnPeriod < 0.1 then
+	if n % respawnPeriod < 0.1 and n < 30*60*objectivePhaseLength then
 		local civMessage = "Civilians coming out of hiding in "..CIV_SPAWN_WARNINGTIME.." seconds!"
-		unitSpawn("civilian", civMessage, CIVILIAN_COUNT, GAIA_TEAM_ID, CIV_SPAWN_WARNINGTIME)
-		unitSpawn("zomsprinter", false, ZOMBIE_COUNT, GG.zombieTeam, 0)
+		local civSpawnSpot = math.random(1, #spots)
+		local civx, civz = spots[civSpawnSpot].x, spots[civSpawnSpot].z
+		unitSpawnRandomPos("civilian", civx, civz, civMessage, CIVILIAN_COUNT, GAIA_TEAM_ID, CIV_SPAWN_WARNINGTIME)
+		
+		local zomSpawnSpot = math.random(1, #spots)
+		local zomx, zomz = spots[zomSpawnSpot].x, spots[zomSpawnSpot].z
+		unitSpawnRandomPos("zomsprinter", zomx, zomz, false, ZOMBIE_COUNT, GG.zombieTeamID, 0)
 	end
 end

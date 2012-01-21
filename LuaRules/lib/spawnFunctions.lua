@@ -35,13 +35,53 @@ function GetStartUnit(teamID)
 	return startUnit
 end
 
+function unitSpawnRandomPos(unitname, x, z, message, count, teamID, delay)
+	local featureCheckRadius = 50
+	local searchLimit = 500
+	local SPREAD_MULT = 1.01
+	local spawnSpread = 10
+	local unitIDList = {}
+	local failsafe = 0
+	local counter = 0
+	local y = GetGroundHeight(x, z)
+	while (counter < count and failsafe < searchLimit) do
+		local dx = math.random(-spawnSpread, spawnSpread)
+		local dz = math.random(-spawnSpread, spawnSpread)
+		local xspwn = x + dx
+		local zspwn = z + dz
+		local yspwn = GetGroundHeight(xspwn, zspwn)
+		local udid = UnitDefNames[unitname].id
+		local featureClear = Spring.GetFeaturesInCylinder(xspwn, zspwn, featureCheckRadius)
+		if #featureClear == 0 and IsPositionValid(udid, xspwn, zspwn) == true then
+			if delay > 0 then
+				GG.Delay.DelayCall(Spring.MarkerErasePosition, {x, y, z}, delay*30)
+				GG.Delay.DelayCall(CreateUnit, {unitname, xspwn, yspwn, zspwn, 0, teamID}, delay*30)
+			else
+				local unitID = CreateUnit(unitname, xspwn, yspwn, zspwn, 0, teamID)	
+				table.insert(unitIDList, unitID)
+			end
+			failsafe = 0
+			counter = counter + 1
+		end
+		failsafe = failsafe + 1
+		spawnSpread = spawnSpread * SPREAD_MULT
+	end
+	if failsafe == searchLimit then
+		Spring.Echo("SPAWNER FAILED TO SPAWN UNIT: "..unitname)
+	end
+	if message ~= false then
+		Spring.MarkerAddPoint(x, y, z, message)
+	end
+	return unitIDList
+end
+
 function SpawnStartUnit(teamID)
 	local startUnit = GetStartUnit(teamID)
 	if (startUnit and startUnit ~= "") then
 		-- spawn the specified start unit
 		local x,y,z = GetTeamStartPosition(teamID)
 		-- Erase start position marker while we're here
-		MarkerErasePosition(x or 0, y or 0, z or 0)
+		--MarkerErasePosition(x or 0, y or 0, z or 0)
 		-- snap to 16x16 grid
 		x, z = 16*math.floor((x+8)/16), 16*math.floor((z+8)/16)
 		y = GetGroundHeight(x, z)
