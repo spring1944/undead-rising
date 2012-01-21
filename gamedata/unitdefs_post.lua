@@ -48,6 +48,13 @@ for name, ud in pairs(UnitDefs) do
  
  --BEGIN UNIT PROCESSING
 	--army save specific
+	
+	if ud.name == "civilian" then
+		ud.transportbyenemy = true
+	else
+		ud.transportbyenemy = false
+	end
+	
 	if (ud.customparams) then
 		if (not ud.customparams.flagcaprate) then
 			if (ud.customparams.flag or ud.weapons ~= nil) then

@@ -15,15 +15,17 @@ local TRUSTEDNAMES = "[S44]Nemo".." ".."[S44]Autohost"
 
 if (gadgetHandler:IsSyncedCode()) then
 VFS.Include("LuaRules/lib/tableToString.lua")
-
+VFS.Include("LuaRules/lib/spawnFunctions.lua")
+--[[
 local GetGroundHeight			=	Spring.GetGroundHeight
 local GetUnitsInCylinder		=	Spring.GetUnitsInCylinder
-local GetTeamStartPosition		=	Spring.GetTeamStartPosition
 local GetSideData				=	Spring.GetSideData
-local GetTeamInfo				=	Spring.GetTeamInfo
 local GetTeamUnits				=	Spring.GetTeamUnits
+local GAIA_TEAM_ID				=	Spring.GetGaiaTeamID()]]--
+local GetTeamStartPosition		=	Spring.GetTeamStartPosition
+local GetTeamInfo				=	Spring.GetTeamInfo
 local GetGameRulesParam			=	Spring.GetGameRulesParam
-local GAIA_TEAM_ID				=	Spring.GetGaiaTeamID()
+
 
 local SetGameRulesParam			=	Spring.SetGameRulesParam
 local SetTeamResource			=	Spring.SetTeamResource
@@ -42,48 +44,11 @@ local modOptions = Spring.GetModOptions()
 
 --------------------------------------------------------------------------- 
 
-
-
-
 local function SetStartResources(teamID)
 	SetTeamResource(teamID, "es", tonumber(modOptions.logistics_reserve) or 5000)
 	SetTeamResource(teamID, "e", tonumber(modOptions.logistics_reserve) or 5000)
 end
 
-
-
---borrowed/slightly modified from tobi/flozi's game_setup.lua
-local function GetStartUnit(teamID)
-	-- get the team startup info
-	local side = select(5, GetTeamInfo(teamID))
-	local startUnit
-	if (side == "") then
-		-- startscript didn't specify a side for this team
-		local sidedata = GetSideData()
-		if (sidedata and #sidedata > 0) then
-			startUnit = sidedata[1 + teamID % #sidedata].startUnit
-		end
-	else
-		startUnit = GetSideData(side)
-	end
-	return startUnit
-end
-
-local function SpawnStartUnit(teamID)
-	local startUnit = GetStartUnit(teamID)
-	if (startUnit and startUnit ~= "") then
-		-- spawn the specified start unit
-		local x,y,z = GetTeamStartPosition(teamID)
-		-- Erase start position marker while we're here
-		MarkerErasePosition(x or 0, y or 0, z or 0)
-		-- snap to 16x16 grid
-		x, z = 16*math.floor((x+8)/16), 16*math.floor((z+8)/16)
-		y = GetGroundHeight(x, z)
-		-- facing toward map center	
-		local unitID = CreateUnit(startUnit, x, y, z, "south", teamID)
-	end
-end
---end stuff that was mostly borrowed from game_setup.lua (from S44 main)
 
 local function ShopModeSpawn(teams)
 	for i, teamID in ipairs(teams) do
@@ -93,28 +58,6 @@ local function ShopModeSpawn(teams)
 		end
 	end
 end
-
-local function IsPositionValid(unitDefID, x, z)
-	-- Don't place units underwater. (this is also checked by TestBuildOrder
-	-- but that needs proper maxWaterDepth/floater/etc. in the UnitDef.)
-	local y = GetGroundHeight(x, z)
-	if (y <= 0) then
-		return false
-	end
-	-- Don't place units where it isn't be possible to build them normally.
-	local test = TestBuildOrder(unitDefID, x, y, z, 0)
-	if (test ~= 2) then
-		return false
-	end
-	-- Don't place units too close together.
-	local ud = UnitDefs[unitDefID]
-	local units = GetUnitsInCylinder(x, z, 25)
-	if (units[1] ~= nil) then
-		return false
-	end
-	return true
-end
-
 
 --goes through each unit in the spawn table, spawns it to the appropriate team with the appropriate stats
 local function SpawnArmies()

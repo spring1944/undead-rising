@@ -41,12 +41,26 @@ local REQUIRED_MOD_SHORT_NAME = "A UNIQUE SHORTNAME"
 local LOGFILE = "S44/playeraccounts.lua"
 
 --stores the money/units for all active players
+--[[
+example entry for player bob:
+playerTable["bob"] = {
+	teamID = 2,
+	money = "uninitialized"/"new player"/50000,
+	units = {[1] = unit stats, [2] = another unit's stats,...}
+}
+
+Note! the table that gets written to disc lacks the teamID entry. 
+Otherwise it is the same (just with more player entries, probably)
+]]--
 local playerTable	=	{} 
 
 --these players are allowed to record data
 local TRUSTEDNAMES = "[S44]Nemo".." ".."[S44]Autohost"
 
 --decides if there's a trusted observer who is also a spec and allows data to be written if so
+--note, there's also gadget-side protection, so this isn't as horribly insecure as it might seem >_>
+--for more details, see the initialize gadget (its unsynced side checks for trusted names and only accepts 
+--luarules messages from those playerIDs)
 local okToSave = true
 
 --this is what lets tables be written to strings or files and read back again
@@ -70,6 +84,7 @@ local function ProcessTeamUnits(teamID, playerName)
 			local unitName = unitDef.name
 			local ammo = UnitDefs[unitDefID].customParams.maxammo or -1
 			local isShop = string.find(unitName, "shop")
+			--while zombie teams don't get their units recorded, I guess they could try to give zombies to human players, so we check to make sure those don't get recorded
 			local isZombie = string.find(unitName, "zom")
 			if unitName ~= "flag" and isShop == nil and isZombie == nil then
 				--uses the global playerTable
@@ -88,10 +103,9 @@ end
 local function SaveData()
 	local masterSaveInfo = table.load(LOGFILE) or {} 
 	local zombieTeamID = GetGameRulesParam("zombieteam")
-	Spring.Echo(zombieTeamID)
 	for playerName, playerData in pairs(playerTable) do	
 		local teamID = playerData.teamID
-		Spring.Echo("But "..playerName.."'s teamID is "..playerData.teamID)
+				
 		--teamID of 'inactive' means the team retreated or was killed
 		--these teams update their tables on death or retreat
 		if teamID ~= "inactive" and teamID ~= zombieTeamID then
@@ -99,15 +113,19 @@ local function SaveData()
 			ProcessTeamUnits(teamID, playerName)
 		end
 		
-	--go through and update the saved tables with the active player data now that the game is over
+		--if the player doesn't have an account, create a spot to save their data
+		if masterSaveInfo[playerName] == nil then
+			masterSaveInfo[playerName] = {}
+		end
+		--go through and update the saved tables with the active player data now that the game is over
 		local savePlayerData = masterSaveInfo[playerName]
+		
 		--if something bad happened and there's no team rules param for this team's money, 
-		--just put save it at the level they had before the game started
+		--just put it at the level they had before the game started
 		savePlayerData.money = GetTeamRulesParam(teamID, "money") or playerData.money
 		
 		--don't update unit tables for zombie teams (don't want to save zombies or lose old units)
 		if teamID ~= zombieTeamID then
-			Spring.Echo("updating saved unit info for teamID "..teamID)
 			savePlayerData.units = playerData.units
 		end
 	end
@@ -119,23 +137,24 @@ end
 local function NameToTeamID()
 	for index, teamID in ipairs(GetTeamList()) do
 		local _, leader, isDead, isAiTeam = GetTeamInfo(teamID)
-		local playerName, _, spectator = GetPlayerInfo(leader)
-		local addToPlayerTable = spectator --don't add specs
-		Spring.Echo("Found a team in GetTeamList!", leader, teamID, playerName, spectator)
+		local playerName = GetPlayerInfo(leader)
+		
+		--note, I don't exclude zombie teams from the active player table because they can
+		--earn money during the game.
 		if teamID ~= GetGaiaTeamID()  then
+			--get AI name so we can treat AIs just like human players
 			if isAiTeam == true then
-				local skirmishAAID, AIname, hostingPlayerID = GetAIInfo(teamID)
+				local skirmishAAID, AIname = GetAIInfo(teamID)
 				playerName = AIname
-				addToPlayerTable = true
 			end
-			Spring.Echo("added player to player table!", playerName)
-			if addToPlayerTable == true then
-				playerTable[playerName] = {
-					teamID = teamID,
-					money = "uninitialized",
-					units = {},		
-				}
-			end
+			
+			--only teamID really needs to be set here
+			--I'm just putting in placeholder values for units and money (they get filled later)
+			playerTable[playerName] = {
+				teamID = teamID,
+				money = "uninitialized",
+				units = {},		
+			}
 		end
 	end
 end
@@ -162,7 +181,8 @@ function widget:Initialize()
 		return
 	end
 	
-	--this is switched on if enough players are new or there was no bank account file
+	--this is switched on if sombody has no units (and isn't zombie team)
+	--this also covers the case where the log file failed to load
 	local emergencyShopMode = false 
 	
 	--attaches names to teamIDs for active (non-spec) players	
@@ -171,15 +191,13 @@ function widget:Initialize()
 	--table.load returns nil if the file is empty
 	local masterSaveInfo = table.load(LOGFILE) or {} 
 	
-	--keep track of these in order to decide if we should actually boot shop mode instead of normal mode
-	local numNewPlayers = 0
-	local numActivePlayers = 0
+	--this game rules param is set in the initialize gadget
 	local zombieTeamID = GetGameRulesParam('zombieteam')
+	
 	--loop through all active players, get their info from the log file (or initialize it if they're new)
 	for playerName, playerData in pairs(playerTable) do
 		local playerHasAccount = masterSaveInfo[playerName] or false
 		if playerHasAccount == false then
-			numNewPlayers = numNewPlayers + 1
 			playerData.units = {}
 			-- the money handler gadget will take care of giving new players money
 			playerData.money = "new player" 	
@@ -190,8 +208,8 @@ function widget:Initialize()
 		end	
 		--if anybody doesn't have units (but is not the zombie team), flip to shop mode
 		if #playerData.units == 0 and playerData.teamID ~= zombieTeamID then emergencyShopMode = true end
-		numActivePlayers = numActivePlayers + 1
 	end
+	
 	--wipe out this particular reference to the huge player account database
 	--(we have data for the active players, that's all we care about)
 	masterSaveInfo = nil

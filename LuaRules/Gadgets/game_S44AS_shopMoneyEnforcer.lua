@@ -20,6 +20,7 @@ local GetTeamResources		= Spring.GetTeamResources
 local GetUnitCmdDescs 		= Spring.GetUnitCmdDescs
 local GetUnitTeam 			= Spring.GetUnitTeam
 local GetGameRulesParam		= Spring.GetGameRulesParam
+local GetUnitIsBuilding		= Spring.GetUnitIsBuilding
 
 -- Synced Ctrl
 local EditUnitCmdDesc		= Spring.EditUnitCmdDesc
@@ -83,7 +84,7 @@ function gadget:GameFrame(n)
 
 				end
 				--Spring.Echo("numdisabled vs cmddescs", numDisabled, #ud["buildOptions"])
-				if numDisabled == #ud["buildOptions"] then
+				if numDisabled == #ud["buildOptions"] and GetUnitIsBuilding(unitID) ~= nil then
 					teamsWhichAreDoneBuying = teamsWhichAreDoneBuying + 1
 				end
 			end

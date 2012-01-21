@@ -202,14 +202,8 @@ function gadget:GameFrame(n)
 							--Spring.Echo("they're the ones who shot at us!")
 							Flee(enemyX, enemyZ, unitID, guardTeam)
 						else
-							local unitDefID = Spring.GetUnitDefID(nearestEnemy)
-							local ud = UnitDefs[unitDefID]
-							GiveOrderToUnit(unitID, CMD_GUARD, {nearestEnemy}, {})
-							local px, py, pz = GetTeamStartPosition(guardTeam)
-							if scaredUnits[unitID] == 0 or InRadius(px, pz, civX, civZ, BASE_RADIUS) then
-								GiveOrderToUnit(unitID, CMD_MOVE, {px, py, pz + 200}, {})
-								Spring.SetUnitAlwaysVisible(unitID, false)
-								AddTeamResource(guardTeam, "m", modOptions.civilian_income or 1)
+							if scaredUnits[unitID] == 0 then
+								GiveOrderToUnit(unitID, CMD_GUARD, {nearestEnemy}, {})
 							end
 						end
 					end

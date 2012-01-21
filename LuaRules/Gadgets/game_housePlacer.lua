@@ -10,7 +10,14 @@ function gadget:GetInfo()
 	}
 end
 
+-- synced only
+if (not gadgetHandler:IsSyncedCode()) then
+	return false
+end
+
 local modOptions = Spring.GetModOptions()
+
+VFS.Include("LuaRules/lib/spawnFunctions.lua")
 
 -- function localisations
 -- Synced Read
@@ -57,30 +64,6 @@ local onlyHouseSpots						=   {}
 local teamStartPos							=	{}
 local initFrame
 
-
-if (gadgetHandler:IsSyncedCode()) then
--- SYNCED
-
-local function Distance(x1, z1, x2, z2, whocalled)
-	local dist = math.sqrt((x2-x1)^2  + (z2-z1)^2)
-	--Spring.Echo("distance from "..whocalled.."!", x1, z1, x2, z2, dist)
-	return dist
-end
-
-local function IsPositionValid(unitDefID, x, z)
-	-- Don't place units underwater. (this is also checked by TestBuildOrder
-	-- but that needs proper maxWaterDepth/floater/etc. in the UnitDef.)
-	local y = GetGroundHeight(x, z)
-	if (y <= 0) then
-		return false
-	end
-	-- Don't place units where it isn't be possible to build them normally.
-	local test = Spring.TestBuildOrder(unitDefID, x, y, z, 0)
-	if (test ~= 2) then
-		return false
-	end
-	return true
-end
 local function randomHouse()
 	local newHouse
 	local pickHouse = math.random(1, 8)
@@ -233,8 +216,4 @@ function gadget:GameFrame(n)
 		unitSpawn("civilian", civMessage, CIVILIAN_COUNT, GAIA_TEAM_ID, CIV_SPAWN_WARNINGTIME)
 		unitSpawn("zomsprinter", false, ZOMBIE_COUNT, GG.zombieTeam, 0)
 	end
-end
-
-else
--- UNSYNCED
 end
