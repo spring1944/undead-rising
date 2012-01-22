@@ -68,7 +68,6 @@ for name, ud in pairs(UnitDefs) do
 			ud.crushresistance = 99999999		
 		else
 			ud.crushresistance = 50
-			ud.stealth = false
 		end
 	end
 	
