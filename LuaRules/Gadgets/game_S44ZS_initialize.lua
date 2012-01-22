@@ -45,7 +45,6 @@ local function calculateNetWorth(playerName)
 	netWorth = pd.money
 	for i=1,#pd.units do
 		local unitName = pd.units[i].name
-		local udid = GetUnitDefID(unitID)
 		local ud = UnitDefNames[unitName]
 		netWorth = netWorth + ud.metalCost
 	end
