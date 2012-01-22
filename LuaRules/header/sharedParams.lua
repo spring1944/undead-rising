@@ -58,7 +58,7 @@ local params = {
 	
 	--initialize values
 		--these are the names that are allowed to save/send account info
-	TRUSTED_NAMES				= "[S44]Nemo".." ".."[S44]Autohost",
+	TRUSTED_NAMES				= "[S44]Nemo".." ".."[S44]Autohost".."[RD]Godde",
 		--a player's logistics at the start of a game
 	LOGISTICS_RESERVE			= tonumber(modOptions.logistics_reserve) or 5000,
 	
