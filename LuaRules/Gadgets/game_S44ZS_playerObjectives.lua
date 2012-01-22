@@ -16,10 +16,10 @@ if (not gadgetHandler:IsSyncedCode()) then
 end
 
 VFS.Include("LuaRules/lib/spawnFunctions.lua")
+
+
+
 local reinforcementDefs = VFS.Include("LuaRules/Configs/reinforcementDefs.lua")
-
-
-local modOptions = Spring.GetModOptions()
 
 local SetGameRulesParam			=	Spring.SetGameRulesParam
 
@@ -27,12 +27,13 @@ local GetTeamStartPosition		=	Spring.GetTeamStartPosition
 local GetTeamList				= 	Spring.GetTeamList
 local GetTeamUnits				=	Spring.GetTeamUnits
 
-local UPDATEFREQ			= 5 --seconds
-local civilianSaveGoal		= tonumber(modOptions.civilian_goal) or 50
-local hotZoneGoal			= 5
-local flagHoldGoal			= 100
-local objectivePhaseLength	= tonumber(modOptions.objective_phase_length) or 1 --minutes
-local reinforcementDelay	= 60 --seconds
+local params = VFS.Include("LuaRules/header/sharedParams.lua")
+
+local CIVILIAN_SAVE_GOAL		= params.CIVILIAN_SAVE_GOAL
+local HOT_ZONE_GOAL				= params.HOT_ZONE_GOAL
+local FLAG_HOLD_GOAL			= params.FLAG_HOLD_GOAL
+local OBJECTIVE_PHASE_LENGTH	= params.OBJECTIVE_PHASE_LENGTH --minutes
+local REINFORCEMENT_DELAY		= params.REINFORCEMENT_DELAY --seconds
 
 --[[
 1 = civilian rescue
@@ -42,15 +43,19 @@ local reinforcementDelay	= 60 --seconds
 
 local objectiveTeams = {[1] = {}, [2] = {}, [3] = {}}
 local objectiveText = {
-	[1] = "CIVILIAN RESCUE! Rescue "..civilianSaveGoal.." civilians!",
-	[2] = "HOTZONE PURGE! Destroy "..hotZoneGoal.." hot zones!",
-	[3] = "SECURE TERRITORY! Hold the flags for "..flagHoldGoal.." seconds!"
+	[1] = "CIVILIAN RESCUE! Rescue "..CIVILIAN_SAVE_GOAL.." civilians!",
+	[2] = "HOTZONE PURGE! Destroy "..HOT_ZONE_GOAL.." hot zones!",
+	[3] = "SECURE TERRITORY! Hold the flags for "..FLAG_HOLD_GOAL.." seconds!"
 }
 
 local function teamWonObjRound(teamID)
 	local playerName = GG.teamIDToPlayerName[teamID]
 	local playerData = GG.activeAccounts[playerName]
 	local side = GG.teamSide[teamID]
+	--mark them as winners of the objective round so they get rewarded properly in game_end.lua
+	--and so that game_end.lua doesn't try to remove this team once all their units get retreated
+	playerData.objVictor = true
+	SetGameRulesParam("obj_win_team", teamID)
 	--save and remove all of their normal units (if not zombies)
 	if teamID ~= GG.zombieTeamID then
 		local teamUnits = GetTeamUnits(teamID)
@@ -60,17 +65,14 @@ local function teamWonObjRound(teamID)
 	else
 		side = "zom"
 	end
-	--give them a prize for winning objective round
-	GG.Reward(teamID, "wongame")
-	playerData.teamID = "inactive"
-	SetGameRulesParam("obj_win_team", teamID)
 
+	
 	--now spawn the huge flood of reinforcements
 	local x, _, z = GetTeamStartPosition(teamID)
 	for unitName, number in pairs(reinforcementDefs[side]) do
 		Spring.Echo(unitName)
 		--takes unitname, x, z, message, count, teamID, delay (in seconds!)
-		unitSpawnRandomPos(unitName, x, z, false, number, teamID, reinforcementDelay)
+		unitSpawnRandomPos(unitName, x, z, false, number, teamID, REINFORCEMENT_DELAY)
 	end
 end
 
@@ -78,7 +80,7 @@ local function checkCivilianSaveObj()
 	local successfulTeams = {}
 	for playerName, playerData in pairs(GG.activeAccounts) do
 		--Spring.Echo(playerName, playerData.rescuedCivilians)
-		if playerData.rescuedCivilians >= civilianSaveGoal then
+		if playerData.rescuedCivilians >= CIVILIAN_SAVE_GOAL then
 			--Spring.Echo("successful team!", playerName)
 			table.insert(successfulTeams, playerData.teamID)
 		end
@@ -109,19 +111,20 @@ function gadget:GameFrame(n)
 			local teamID = teams[i]
 			if teamID ~= GG.zombieTeamID then
 				local teamObj = objectiveTeams[teamID]
-				Spring.SendMessageToTeam(teamID, "\255\255\001\001CIVILIAN RESCUE! Rescue "..civilianSaveGoal.." civilians!") --todo: replace with dynamic
+				Spring.SendMessageToTeam(teamID, "\255\255\001\001CIVILIAN RESCUE! Rescue "..CIVILIAN_SAVE_GOAL.." civilians!") --todo: replace with dynamic
+				Spring.SendMessage("\255\001\255\001Objective phase is "..(OBJECTIVE_PHASE_LENGTH/30).." SECONDS!")
 			end
 		end
 	end
-	if n == (30*60*objectivePhaseLength) then
+	if n == OBJECTIVE_PHASE_LENGTH then
 		local civWinningTeams = checkCivilianSaveObj()
 		if #civWinningTeams ~= 1 then --either both teams got the objective, or none did.
 			teamWonObjRound(GG.zombieTeamID)
-			Spring.SendMessage("\255\255\001\001ZOMBIE TEAM HAS WON THE GAME! HORDE ARRIVING IN "..reinforcementDelay.." SECONDS!")
+			Spring.SendMessage("\255\255\001\001ZOMBIE TEAM HAS WON THE GAME! HORDE ARRIVING IN "..(REINFORCEMENT_DELAY/30).." SECONDS!")
 		else
 			local winningTeamID = civWinningTeams[1]
 			teamWonObjRound(winningTeamID)
-			Spring.SendMessage("\255\255\001\001"..GG.teamIDToPlayerName[winningTeamID].." has won the objective round! Reinforcements arriving in "..reinforcementDelay.." seconds.")
+			Spring.SendMessage("\255\255\001\001"..GG.teamIDToPlayerName[winningTeamID].." has won the objective round! Reinforcements arriving in "..REINFORCEMENT_DELAY.." seconds.")
 		end
 	end
 end

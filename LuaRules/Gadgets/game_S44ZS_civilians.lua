@@ -20,7 +20,7 @@ if (Spring.GetModOptions) then
   modOptions = Spring.GetModOptions()
 end
 
-VFS.Include("LuaRules/lib/spawnFunctions.lua")
+
 
 
 local CMD_FIRESTATE		=	CMD.FIRE_STATE
@@ -43,24 +43,37 @@ local GetGaiaTeamID			=	Spring.GetGaiaTeamID
 local GetTeamInfo			=	Spring.GetTeamInfo
 local GetUnitDefID			=	Spring.GetUnitDefID
 
-local AddTeamResource		=	Spring.AddTeamResource
-local GiveOrderToUnit		=	Spring.GiveOrderToUnit
+local AddTeamResource			=	Spring.AddTeamResource
+local GiveOrderToUnit			=	Spring.GiveOrderToUnit
 
-local civilianAwareRadius	=	450 --how far around them civilians are aware of things happening (like civilians dying, zombies approaching, etc).
-local scaredUnits			=	{}
-local scaryTeams			=	{}
-local scaryTeamDuration		=	15
-local fearDuration			=	5
-local BASE_RADIUS			= 	800
+VFS.Include("LuaRules/lib/spawnFunctions.lua")
 
+local params = VFS.Include("LuaRules/header/sharedParams.lua")
 
+--how far around them civilians are aware of things happening (like civilians dying, zombies approaching, etc).
+local CIV_AWARE_RADIUS			=	params.CIV_AWARE_RADIUS
+--how long civvies run from a team that shot at them
+local CIV_TEAM_FEAR_DURATION	=	params.CIV_TEAM_FEAR_DURATION
+
+--how long civvies run from zombies before reevaluating
+local CIV_FEAR_DURATION			=	params.CIV_FEAR_DURATION
+--how close to the team's start point a civ needs to be to be considered 'rescued'. 
+--THIS IS A PLACEHOLDER until retreat zones are properly done
+local SAFE_DIST					= 	400
+
+--variables
+local scaredUnits				=	{}
+local scaryTeams				=	{}
+-----------------------------
+--local functions
+-----------------------------
 local function InRadius(x1, z1, x2, z2, radius)
 	return (math.abs(x1-x2) < radius or math.abs(z1-z1) < radius)
 end
 
 local function RescuedCheck(civUnitID, civX, civZ, rescuerTeamID)
 	local safeX, _, safeZ = Spring.GetTeamStartPosition(rescuerTeamID)
-	if Distance(civX, civZ, safeX, safeZ, "civilians.lua") < 400 and GetUnitTransporter(civUnitID) == nil then
+	if Distance(civX, civZ, safeX, safeZ, "civilians.lua") < SAFE_DIST and GetUnitTransporter(civUnitID) == nil then
 		GG.Retreat(civUnitID)
 		GG.Reward(rescuerTeamID, "civiliansave")
 	end
@@ -69,19 +82,8 @@ end
 local function Flee(scaryX, scaryZ, unitID, attackerTeam) --RUN AWWAAAAAY!
 	Spring.SetUnitAlwaysVisible(unitID, true)
 	--Spring.Echo("Fleeee", unitID, "fleee!")
-	scaredUnits[unitID] = fearDuration
-	scaryTeams[attackerTeam] = 0
+	scaredUnits[unitID] = CIV_FEAR_DURATION
 	local civX,_,civZ = GetUnitPosition(unitID)
-	--Spring.Echo("civX:", civX,"civZ:", civZ)
-	--local nearbyUnits = GetUnitsInCylinder(civX, civZ, civilianAwareRadius)
-	--Spring.Echo("and all of your little friends, all", #nearbyUnits, "of them!")
-	--[[if nearbyUnits ~= nil then
-		for _,unit in ipairs(nearbyUnits) do
-			if (unit ~= unitID) and (scaredUnits[unit] == 0) then
-				Flee(scaryX, scaryZ, unit, attackerTeam)
-			end
-		end
-	end]]--
 	local xDest
 	local zDest	
 	local x1
@@ -136,18 +138,36 @@ local function Flee(scaryX, scaryZ, unitID, attackerTeam) --RUN AWWAAAAAY!
 	--Spring.Echo("run off to", xDest, zDest, "little civilian")
 	GiveOrderToUnit(unitID, CMD_MOVE, {xDest, y, zDest}, {})
 end
-
-function gadget:UnitDamaged(unitID, unitDefID, unitTeam, _, _, _, attackerID, _, attackerTeam)
+----End local functions
+----------------------------
+---Call ins
+----------------------------
+function gadget:UnitDamaged(unitID, unitDefID, unitTeam, _, _, _, attackerID, _, attackerTeamID)
 	if (scaredUnits[unitID] ~= nil) then
 		--Spring.Echo("I've been hit, run my friends!")
 		if attackerID ~= nil then
 		local scaryX, _, scaryZ = GetUnitPosition(attackerID)
-		Flee(scaryX, scaryZ, unitID, attackerTeam)	
+		scaryTeams[attackerTeamID] = CIV_TEAM_FEAR_DURATION
+		Flee(scaryX, scaryZ, unitID, attackerTeamID)	
 		end
 	end
 end
 
-function gadget:UnitDestroyed(unitID)
+function gadget:UnitDestroyed(unitID, unitDefID, teamID, attackerID, attackerDefID, attackerTeamID)
+	local ud = UnitDefs[unitDefID]
+	--[[if (ud.customParams.civilian) then
+		local x, _, z = GetUnitPosition(unitID)
+		local nearbyUnits = GetUnitsInCylinder(x, z, CIV_AWARE_RADIUS)
+		for i=1, #nearbyUnits do
+			local nearbyUnit = nearbyUnits[i]
+			local nudid = GetUnitDefID(unitID)
+			local nearbyUD = UnitDefs[nudid]
+			if nearbyUD.customParams.civilian then
+				scaryTeams[attackerTeamID] = CIV_TEAM_FEAR_DURATION
+				Flee(x, z, nearbyUnit, attackerTeamID)
+			end			
+		end
+	end]]--
 	scaredUnits[unitID] = nil
 end
 
@@ -177,7 +197,7 @@ function gadget:GameFrame(n)
 		return
 	end	
 	if(n % 30 < 1) then
-		for teamID, someThing in pairs(scaryTeams) do
+		for teamID, duration in pairs(scaryTeams) do
 			--Spring.Echo("scary teamID:",teamID, "fear factor:", scaryTeams[teamID])
 			if scaryTeams[teamID] > 0 then
 				scaryTeams[teamID] = scaryTeams[teamID] - 1
@@ -186,14 +206,14 @@ function gadget:GameFrame(n)
 			end
 		end
 		
-		for unitID, someThing in pairs(scaredUnits) do
+		for unitID, fearTime in pairs(scaredUnits) do
 			if scaredUnits[unitID] > 0 then
 				scaredUnits[unitID] = scaredUnits[unitID] - 1
 			else
 				GiveOrderToUnit(unitID, CMD_STOP, {}, {})
 				scaredUnits[unitID] = 0
 			end
-			local nearestEnemy = GetUnitNearestEnemy(unitID, civilianAwareRadius, 0)
+			local nearestEnemy = GetUnitNearestEnemy(unitID, CIV_AWARE_RADIUS, 0)
 			if nearestEnemy ~= nil then
 				local unitDefID = GetUnitDefID(nearestEnemy)
 				local ud = UnitDefs[unitDefID]
@@ -212,6 +232,7 @@ function gadget:GameFrame(n)
 							--Spring.Echo("they're the ones who shot at us!")
 							Flee(enemyX, enemyZ, unitID, guardTeam)
 						else
+							--TODO: update this to check for a team's actual retreat zone
 							local px, py, pz = GetTeamStartPosition(guardTeam)
 							if scaredUnits[unitID] == 0 then
 								GiveOrderToUnit(unitID, CMD_MOVE, {px, py, pz}, {})

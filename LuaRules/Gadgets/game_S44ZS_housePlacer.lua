@@ -33,28 +33,23 @@ local CreateFeature							=	Spring.CreateFeature
 local CreateUnit							=	Spring.CreateUnit
 
 -- constants
-local GAIA_TEAM_ID							=	Spring.GetGaiaTeamID()
+
 local BLOCK_SIZE							=	64	-- size of map to check at once
 local METAL_THRESHOLD						=	1 -- Handy for creating profiles, set to just less than the lowest metal spot you want to include. ALWAYS REVERT TO 1
 local PROFILE_PATH							=	"maps/" .. string.sub(Game.mapName, 1, string.len(Game.mapName) - 4) .. "_profile.lua"
 
-local featureCheckRadius					=	100
-local houseFeatureCheckRadius				=	300 
-local MAX_SPREAD							=	350
-local SPREAD_MULT							=	1.005
-local maxCivSpread							=	400
+local params = VFS.Include("LuaRules/header/sharedParams.lua")
 
-local SEARCH_LIMIT							=   500
+local GAIA_TEAM_ID							= Spring.GetGaiaTeamID()
 
-local CIV_SPAWN_WARNINGTIME					=  (tonumber(modOptions.respawn_period) or 1) * 60
+local HOUSE_FEATURE_CHECK_RADIUS			= params.HOUSE_FEATURE_CHECK_RADIUS
+local CIV_SPAWN_WARNINGTIME					= params.CIV_SPAWN_WARNINGTIME
+local OBJECTIVE_PHASE_LENGTH				= params.OBJECTIVE_PHASE_LENGTH
+local SPAWN_BUFFER							= params.SPAWN_BUFFER
 
-local objectivePhaseLength					= tonumber(modOptions.objective_phase_length) or 10 --minutes
-
-local spawnBuffer							=	800
---mod Option defined values
-local ZOMBIE_COUNT 							= tonumber(modOptions.zombie_count) or 5
-local CIVILIAN_COUNT 						= tonumber(modOptions.civilian_count) or 15
-local respawnPeriod							= (tonumber(modOptions.respawn_period) or 1) * 60 * 30 --minutes-> seconds-> frames
+local ZOMBIE_COUNT 							= params.ZOMBIE_COUNT
+local CIVILIAN_COUNT 						= params.CIVILIAN_COUNT
+local RESPAWN_PERIOD						= params.RESPAWN_PERIOD
 
 -- variables
 local avgMetal								=	0	-- average metal per spot
@@ -90,9 +85,8 @@ local function randomHouse()
 end
 
 local function PlaceHouse(spotX, spotZ)
-	local spread = 100
 	local udid = UnitDefNames["civilian"].id 
-	for num, featureID in pairs(Spring.GetFeaturesInCylinder(spotX, spotZ, houseFeatureCheckRadius)) do
+	for num, featureID in pairs(Spring.GetFeaturesInCylinder(spotX, spotZ, HOUSE_FEATURE_CHECK_RADIUS)) do
 		local fdid = Spring.GetFeatureDefID(featureID)
 		local fd = FeatureDefs[fdid]
 		local civHouse = (fd.tooltip == "Farmhouse" or fd.tooltip == "Barn")
@@ -148,7 +142,7 @@ function gadget:GameFrame(n)
 							local notNearTeamStartCount = 0
 							for teamID, pos in pairs(teamStartPos) do
 								--Spring.Echo("teamID, pos!", teamID, pos)
-								if Distance(x, z, pos.x, pos.z, "team startpos buffer") > spawnBuffer then
+								if Distance(x, z, pos.x, pos.z, "team startpos buffer") > SPAWN_BUFFER then
 									notNearTeamStartCount=notNearTeamStartCount+1
 								end
 							end
@@ -179,8 +173,10 @@ function gadget:GameFrame(n)
 		end
 	end
 	--civilian and zombie periodical spawn
-	if n % respawnPeriod < 0.1 and n < 30*60*objectivePhaseLength then
-		local civMessage = "Civilians coming out of hiding in "..CIV_SPAWN_WARNINGTIME.." seconds!"
+	--unitSpawnRandomPos(unitName, x, z, message, number to spawn, teamID, delay-in-frames)
+	if n % RESPAWN_PERIOD < 0.1 and n < OBJECTIVE_PHASE_LENGTH then
+		local warningTimeInSeconds = CIV_SPAWN_WARNINGTIME/30
+		local civMessage = "Civilians coming out of hiding in "..warningTimeInSeconds.." seconds!"
 		local civSpawnSpot = math.random(1, #spots)
 		local civx, civz = spots[civSpawnSpot].x, spots[civSpawnSpot].z
 		unitSpawnRandomPos("civilian", civx, civz, civMessage, CIVILIAN_COUNT, GAIA_TEAM_ID, CIV_SPAWN_WARNINGTIME)

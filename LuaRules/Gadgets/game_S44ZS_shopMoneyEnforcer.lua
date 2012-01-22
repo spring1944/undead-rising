@@ -23,6 +23,9 @@ local GetGameRulesParam		= Spring.GetGameRulesParam
 local GetUnitIsBuilding		= Spring.GetUnitIsBuilding
 
 -- Synced Ctrl
+local SetUnitNoSelect		= Spring.SetUnitNoSelect
+local SetUnitHealth			= Spring.SetUnitHealth
+local SetUnitSensorRadius	= Spring.SetUnitSensorRadius
 local EditUnitCmdDesc		= Spring.EditUnitCmdDesc
 local FindUnitCmdDesc		= Spring.FindUnitCmdDesc
 
@@ -50,8 +53,11 @@ function gadget:UnitCreated(unitID, unitDefID, teamID, builderID)
 			noSelect = false
 		end
 		if noSelect == true then
-			Spring.SetUnitNoSelect(unitID, true)
-			Spring.SetUnitHealth(unitID, {paralyze = 100000})
+			SetUnitSensorRadius(unitID, "los", 0)
+			SetUnitSensorRadius(unitID, "radar", 0)
+			SetUnitSensorRadius(unitID, "airLos", 0)
+			SetUnitNoSelect(unitID, true)
+			SetUnitHealth(unitID, {paralyze = 100000})
 		end
 	end
 end
@@ -84,7 +90,7 @@ function gadget:GameFrame(n)
 
 				end
 				--Spring.Echo("numdisabled vs cmddescs", numDisabled, #ud["buildOptions"])
-				if numDisabled == #ud["buildOptions"] and GetUnitIsBuilding(unitID) ~= nil then
+				if numDisabled == #ud["buildOptions"] and GetUnitIsBuilding(unitID) == nil then
 					teamsWhichAreDoneBuying = teamsWhichAreDoneBuying + 1
 				end
 			end

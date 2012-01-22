@@ -62,11 +62,21 @@ for name, ud in pairs(UnitDefs) do
 			end
 		end
 	end
+	
+	if (ud.customparams) then
+		if not ud.customparams.undead then
+			ud.crushresistance = 99999999		
+		else
+			ud.crushresistance = 50
+			ud.stealth = false
+		end
+	end
+	
 	if (ud.workertime and ud.maxvelocity and ud.name ~= "gbrcommando") then
 		ud["buildoptions"] = {"apminesign", "atminesign", "tankobstacle"}
 	end
-	
-	ud.idleautoheal = 0
+
+	ud.idleautoheal = 0.001
 	--end army save specific
 
 	--new sensor stuff!
@@ -131,6 +141,7 @@ for name, ud in pairs(UnitDefs) do
 	-- Make all vehicles push resistant, except con vehicles, so they vacate build spots
 	if tonumber(ud.maxvelocity or 0) > 0 and (not ud.canfly) and tonumber(ud.footprintx) > 1 and (not ud.builder) then
 		--Spring.Echo(name)
+		ud.crushstrength = ud.mass
 		ud.pushresistant = true
 		--new sensor stuff
 		ud.stealth = false
@@ -154,7 +165,8 @@ for name, ud in pairs(UnitDefs) do
 			end
 		end
 		if (isInf == false) then
-			if (string.find(name, "sortie") == nil) and side ~= "zo" and side ~= "ci" then
+			local acceptableUnit = (string.find(name, "sortie") == nil) and (string.find(name, "pontoon") == nil)
+			if acceptableUnit and side ~= "zo" and side ~= "ci" then
 				shopOptions[side][#shopOptions[side]+1] = name
 			end
 		end

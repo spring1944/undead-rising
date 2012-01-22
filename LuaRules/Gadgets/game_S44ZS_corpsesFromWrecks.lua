@@ -19,11 +19,12 @@ end
 local GetSideData				=	Spring.GetSideData
 local GetGaiaTeamID				=	Spring.GetGaiaTeamID
 
-local numCorpses		=	3
+local params = VFS.Include("LuaRules/header/sharedParams.lua")
+local MAX_VEH_CORPSES		=	params.MAX_VEH_CORPSES
 
 local function SpawnCorpses(x, y, z, side)
 	local corpse = side.."soldier_dead"
-	for i=1, math.random(2, numCorpses) do
+	for i=1, math.random(0, MAX_VEH_CORPSES) do
 		local x = math.random(-75, 75) + x
 		local z = math.random(-75, 75) + z
 		Spring.CreateFeature(corpse, x, Spring.GetGroundHeight(x, z), z)

@@ -54,8 +54,8 @@ function unitSpawnRandomPos(unitname, x, z, message, count, teamID, delay)
 		local featureClear = Spring.GetFeaturesInCylinder(xspwn, zspwn, featureCheckRadius)
 		if #featureClear == 0 and IsPositionValid(udid, xspwn, zspwn) == true then
 			if delay > 0 then
-				GG.Delay.DelayCall(Spring.MarkerErasePosition, {x, y, z}, delay*30)
-				GG.Delay.DelayCall(CreateUnit, {unitname, xspwn, yspwn, zspwn, 0, teamID}, delay*30)
+				GG.Delay.DelayCall(Spring.MarkerErasePosition, {x, y, z}, delay)
+				GG.Delay.DelayCall(CreateUnit, {unitname, xspwn, yspwn, zspwn, 0, teamID}, delay)
 			else
 				local unitID = CreateUnit(unitname, xspwn, yspwn, zspwn, 0, teamID)	
 				table.insert(unitIDList, unitID)

@@ -26,7 +26,8 @@ end
 local GetSideData				=	Spring.GetSideData
 local GetGaiaTeamID				=	Spring.GetGaiaTeamID
 
-local zombificationRadius		=	100
+local params = VFS.Include("LuaRules/header/sharedParams.lua")
+local ZOMBIFICATION_RADIUS		=	params.ZOMBIFICATION_RADIUS
 
 function gadget:GameFrame(n)
 
@@ -37,7 +38,7 @@ function gadget:GameFrame(n)
 			local fname = FeatureDefs[fdid].name
 			if fname and (string.find(fname, "soldier") or string.find(fname, "civilian")) ~= nil then
 				local x, y, z = Spring.GetFeaturePosition(fid)
-				local nearbyUnits = Spring.GetUnitsInCylinder(x, z, zombificationRadius)
+				local nearbyUnits = Spring.GetUnitsInCylinder(x, z, ZOMBIFICATION_RADIUS)
 				if nearbyUnits ~= nil then
 					for _,unit in ipairs(nearbyUnits) do
 						local unitDefID = Spring.GetUnitDefID(unit)

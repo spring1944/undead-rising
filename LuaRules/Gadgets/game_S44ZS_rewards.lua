@@ -22,16 +22,21 @@ huge flood of reinforcements
 3) rescued a civilian
 4) destroyed a 'hotzone' feature group (a place where zombies got a reinforcement wave at some point)
 5) killed a zombie
-
 ]]--
+
+local params = VFS.Include("LuaRules/header/sharedParams.lua")
+
 local prizes = {
-	["epicwin"] = 20000,
-	["wongame"] = 5000, 
-	["civiliansave"] = 200, 
-	["hotzonepurge"] = 200,
-	["zombiekill"] = 100,
-	["humankill"] = 0
+	["epicwin"] = params.PRIZE_EPIC_WIN,
+	["wongame"] = params.PRIZE_OBJECTIVE_WIN, 
+	["humansgone"] = params.PRIZE_HUMANS_GONE,
+	["civiliansave"] = params.PRIZE_CIVILIAN_SAVE, 
+	["hotzonepurge"] = params.PRIZE_HOT_ZONE_PURGE,
+	["zombiekill"] = params.PRIZE_ZOMBIE_KILL,
+	["humankill"] = params.PRIZE_HUMAN_KILL,
 }
+
+local ZOM_BOUNTY_MULT = params.ZOM_BOUNTY_MULT
 
 function GG.Reward(teamID, achievement, bounty)
 	local bounty = bounty
@@ -41,33 +46,41 @@ function GG.Reward(teamID, achievement, bounty)
 	
 	local playerName = GG.teamIDToPlayerName[teamID]
 	local pd = GG.activeAccounts[playerName]
-	if pd then
-		if pd.teamID ~= "inactive" then		
-			if prizes[achievement] ~= nil then
-				--Spring.Echo("Reward for "..achievement.." for team "..teamID.."!")
-				local currentMoney = Spring.GetTeamResources(teamID, "metal")
-				Spring.SetTeamResource(teamID, "m", currentMoney + prizes[achievement] + bounty)
-				
-				if achievement == "civiliansave" then
-					pd.rescuedCivilians = pd.rescuedCivilians + 1
+	if pd == nil then
+		Spring.Echo("BAD PD IN REWARDS.LUA!", playerName.."teamID ", teamID,"zombie teamID:",GG.zombieTeamID, achievement, bounty)
+	end
+	--TODO make this big and shiny in the middle of the screen
+	if pd.teamID ~= "inactive" then		
+		if prizes[achievement] ~= nil then
+			--Spring.Echo("Reward for "..achievement.." for team "..teamID.."!")
+			local currentMoney = Spring.GetTeamResources(teamID, "metal")
+			Spring.SetTeamResource(teamID, "m", currentMoney + prizes[achievement] + bounty)
+			
+			if achievement == "civiliansave" then
+				pd.rescuedCivilians = pd.rescuedCivilians + 1
+				--TODO add a proper display
+				if pd.rescuedCivilians % 10 < 1 then
 					Spring.SendMessage("\255\255\001\001"..playerName.." has rescued "..pd.rescuedCivilians .." civvies!")
-					--Spring.Echo(saviorPlayerName, pd.rescuedCivilians)
 				end
-			else
-				Spring.Echo("BAD ACHIEVEMENT PARAM TO GG.Reward - "..achievement)
+				--Spring.Echo(saviorPlayerName, pd.rescuedCivilians)
 			end
+		else
+			Spring.Echo("BAD ACHIEVEMENT PARAM TO GG.Reward - "..achievement)
 		end
 	end
 end
 
 function gadget:UnitDestroyed(unitID, unitDefID, teamID, attackerID, attackerDefID, attackerTeamID)
 	local ud = UnitDefs[unitDefID]
-	if ud.customParams then
-		if ud.customParams.undead then
-			GG.Reward(attackerTeamID, "zombiekill")
+	--This check covers self destructs
+	if attackerTeamID then
+		if ud.customParams then
+			if ud.customParams.undead then
+				GG.Reward(attackerTeamID, "zombiekill")
+			end
 		end
-	end
-	if attackerTeamID == GG.zombieTeamID then
-		GG.Reward(GG.zombieTeamID, "humankill", ud.metalCost)
+		if attackerTeamID == GG.zombieTeamID then
+			GG.Reward(GG.zombieTeamID, "humankill", ud.metalCost*ZOM_BOUNTY_MULT)
+		end
 	end
 end
