@@ -34,9 +34,6 @@ local InsertUnitCmdDesc		=	Spring.InsertUnitCmdDesc
 local RemoveUnitCmdDesc		=	Spring.RemoveUnitCmdDesc
 
 VFS.Include("LuaRules/header/S44_commandIDs.lua")
-local modOptions = Spring.GetModOptions()
-
-local objectivePhaseLength	= tonumber(modOptions.objective_phase_length) or 1 --minutes
 
 --variables
 local unitsWhichCanRetreat = {}
@@ -52,10 +49,15 @@ local retreatDesc = {
 	tooltip	= "Retreat this unit from the field of battle.",
 }
 
-function GG.Retreat(unitID)
+function GG.Retreat(unitID, ignoreUnitPosition)
+	local unitTeam = GetUnitTeam(unitID)
+	if ignoreUnitPosition == true then
+		unitsWhichCanRetreat[teamID][unitID] = true
+	end
+		
 	GiveOrderToUnit(unitID, CMD_RETREAT, {}, {})
 	local transportedUnits = GetUnitIsTransporting(unitID)
-	local unitTeam = GetUnitTeam(unitID)
+
 	if transportedUnits ~= nil then
 		for i=1, #transportedUnits do
 			local transportedUnit = transportedUnits[i]
@@ -81,11 +83,15 @@ function gadget:Initialize()
 	gadgetHandler:RegisterCMDID(CMD_RETREAT)
 end
 
-function gadget:CommandFallback(unitID, unitDefID, teamID, cmdID, cmdParams, cmdOptions)
+function gadget:AllowCommand(unitID, unitDefID, teamID, cmdID, cmdParams, cmdOptions)
 	if cmdID == CMD_RETREAT then
-		--Spring.Echo("GOT A RETREAT COMMAND!")
+		if not unitsWhichCanRetreat[teamID][unitID] then
+			return false
+		end
 		DestroyUnit(unitID, false, true) --unitID, self-d, reclaimed (ie silent)
+		return true
 	end
+	return true
 end
 
 function gadget:UnitDestroyed(unitID, unitDefID, teamID)

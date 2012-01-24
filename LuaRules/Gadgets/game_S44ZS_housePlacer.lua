@@ -15,8 +15,6 @@ if (not gadgetHandler:IsSyncedCode()) then
 	return false
 end
 
-local modOptions = Spring.GetModOptions()
-
 VFS.Include("LuaRules/lib/spawnFunctions.lua")
 
 -- function localisations

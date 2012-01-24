@@ -60,7 +60,7 @@ local function teamWonObjRound(teamID)
 	if teamID ~= GG.zombieTeamID then
 		local teamUnits = GetTeamUnits(teamID)
 		for i=1, #teamUnits do
-			GG.Retreat(teamUnits[i])
+			GG.Retreat(teamUnits[i], true)
 		end
 	else
 		side = "zom"
@@ -112,7 +112,7 @@ function gadget:GameFrame(n)
 			if teamID ~= GG.zombieTeamID then
 				local teamObj = objectiveTeams[teamID]
 				Spring.SendMessageToTeam(teamID, "\255\255\001\001CIVILIAN RESCUE! Rescue "..CIVILIAN_SAVE_GOAL.." civilians!") --todo: replace with dynamic
-				Spring.SendMessage("\255\001\255\001Objective phase is "..(OBJECTIVE_PHASE_LENGTH/30).." SECONDS!")
+				Spring.SendMessageToTeam(teamID, "\255\001\255\001Objective phase is "..(OBJECTIVE_PHASE_LENGTH/30).." SECONDS!")
 			end
 		end
 	end
