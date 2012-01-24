@@ -74,7 +74,7 @@ end
 local function RescuedCheck(civUnitID, civX, civZ, rescuerTeamID)
 	local safeX, _, safeZ = Spring.GetTeamStartPosition(rescuerTeamID)
 	if Distance(civX, civZ, safeX, safeZ, "civilians.lua") < SAFE_DIST and GetUnitTransporter(civUnitID) == nil then
-		GG.Retreat(civUnitID)
+		GG.Retreat(civUnitID, true)
 		GG.Reward(rescuerTeamID, "civiliansave")
 	end
 end

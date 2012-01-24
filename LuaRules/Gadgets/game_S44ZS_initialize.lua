@@ -63,11 +63,19 @@ local function SetStartResources(teamID)
 end
 
 
-local function ShopModeSpawn(teams)
-	for i, teamID in ipairs(teams) do
-		if teamID ~= GAIA_TEAM_ID then
-			SpawnStartUnit(teamID)
+local function ShopModeSpawn(playerData)
+	local teamID = playerData.teamID
+	--do they have at least one unit in their table? 
+	if playerData.units[1] then
+		local unitData = playerData.units[1]
+		local unitName = unitData.name
+		local side = string.sub(unitName, 1, 3)
+		if string.sub(side, 1, 2) == "us" then
+			side = "us"
 		end
+		SpawnStartUnit(teamID, side)
+	else
+		SpawnStartUnit(teamID)
 	end
 end
 
@@ -162,6 +170,9 @@ function gadget:GameStart()
 				lowestNetWorthSeen = playerNetWorth
 			end
 		end
+		if shopMode == true then
+			ShopModeSpawn(playerData)
+		end
 	end
 	
 	if shopMode == false then
@@ -174,9 +185,7 @@ function gadget:GameStart()
 	
 	SpawnArmies()
 	
-	if shopMode == true then
-		ShopModeSpawn(teams)
-	end
+
 end
 
 else -- UNSYNCED

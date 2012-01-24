@@ -75,8 +75,13 @@ function unitSpawnRandomPos(unitname, x, z, message, count, teamID, delay)
 	return unitIDList
 end
 
-function SpawnStartUnit(teamID)
-	local startUnit = GetStartUnit(teamID)
+function SpawnStartUnit(teamID, side)
+	local startUnit
+	if side ~= nil then
+		startUnit = GetSideData(side)
+	else
+		startUnit = GetStartUnit(teamID)
+	end
 	if (startUnit and startUnit ~= "") then
 		-- spawn the specified start unit
 		local x,y,z = GetTeamStartPosition(teamID)
