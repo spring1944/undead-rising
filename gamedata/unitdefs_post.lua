@@ -71,11 +71,16 @@ for name, ud in pairs(UnitDefs) do
 		end
 	end
 	
-	if (ud.workertime and ud.maxvelocity and ud.name ~= "gbrcommando") then
+	if (ud.workertime and ud.maxvelocity and string.find(ud.name, "commando") == nil) then
 		ud["buildoptions"] = {"apminesign", "atminesign", "tankobstacle"}
 	end
-
 	ud.idleautoheal = 0.001
+	if (ud.customparams) then
+		if (ud.customparams.feartarget) then
+			ud.idleautoheal = 0.5
+		end
+	end
+
 	--end army save specific
 
 	--new sensor stuff!
@@ -164,7 +169,7 @@ for name, ud in pairs(UnitDefs) do
 			end
 		end
 		if (isInf == false) then
-			local acceptableUnit = (string.find(name, "sortie") == nil) and (string.find(name, "pontoon") == nil)
+			local acceptableUnit = (string.find(name, "sortie") == nil) and (string.find(name, "pontoon") == nil) and (string.find(name, "scout") == nil)
 			if acceptableUnit and side ~= "zo" and side ~= "ci" then
 				shopOptions[side][#shopOptions[side]+1] = name
 			end

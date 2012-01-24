@@ -85,7 +85,7 @@ local function ProcessUnits(unitTable, playerName)
 			local unitDefID = GetUnitDefID(unitID)
 			local unitDef = UnitDefs[unitDefID]
 			local unitName = unitDef.name
-			local ammo = UnitDefs[unitDefID].customParams.maxammo or -1
+			local ammo = GetUnitRulesParam(unitID, "ammo") or -1
 			local isShop = string.find(unitName, "shop")
 			--while zombie teams don't get their units recorded, I guess they could try to give zombies to human players, so we check to make sure those don't get recorded
 			local isZombie = string.find(unitName, "zom")

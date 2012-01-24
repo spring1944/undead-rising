@@ -28,6 +28,7 @@ local SetUnitHealth			= Spring.SetUnitHealth
 local SetUnitSensorRadius	= Spring.SetUnitSensorRadius
 local EditUnitCmdDesc		= Spring.EditUnitCmdDesc
 local FindUnitCmdDesc		= Spring.FindUnitCmdDesc
+local SetUnitRulesParam  = Spring.SetUnitRulesParam
 
 -- Variables
 local shopUnits = {}
@@ -58,6 +59,9 @@ function gadget:UnitCreated(unitID, unitDefID, teamID, builderID)
 			SetUnitSensorRadius(unitID, "airLos", 0)
 			SetUnitNoSelect(unitID, true)
 			SetUnitHealth(unitID, {paralyze = 100000})
+		end
+		if ud.customParams.maxammo then
+			SetUnitRulesParam(unitID, "ammo", ud.customParams.maxammo)
 		end
 	end
 end
