@@ -9,7 +9,9 @@
   collisionSize=1.5;
   coreThickness=0.00001;
   [customParams] {
-    damagetype=melee;
+    armor_penetration_1000m=40;
+    armor_penetration_100m=40;
+    damagetype=kinetic;
   }
   [damage] {
     default=1000;
