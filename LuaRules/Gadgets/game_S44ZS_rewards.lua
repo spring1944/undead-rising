@@ -31,6 +31,7 @@ local prizes = {
 	["wongame"] = params.PRIZE_OBJECTIVE_WIN, 
 	["humansgone"] = params.PRIZE_HUMANS_GONE,
 	["civiliansave"] = params.PRIZE_CIVILIAN_SAVE, 
+	["flagcontrol"] = params.PRIZE_FLAG_CONTROL,
 	["hotzonepurge"] = params.PRIZE_HOT_ZONE_PURGE,
 	["zombiekill"] = params.PRIZE_ZOMBIE_KILL,
 	["humankill"] = params.PRIZE_HUMAN_KILL,
@@ -63,6 +64,11 @@ function GG.Reward(teamID, achievement, bounty)
 					Spring.SendMessage("\255\255\001\001"..playerName.." has rescued "..pd.rescuedCivilians .." civvies!")
 				end
 				--Spring.Echo(saviorPlayerName, pd.rescuedCivilians)
+			elseif achievement == "flagcontrol" then
+				if pd.flagControlTime % 60 < 1 then
+					Spring.SendMessage("\255\255\001\001"..playerName.." has secured territory for "..pd.flagControlTime .." total seconds!")
+				end
+			else
 			end
 		else
 			Spring.Echo("BAD ACHIEVEMENT PARAM TO GG.Reward - "..achievement)

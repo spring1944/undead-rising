@@ -56,14 +56,6 @@ for name, ud in pairs(UnitDefs) do
 	end
 	
 	if (ud.customparams) then
-		if (not ud.customparams.flagcaprate) then
-			if (ud.customparams.flag or ud.weapons ~= nil) then
-				ud.customparams.flagcaprate = 1
-			end
-		end
-	end
-	
-	if (ud.customparams) then
 		if not ud.customparams.undead then
 			ud.crushresistance = 99999999		
 		else

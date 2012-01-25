@@ -1,0 +1,46 @@
+----------------------
+-------------Functions
+----------------------
+*GG.Retreat(num unitID, bool ignoreUnitPosition)
+--causes a unit to retreat from the battlefield and be saved in that player's data
+--this is specified in game_S44ZS_retreat.lua. the second argument is optional.
+
+
+*GG.Reward(num teamID, string achievement, num bounty)
+--Adds money to a player's account for accomplishing a task
+--(saving a civilian, killing a zombie, winning the game in various ways)
+--bounty is optional and will be set to 0 if not passed. 
+
+
+----------------------
+-------------Vars
+----------------------
+*GG.teamIDToPlayerName
+--just what it says. associative array style table linking teamIDs to playerNames.
+--for example, GG.teamIDToPlayerName[1] might equal "Bob"
+
+*GG.activeAccounts
+--an associative array linking player names to a variety of their data
+--including team ID (which flips to "inactive" when the team dies)
+--money, number of civilains saved, hotspots purged, time flags held.
+--example: GG.activeAccounts["Bob"] = {
+--	money = 500,
+--	units = {},
+--	savedCivilains = 3,
+--	purgedHotspots = 1,
+--	flagHoldTime = 50,
+}
+
+
+*GG.zombieTeamID
+--This is the team ID of the zombie player.
+
+*GG.flags
+--Holds a numeric array of all the flag positions. 
+--Example: GG.flags[1] = {
+--	unitID = 452,
+--	x = 500,
+--	y = -342,
+--}
+*GG.side
+--holds the side string for teams

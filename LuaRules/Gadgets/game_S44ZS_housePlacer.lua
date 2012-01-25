@@ -14,8 +14,9 @@ end
 if (not gadgetHandler:IsSyncedCode()) then
 	return false
 end
-
+VFS.Include("LuaRules/lib/easyMetal.lua")
 VFS.Include("LuaRules/lib/spawnFunctions.lua")
+VFS.Include("LuaRules/lib/tableToString.lua")
 
 -- function localisations
 -- Synced Read
@@ -29,7 +30,7 @@ local GetTeamInfo							=	Spring.GetTeamInfo
 -- Synced Ctrl
 local CreateFeature							=	Spring.CreateFeature
 local CreateUnit							=	Spring.CreateUnit
-
+local SetUnitAlwaysVisible					=	Spring.SetUnitAlwaysVisible
 -- constants
 
 local BLOCK_SIZE							=	64	-- size of map to check at once
@@ -38,6 +39,7 @@ local PROFILE_PATH							=	"maps/" .. string.sub(Game.mapName, 1, string.len(Gam
 
 local params = VFS.Include("LuaRules/header/sharedParams.lua")
 
+
 local GAIA_TEAM_ID							= Spring.GetGaiaTeamID()
 
 local HOUSE_FEATURE_CHECK_RADIUS			= params.HOUSE_FEATURE_CHECK_RADIUS
@@ -45,19 +47,14 @@ local CIV_SPAWN_WARNINGTIME					= params.CIV_SPAWN_WARNINGTIME
 local OBJECTIVE_PHASE_LENGTH				= params.OBJECTIVE_PHASE_LENGTH
 local SPAWN_BUFFER							= params.SPAWN_BUFFER
 
+local FLAG_HOLD_POSITIONS					= params.FLAG_HOLD_POSITIONS
+
 local ZOMBIE_COUNT 							= params.ZOMBIE_COUNT
 local CIVILIAN_COUNT 						= params.CIVILIAN_COUNT
 local RESPAWN_PERIOD						= params.RESPAWN_PERIOD
 
 -- variables
-local avgMetal								=	0	-- average metal per spot
-local totalMetal							=	0 -- total metal found
-local minMetalLimit 						=	0.5	-- minimum metal to place a flag at
-local numSpots								=	0 -- number of spots found
-local spots 								=	{} -- table of flag locations
-local onlyHouseSpots						=   {}
-local teamStartPos							=	{}
-local initFrame
+local spots 								=	{} -- table of house/flag locations
 
 local function randomHouse()
 	local newHouse
@@ -115,8 +112,9 @@ function gadget:GameFrame(n)
 		return
 	end
 	if n == 0 then
+		local teamStartPos = {}
 		for number, teamID in ipairs(Spring.GetTeamList()) do
-			if teamID ~= Spring.GetGaiaTeamID() then
+			if teamID ~= GAIA_TEAM_ID then
 				local x, _, z = Spring.GetTeamStartPosition(teamID)
 				--Spring.Echo("team"..tostring(teamID).."has a start position at "..tostring(x)..","..tostring(z))
 				teamStartPos[teamID] = {
@@ -132,34 +130,52 @@ function gadget:GameFrame(n)
 		end
 		if not VFS.FileExists(PROFILE_PATH) then
 			Spring.Echo("Map House Profile not found. Autogenerating house positions.")
-			for z = 0, Game.mapSizeZ, BLOCK_SIZE do
-				for x = 0, Game.mapSizeX, BLOCK_SIZE do
-					if GetGroundHeight(x,z) > 0 then
-						_, metal = GetGroundInfo(x, z)
-						if metal >= METAL_THRESHOLD then
-							local notNearTeamStartCount = 0
-							for teamID, pos in pairs(teamStartPos) do
-								--Spring.Echo("teamID, pos!", teamID, pos)
-								if Distance(x, z, pos.x, pos.z, "team startpos buffer") > SPAWN_BUFFER then
-									notNearTeamStartCount=notNearTeamStartCount+1
-								end
-							end
-
-							if notNearTeamStartCount == #teamStartPos+1 then --+1 because # doesn't count zero index
-								if #spots > 1 then
-									if Distance(spots[#spots].x, spots[#spots].z, x, z, "spot overlap check") > 100 then
-										spots[#spots + 1] = {x = x, z = z}
-										PlaceHouse(x, z)
-										numSpots = numSpots + 1
-									end
-								else
-									spots[#spots + 1] = {x = x, z = z}
-									PlaceHouse(x, z)
-									numSpots = numSpots + 1
-								end
-							end
-						end
+			spots = AnalyzeMetalMap()
+			local spotsToRemove = {}
+			for i=1, #spots do
+				local notNearTeamStartCount = 0
+				local sd = spots[i] --spot data
+				for teamID, pos in pairs(teamStartPos) do
+					--Spring.Echo("teamID, pos!", teamID, pos)
+					if Distance(pos.x, pos.z, sd.x, sd.z, "team startpos buffer") > SPAWN_BUFFER then
+						notNearTeamStartCount=notNearTeamStartCount+1
 					end
+				end
+
+				--+1 because # doesn't count zero index
+				if notNearTeamStartCount == #teamStartPos+1 then 
+					PlaceHouse(sd.x, sd.z)
+				else
+					table.insert(spotsToRemove, i)
+				end
+			end
+			
+			--yes this is gross (and super slow if there are bazillions of spots)
+			--and it'd be better to prevent them from being added to the 
+			--table in the first place, but I don't want to muck with easyMetal code.
+			
+			--the "-(i-1)" is so that the saved indicies are updated as the size of the spots 
+			--table changes due to previous removals.
+			for i=1, #spotsToRemove do
+				Spring.Echo("removing spot #", spotsToRemove[i], spots[spotsToRemove[i]-(i-1)])
+				Spring.Echo("from position", spots[spotsToRemove[i]-(i-1)].x, spots[spotsToRemove[i]-(i-1)].z)
+				table.remove(spots, spotsToRemove[i]-(i-1))
+			end
+			
+			local spawnedFlags = 0
+			while spawnedFlags < FLAG_HOLD_POSITIONS do
+				local flagSpot = math.random(1, #spots)
+				local sd = spots[flagSpot] --spot data
+				if sd.hasFlag ~= true then
+					local flagID = CreateUnit("flag", sd.x, GetGroundHeight(sd.x, sd.z), sd.z, 0, GAIA_TEAM_ID)
+					SetUnitAlwaysVisible(flagID, true)
+					sd.hasFlag = true
+					GG.flags[#GG.flags + 1] = {
+						unitID = flagID,
+						x = sd.x,
+						z = sd.z,
+					}
+					spawnedFlags = spawnedFlags + 1
 				end
 			end
 		else -- load the flag positions from profile

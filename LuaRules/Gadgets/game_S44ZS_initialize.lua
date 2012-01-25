@@ -52,10 +52,21 @@ local function calculateNetWorth(playerName)
 		local ud = UnitDefNames[unitName]
 		netWorth = netWorth + ud.metalCost
 	end
-return netWorth
-
+	return netWorth
 end
 
+local function findPoorestPlayer()
+	local lowestNetWorthSeen = MAX_MONEY + 1
+	local poorestPlayerTeamID = 1
+	for playerName, playerData in pairs(GG.activeAccounts) do
+		local playerNetWorth = calculateNetWorth(playerName)
+		if playerNetWorth < lowestNetWorthSeen then
+			poorestPlayerTeamID = playerData.teamID
+			lowestNetWorthSeen = playerNetWorth
+		end
+	end
+	return poorestPlayerTeamID
+end
 
 local function SetStartResources(teamID)
 	SetTeamResource(teamID, "es", LOGISTICS_RESERVE)
@@ -115,8 +126,10 @@ end
 
 function gadget:RecvLuaMsg(msg, playerID)
 	if string.sub(msg, 1, 4) == "tds:" then -- as in TrustedDataSource
-		local trustedPID = tonumber(string.sub(msg, 5))
-		SetGameRulesParam("trustedPID", trustedPID)
+		if GetGameRulesParam("trustedPID") == nil then -- hasn't already been set
+			local trustedPID = tonumber(string.sub(msg, 5))
+			SetGameRulesParam("trustedPID", trustedPID)
+		end
 	else
 		local trustedPID = GetGameRulesParam("trustedPID")
 		if playerID == trustedPID then
@@ -138,6 +151,7 @@ end
 
 function gadget:Initialize()
 	GG.activeAccounts = {}
+	GG.flags = {}
 	if modOptions.shop_mode == "1" then
 		SetGameRulesParam("shopmode", 1)
 	else
@@ -154,8 +168,8 @@ function gadget:GameStart()
 	GG.teamIDToPlayerName = {}
 	
 	--the player with the lowest net worth (army value + money in the bank) is always zombies
-	local poorestPlayerTeamID = 1
-	local lowestNetWorthSeen = MAX_MONEY + 1
+	local poorestPlayerTeamID = findPoorestPlayer()
+	Spring.Echo("poorest player is!", poorestPlayerTeamID)
 	local shopMode = (GetGameRulesParam("shopmode") == 1)
 	for playerName, playerData in pairs(GG.activeAccounts) do
 		local teamID = playerData.teamID
@@ -163,20 +177,12 @@ function gadget:GameStart()
 		local side = select(5, GetTeamInfo(teamID))
 		GG.teamSide[teamID] = side
 		GG.teamIDToPlayerName[teamID] = playerName
-		if shopMode == false then
-			local playerNetWorth = calculateNetWorth(playerName)
-			if playerNetWorth < lowestNetWorthSeen then
-				poorestPlayerTeamID = teamID
-				lowestNetWorthSeen = playerNetWorth
-			end
-		end
 		if shopMode == true then
 			ShopModeSpawn(playerData)
 		end
 	end
 	
 	if shopMode == false then
-		GG.zombieTeamID = 0
 		GG.zombieTeamID = poorestPlayerTeamID
 		SetGameRulesParam("zombieteam", poorestPlayerTeamID)
 	else
@@ -194,11 +200,13 @@ function gadget:Initialize()
 	local instanceName = Script.GetName()
 	local name, _, spec, teamID = Spring.GetPlayerInfo(localPID)
 	--Spring.Echo(name, spec, localPID)
-	
-	if (string.find(TRUSTED_NAMES, name, 1, true) == nil) or (spec == false) then
-		Spring.Echo("untrusted source of save info: "..name)
-	else
-		Spring.SendLuaRulesMsg("tds:"..localPID)
+	for i=1, #TRUSTED_NAMES do
+		local trustedName = TRUSTED_NAMES[i]
+		if (name == trustedName) and (spec == true) then
+			Spring.Echo("Found trusted data source: "..name.."!")
+			Spring.SendLuaRulesMsg("tds:"..localPID)
+			break
+		end
 	end
 end
 

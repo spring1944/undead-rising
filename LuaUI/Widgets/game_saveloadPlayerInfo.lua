@@ -219,8 +219,8 @@ function widget:Initialize()
 		--but this saves looping through the player table after sending it over to synced
 		-- and adding these things (they're for the various win conditions)
 		playerData.rescuedCivilians = 0
-		playerData.territoryControlTime = 0
-		playerData.destroyedHotzones = 0
+		playerData.flagControlTime = 0
+		playerData.purgedHotzones = 0
 		
 		--if anybody doesn't have units (but is not the zombie team), flip to shop mode
 		if #playerData.units == 0 and playerData.teamID ~= zombieTeamID then

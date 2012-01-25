@@ -1,18 +1,20 @@
 local modOptions = Spring.GetModOptions()
-local framesToSeconds = 30
-local framesToMinutes = 60*framesToSeconds
+local framesPerSecond = 30
+local framesPerMinute = 60*framesPerSecond
 
 --note, any typos in this file will crash pretty much everything.
 
 local params = {	
+	--NOTE: all of these times are stored in frames, so for printing stuff out they need to be
+	--converted back to seconds/minutes.
 	--how long does the objective period (before reinforcement wave) last?
-	OBJECTIVE_PHASE_LENGTH		= (tonumber(modOptions.objective_phase_length) or 10)*framesToMinutes,
+	OBJECTIVE_PHASE_LENGTH		= (tonumber(modOptions.objective_phase_length) or 10)*framesPerMinute,
 
 	--how often do new civilians/zombies spawn in?
-	RESPAWN_PERIOD				= (tonumber(modOptions.respawn_period) or 1)*framesToMinutes,
+	RESPAWN_PERIOD				= (tonumber(modOptions.respawn_period) or 1)*framesPerMinute,
 	
 	--how much advance warning do players get for civilain spawns?
-	CIV_SPAWN_WARNINGTIME		= ((tonumber(modOptions.respawn_period)*60) or 60)*framesToSeconds,
+	CIV_SPAWN_WARNINGTIME		= ((tonumber(modOptions.respawn_period)*60) or 60)*framesPerSecond,
 	
 	--how many zombies/civilians are spawned each RESPAWN_PERIOD?
 	ZOMBIE_COUNT 				= tonumber(modOptions.zombie_count) or 5,
@@ -28,10 +30,12 @@ local params = {
 		--#hot zones destroyed
 	HOT_ZONE_GOAL				= tonumber(modOptions.hot_zone_goal) or 10, 
 		--#seconds of control
-	FLAG_HOLD_GOAL				= tonumber(modOptions.flag_hold_goal) or 100, 
+	FLAG_HOLD_GOAL				= tonumber(modOptions.flag_hold_goal) or 360, 	
+		--number of flags to control on the map
+	FLAG_HOLD_POSITIONS			= tonumber(modOptions.flag_hold_positions) or 3,
 	
 	--how long does it take the objective winner's reinforcements to arrive?
-	REINFORCEMENT_DELAY			= (60)*framesToSeconds, --seconds
+	REINFORCEMENT_DELAY			= (60)*framesPerSecond, --seconds
 	
 	--corpse settings 
 		--what's the upper limit for infantry corpses spawned from a wrecked veh/tank
@@ -49,16 +53,18 @@ local params = {
 	PRIZE_HUMANS_GONE			= 3000,
 		--for completing various mini-goals (saved civvie, purged a hot zone, killed a zombie)
 	PRIZE_CIVILIAN_SAVE			= 200,
+	PRIZE_FLAG_CONTROL			= 170,
 	PRIZE_HOT_ZONE_PURGE		= 200,
 	PRIZE_ZOMBIE_KILL			= 100,
 	
+	FLAG_CONTROL_REWARD_INTERVAL = 10, --every X seconds of flag control a team will get the above reward
 		--zombie income settings
 	PRIZE_HUMAN_KILL			= 0, --zombies get a 'bounty' added to this value for killing human units
 	ZOM_BOUNTY_MULT				= 1, --which is unit metal cost * this mult
 	
 	--initialize values
 		--these are the names that are allowed to save/send account info
-	TRUSTED_NAMES				= "[S44]Nemo".." ".."[S44]Autohost".."[RD]Godde",
+	TRUSTED_NAMES				= {"[S44]Nemo", "[S44]Autohost", "[RD]Godde"},
 		--a player's logistics at the start of a game
 	LOGISTICS_RESERVE			= tonumber(modOptions.logistics_reserve) or 5000,
 	

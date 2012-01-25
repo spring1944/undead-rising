@@ -52,7 +52,7 @@ local retreatDesc = {
 function GG.Retreat(unitID, ignoreUnitPosition)
 	local unitTeam = GetUnitTeam(unitID)
 	if ignoreUnitPosition == true then
-		unitsWhichCanRetreat[teamID][unitID] = true
+		unitsWhichCanRetreat[unitTeam][unitID] = true
 	end
 		
 	GiveOrderToUnit(unitID, CMD_RETREAT, {}, {})

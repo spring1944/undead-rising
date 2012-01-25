@@ -35,17 +35,19 @@ local FLAG_HOLD_GOAL			= params.FLAG_HOLD_GOAL
 local OBJECTIVE_PHASE_LENGTH	= params.OBJECTIVE_PHASE_LENGTH --minutes
 local REINFORCEMENT_DELAY		= params.REINFORCEMENT_DELAY --seconds
 
+local GAIA_TEAM_ID				= Spring.GetGaiaTeamID()
+
 --[[
 1 = civilian rescue
 2 = hot zone purging
 3 = territory control
 ]]--
 
-local objectiveTeams = {[1] = {}, [2] = {}, [3] = {}}
+
 local objectiveText = {
-	[1] = "CIVILIAN RESCUE! Rescue "..CIVILIAN_SAVE_GOAL.." civilians!",
-	[2] = "HOTZONE PURGE! Destroy "..HOT_ZONE_GOAL.." hot zones!",
-	[3] = "SECURE TERRITORY! Hold the flags for "..FLAG_HOLD_GOAL.." seconds!"
+	[1] = "\255\255\001\001CIVILIAN RESCUE! Rescue "..CIVILIAN_SAVE_GOAL.." civilians!",
+	[3] = "\255\255\001\001HOTZONE PURGE! Destroy "..HOT_ZONE_GOAL.." hot zones!",
+	[2] = "\255\255\001\001SECURE TERRITORY! Hold the flags for "..FLAG_HOLD_GOAL.." combined seconds!"
 }
 
 local function teamWonObjRound(teamID)
@@ -65,38 +67,45 @@ local function teamWonObjRound(teamID)
 	else
 		side = "zom"
 	end
-
 	
 	--now spawn the huge flood of reinforcements
 	local x, _, z = GetTeamStartPosition(teamID)
 	for unitName, number in pairs(reinforcementDefs[side]) do
-		Spring.Echo(unitName)
 		--takes unitname, x, z, message, count, teamID, delay (in seconds!)
 		unitSpawnRandomPos(unitName, x, z, false, number, teamID, REINFORCEMENT_DELAY)
 	end
 end
 
-local function checkCivilianSaveObj()
-	local successfulTeams = {}
-	for playerName, playerData in pairs(GG.activeAccounts) do
-		--Spring.Echo(playerName, playerData.rescuedCivilians)
-		if playerData.rescuedCivilians >= CIVILIAN_SAVE_GOAL then
-			--Spring.Echo("successful team!", playerName)
-			table.insert(successfulTeams, playerData.teamID)
-		end
+local function checkFlagControlObj(playerData)
+	if playerData.flagControlTime >= FLAG_HOLD_GOAL then
+		return true
 	end
-	return successfulTeams
+	return false
 end
+
+local function checkHotspotPurgeObj(playerData)
+	if playerData.purgedHotzones >= HOT_ZONE_GOAL then
+		return true
+	end
+	return false
+end
+
+local function checkCivilianSaveObj(playerData)
+	if playerData.rescuedCivilians >= CIVILIAN_SAVE_GOAL then
+		return true
+	end
+	return false
+end
+
+local objectiveCheckFunctions = {checkCivilianSaveObj, checkFlagControlObj, checkHotzonePurgeObj}
 
 function gadget:GameStart()
 --assign teams to win conditions
 --make sure they know? >_>
 	--Spring.Echo(table.save(reinforcementDefs))
-	local teams = GetTeamList()
-	for i=1, #teams do
-		local teamID = teams[i]
-		local teamObj = math.random(1, 1) --replace this with #objectiveTeams once others are done
-		table.insert(objectiveTeams[teamObj], teamID)
+	for playerName, playerData in pairs(GG.activeAccounts) do
+		playerData.objectiveID = math.random(1, 2) --replace this with 3 once others are done
+		Spring.Echo(playerName, playerData.objectiveID)
 	end
 end
 
@@ -109,22 +118,35 @@ function gadget:GameFrame(n)
 		local teams = GetTeamList()
 		for i=1, #teams do
 			local teamID = teams[i]
-			if teamID ~= GG.zombieTeamID then
-				local teamObj = objectiveTeams[teamID]
-				Spring.SendMessageToTeam(teamID, "\255\255\001\001CIVILIAN RESCUE! Rescue "..CIVILIAN_SAVE_GOAL.." civilians!") --todo: replace with dynamic
-				Spring.SendMessageToTeam(teamID, "\255\001\255\001Objective phase is "..(OBJECTIVE_PHASE_LENGTH/30).." SECONDS!")
+			if teamID ~= GG.zombieTeamID and teamID ~= GAIA_TEAM_ID then
+				local playerName = GG.teamIDToPlayerName[teamID]
+				local pd = GG.activeAccounts[playerName]
+				Spring.SendMessageToTeam(teamID, objectiveText[pd.objectiveID])
+				Spring.SendMessageToTeam(teamID, "\255\001\255\001Objective phase is "..(OBJECTIVE_PHASE_LENGTH/(60*30)).." minutes!")
 			end
 		end
 	end
 	if n == OBJECTIVE_PHASE_LENGTH then
-		local civWinningTeams = checkCivilianSaveObj()
-		if #civWinningTeams ~= 1 then --either both teams got the objective, or none did.
+		local successfulTeams = {}
+		for playerName, playerData in pairs(GG.activeAccounts) do
+			if playerData.teamID ~= GG.zombieTeamID then
+				local objID = playerData.objectiveID
+				local teamObjCheck = objectiveCheckFunctions[objID]
+				Spring.Echo(playerName, objID, teamObjCheck)
+				local achievedObj = teamObjCheck(playerData)
+				Spring.Echo(playerName, achievedObj)
+				if achievedObj == true then
+					table.insert(successfulTeams, playerData.teamID)
+				end
+			end
+		end
+		if #successfulTeams ~= 1 then --either both teams got the objective, or neither did.
 			teamWonObjRound(GG.zombieTeamID)
 			Spring.SendMessage("\255\255\001\001ZOMBIE TEAM HAS WON THE GAME! HORDE ARRIVING IN "..(REINFORCEMENT_DELAY/30).." SECONDS!")
 		else
-			local winningTeamID = civWinningTeams[1]
+			local winningTeamID = successfulTeams[1]
 			teamWonObjRound(winningTeamID)
-			Spring.SendMessage("\255\255\001\001"..GG.teamIDToPlayerName[winningTeamID].." has won the objective round! Reinforcements arriving in "..REINFORCEMENT_DELAY.." seconds.")
+			Spring.SendMessage("\255\255\001\001"..GG.teamIDToPlayerName[winningTeamID].." has won the objective round! Reinforcements arriving in "..(REINFORCEMENT_DELAY/30).." seconds.")
 		end
 	end
 end
