@@ -1,7 +1,7 @@
 function gadget:GetInfo()
 	return {
-		name      = "Flag Manager",
-		desc      = "Populates maps with flags and handles control",
+		name      = "S44ZS flag manager!",
+		desc      = "Populates maps with flags and handles control - for zombies!",
 		author    = "FLOZi, AnalyseMetalMap algorithm from easymetal.lua by CarRepairer, hacked with an axe by Nemo for UD",
 		date      = "31st July 2008",
 		license   = "GNU GPL v2",

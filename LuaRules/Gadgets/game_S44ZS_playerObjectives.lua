@@ -43,7 +43,7 @@ local GAIA_TEAM_ID				= Spring.GetGaiaTeamID()
 3 = territory control
 ]]--
 
-
+local shortObjText = {"Civilian rescue!", "Hold flags!", "Purge hotzones!"}
 local objectiveText = {
 	[1] = "\255\255\001\001CIVILIAN RESCUE! Rescue "..CIVILIAN_SAVE_GOAL.." civilians!",
 	[3] = "\255\255\001\001HOTZONE PURGE! Destroy "..HOT_ZONE_GOAL.." hot zones!",
@@ -105,7 +105,10 @@ function gadget:GameStart()
 	--Spring.Echo(table.save(reinforcementDefs))
 	for playerName, playerData in pairs(GG.activeAccounts) do
 		playerData.objectiveID = math.random(1, 2) --replace this with 3 once others are done
-		Spring.Echo(playerName, playerData.objectiveID)
+		local teamID = playerData.teamID
+		local x, y, z = GetTeamStartPosition(teamID)
+		Spring.MarkerAddPoint(x, y, z, shortObjText[playerData.objectiveID])
+		--Spring.Echo(playerName, playerData.objectiveID)
 	end
 end
 
@@ -132,9 +135,9 @@ function gadget:GameFrame(n)
 			if playerData.teamID ~= GG.zombieTeamID then
 				local objID = playerData.objectiveID
 				local teamObjCheck = objectiveCheckFunctions[objID]
-				Spring.Echo(playerName, objID, teamObjCheck)
+				--Spring.Echo(playerName, objID, teamObjCheck)
 				local achievedObj = teamObjCheck(playerData)
-				Spring.Echo(playerName, achievedObj)
+				--Spring.Echo(playerName, achievedObj)
 				if achievedObj == true then
 					table.insert(successfulTeams, playerData.teamID)
 				end
