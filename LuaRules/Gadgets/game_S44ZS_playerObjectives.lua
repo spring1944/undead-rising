@@ -107,7 +107,9 @@ function gadget:GameStart()
 		playerData.objectiveID = math.random(1, 2) --replace this with 3 once others are done
 		local teamID = playerData.teamID
 		local x, y, z = GetTeamStartPosition(teamID)
-		Spring.MarkerAddPoint(x, y, z, shortObjText[playerData.objectiveID])
+		if teamID ~= GG.zombieTeamID then
+			Spring.MarkerAddPoint(x, y, z, shortObjText[playerData.objectiveID])
+		end
 		--Spring.Echo(playerName, playerData.objectiveID)
 	end
 end

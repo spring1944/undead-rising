@@ -64,7 +64,7 @@ function GG.Reward(teamID, achievement, bounty)
 					Spring.SendMessage("\255\255\001\001"..playerName.." has rescued "..pd.rescuedCivilians .." civvies!")
 				end
 				--Spring.Echo(saviorPlayerName, pd.rescuedCivilians)
-			elseif achievement == "flagcontrol" then
+			elseif achievement == "flagcontrol" and pd.teamID ~= GG.zombieTeamID then
 				if pd.flagControlTime % 60 < 1 then
 					Spring.SendMessage("\255\255\001\001"..playerName.." has secured territory for "..pd.flagControlTime .." total seconds!")
 				end
