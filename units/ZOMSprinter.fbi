@@ -23,7 +23,7 @@
   maxVelocity=2;
   maxWaterDepth=10;
   movementClass=KBOT_Infantry;
-  noChaseCategory=FLAG AIR MINE;
+  noChaseCategory=FLAG AIR;
   objectName=GERRifle.S3O;
   repairable=0;
   seismicSignature=0;
