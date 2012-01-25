@@ -167,9 +167,6 @@ function gadget:GameStart()
 	GG.teamSide = {}
 	GG.teamIDToPlayerName = {}
 	
-	--the player with the lowest net worth (army value + money in the bank) is always zombies
-	local poorestPlayerTeamID = findPoorestPlayer()
-	Spring.Echo("poorest player is!", poorestPlayerTeamID)
 	local shopMode = (GetGameRulesParam("shopmode") == 1)
 	for playerName, playerData in pairs(GG.activeAccounts) do
 		local teamID = playerData.teamID
@@ -183,6 +180,8 @@ function gadget:GameStart()
 	end
 	
 	if shopMode == false then
+		--the player with the lowest net worth (army value + money in the bank) is always zombies
+		local poorestPlayerTeamID = findPoorestPlayer()
 		GG.zombieTeamID = poorestPlayerTeamID
 		SetGameRulesParam("zombieteam", poorestPlayerTeamID)
 	else
