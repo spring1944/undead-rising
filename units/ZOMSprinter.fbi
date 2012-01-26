@@ -15,12 +15,12 @@
 	undead=1;
 	canjump=1;
   }
-  explodeAs=zomDeathSmoke;
+  explodeAs=zomDeath;
   footprintX=1;
   footprintZ=1;
   iconType=zombiea;
   mass=50;
-  maxDamage=150;
+  maxDamage=200;
   maxSlope=15;
   maxVelocity=2;
   maxWaterDepth=10;

@@ -30,7 +30,7 @@ local params = {
 		--#hot zones destroyed
 	HOT_ZONE_GOAL				= tonumber(modOptions.hot_zone_goal) or 10, 
 		--#seconds of control
-	FLAG_HOLD_GOAL				= tonumber(modOptions.flag_hold_goal) or 360, 	
+	FLAG_HOLD_GOAL				= tonumber(modOptions.flag_hold_goal) or 480, 	
 		--number of flags to control on the map
 	FLAG_HOLD_POSITIONS			= tonumber(modOptions.flag_hold_positions) or 3,
 	
