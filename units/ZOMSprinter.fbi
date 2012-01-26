@@ -18,7 +18,7 @@
   footprintZ=1;
   iconType=zombiea;
   mass=50;
-  maxDamage=250;
+  maxDamage=350;
   maxSlope=15;
   maxVelocity=2;
   maxWaterDepth=10;

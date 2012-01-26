@@ -1,3 +1,4 @@
+
 function gadget:GetInfo()
 	return {
 		name      = "House placer",
@@ -16,7 +17,6 @@ if (not gadgetHandler:IsSyncedCode()) then
 end
 VFS.Include("LuaRules/lib/easyMetal.lua")
 VFS.Include("LuaRules/lib/spawnFunctions.lua")
-VFS.Include("LuaRules/lib/tableToString.lua")
 
 -- function localisations
 -- Synced Read
@@ -157,8 +157,8 @@ function gadget:GameFrame(n)
 			--the "-(i-1)" is so that the saved indicies are updated as the size of the spots 
 			--table changes due to previous removals.
 			for i=1, #spotsToRemove do
-				Spring.Echo("removing spot #", spotsToRemove[i], spots[spotsToRemove[i]-(i-1)])
-				Spring.Echo("from position", spots[spotsToRemove[i]-(i-1)].x, spots[spotsToRemove[i]-(i-1)].z)
+				--Spring.Echo("removing spot #", spotsToRemove[i], spots[spotsToRemove[i]-(i-1)])
+				--Spring.Echo("from position", spots[spotsToRemove[i]-(i-1)].x, spots[spotsToRemove[i]-(i-1)].z)
 				table.remove(spots, spotsToRemove[i]-(i-1))
 			end
 			

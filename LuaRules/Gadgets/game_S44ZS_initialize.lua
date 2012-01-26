@@ -57,7 +57,7 @@ end
 
 local function findPoorestPlayer()
 	local lowestNetWorthSeen = MAX_MONEY + 1
-	local poorestPlayerTeamID = 1
+	local poorestPlayerTeamID = 0
 	for playerName, playerData in pairs(GG.activeAccounts) do
 		local playerNetWorth = calculateNetWorth(playerName)
 		if playerNetWorth < lowestNetWorthSeen then

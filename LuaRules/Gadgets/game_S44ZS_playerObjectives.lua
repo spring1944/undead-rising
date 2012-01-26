@@ -21,8 +21,12 @@ VFS.Include("LuaRules/lib/spawnFunctions.lua")
 
 local reinforcementDefs = VFS.Include("LuaRules/Configs/reinforcementDefs.lua")
 
+local SendMessage				=	Spring.SendMessage
+local SendMessageToTeam			=	Spring.SendMessageToTeam
+local MarkerAddPoint			=	Spring.MarkerAddPoint
 local SetGameRulesParam			=	Spring.SetGameRulesParam
 
+local GetGameRulesParam			=	Spring.GetGameRulesParam
 local GetTeamStartPosition		=	Spring.GetTeamStartPosition
 local GetTeamList				= 	Spring.GetTeamList
 local GetTeamUnits				=	Spring.GetTeamUnits
@@ -71,8 +75,8 @@ local function teamWonObjRound(teamID)
 	--now spawn the huge flood of reinforcements
 	local x, _, z = GetTeamStartPosition(teamID)
 	for unitName, number in pairs(reinforcementDefs[side]) do
-		--takes unitname, x, z, message, count, teamID, delay (in seconds!)
-		unitSpawnRandomPos(unitName, x, z, false, number, teamID, REINFORCEMENT_DELAY)
+		--takes unitname, x, z, message, count, teamID, delay (in frames!), spawn piecemeal or not
+		unitSpawnRandomPos(unitName, x, z, false, number, teamID, REINFORCEMENT_DELAY, true) --units arrive piecemeal over the course of the delay period.
 	end
 end
 
@@ -100,22 +104,14 @@ end
 local objectiveCheckFunctions = {checkCivilianSaveObj, checkFlagControlObj, checkHotzonePurgeObj}
 
 function gadget:GameStart()
---assign teams to win conditions
---make sure they know? >_>
-	--Spring.Echo(table.save(reinforcementDefs))
+	--assign each team an objective
 	for playerName, playerData in pairs(GG.activeAccounts) do
-		playerData.objectiveID = math.random(1, 2) --replace this with 3 once others are done
-		local teamID = playerData.teamID
-		local x, y, z = GetTeamStartPosition(teamID)
-		if teamID ~= GG.zombieTeamID then
-			Spring.MarkerAddPoint(x, y, z, shortObjText[playerData.objectiveID])
-		end
-		--Spring.Echo(playerName, playerData.objectiveID)
+		playerData.objectiveID = math.random(1, 2) --replace this with 3 once last one is done
 	end
 end
 
 function gadget:GameFrame(n)
-	if Spring.GetGameRulesParam("shopmode") == 1 then
+	if GetGameRulesParam("shopmode") == 1 then
 		gadgetHandler:RemoveGadget()
 		return
 	end
@@ -125,9 +121,11 @@ function gadget:GameFrame(n)
 			local teamID = teams[i]
 			if teamID ~= GG.zombieTeamID and teamID ~= GAIA_TEAM_ID then
 				local playerName = GG.teamIDToPlayerName[teamID]
-				local pd = GG.activeAccounts[playerName]
-				Spring.SendMessageToTeam(teamID, objectiveText[pd.objectiveID])
-				Spring.SendMessageToTeam(teamID, "\255\001\255\001Objective phase is "..(OBJECTIVE_PHASE_LENGTH/(60*30)).." minutes!")
+				local pd = GG.activeAccounts[playerName] --playerData
+				local x, y, z = GetTeamStartPosition(teamID)
+				MarkerAddPoint(x, y, z, shortObjText[pd.objectiveID])
+				SendMessageToTeam(teamID, objectiveText[pd.objectiveID])
+				SendMessageToTeam(teamID, "\255\001\255\001Objective phase is "..(OBJECTIVE_PHASE_LENGTH/(60*30)).." minutes!")
 			end
 		end
 	end
@@ -147,11 +145,11 @@ function gadget:GameFrame(n)
 		end
 		if #successfulTeams ~= 1 then --either both teams got the objective, or neither did.
 			teamWonObjRound(GG.zombieTeamID)
-			Spring.SendMessage("\255\255\001\001ZOMBIE TEAM HAS WON THE GAME! HORDE ARRIVING IN "..(REINFORCEMENT_DELAY/30).." SECONDS!")
+			SendMessage("\255\255\001\001ZOMBIE TEAM HAS WON THE GAME! HORDE ARRIVING IN "..(REINFORCEMENT_DELAY/30).." SECONDS!")
 		else
 			local winningTeamID = successfulTeams[1]
 			teamWonObjRound(winningTeamID)
-			Spring.SendMessage("\255\255\001\001"..GG.teamIDToPlayerName[winningTeamID].." has won the objective round! Reinforcements arriving in "..(REINFORCEMENT_DELAY/30).." seconds.")
+			SendMessage("\255\255\001\001"..GG.teamIDToPlayerName[winningTeamID].." has won the objective round! Reinforcements arriving in "..(REINFORCEMENT_DELAY/30).." seconds.")
 		end
 	end
 end

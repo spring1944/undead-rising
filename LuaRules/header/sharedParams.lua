@@ -37,6 +37,9 @@ local params = {
 	--how long does it take the objective winner's reinforcements to arrive?
 	REINFORCEMENT_DELAY			= (60)*framesPerSecond, --seconds
 	
+	--how long does a team that remains on map to contend for epic win have to stay before they're allowed to retreat?
+	NO_RETREAT_PERIOD			= (2)*framesPerMinute, --minutes
+
 	--corpse settings 
 		--what's the upper limit for infantry corpses spawned from a wrecked veh/tank
 		--min possible is 0 atm

@@ -35,7 +35,11 @@ function GetStartUnit(teamID)
 	return startUnit
 end
 
-function unitSpawnRandomPos(unitname, x, z, message, count, teamID, delay)
+function unitSpawnRandomPos(unitname, x, z, message, count, teamID, delay, gradualSpawn)
+	Spring.Echo(unitname, "gradualSpawn?", gradualSpawn)
+	if gradualSpawn == nil then
+		gradualSpawn = false
+	end
 	local featureCheckRadius = 50
 	local searchLimit = 500
 	local SPREAD_MULT = 1.01
@@ -54,8 +58,14 @@ function unitSpawnRandomPos(unitname, x, z, message, count, teamID, delay)
 		local featureClear = Spring.GetFeaturesInCylinder(xspwn, zspwn, featureCheckRadius)
 		if #featureClear == 0 and IsPositionValid(udid, xspwn, zspwn) == true then
 			if delay > 0 then
-				GG.Delay.DelayCall(Spring.MarkerErasePosition, {x, y, z}, delay)
-				GG.Delay.DelayCall(CreateUnit, {unitname, xspwn, yspwn, zspwn, 0, teamID}, delay)
+				local spawnDelay = delay
+				if gradualSpawn == true then
+					--gradually spawn this over the course of the delay period
+					spawnDelay = (delay/count) * counter
+					Spring.Echo(unitname, "spawn delay:", spawnDelay)
+				end
+				GG.Delay.DelayCall(Spring.MarkerErasePosition, {x, y, z}, spawnDelay)
+				GG.Delay.DelayCall(CreateUnit, {unitname, xspwn, yspwn, zspwn, 0, teamID}, spawnDelay)
 			else
 				local unitID = CreateUnit(unitname, xspwn, yspwn, zspwn, 0, teamID)	
 				table.insert(unitIDList, unitID)

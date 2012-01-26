@@ -128,26 +128,13 @@ local options = {
 	desc   = "Sets experimental balance options.",
 	type   = 'section',
   },
-  
-  	{
-		key = "civilian_income",
-		name = "Command Income per tick per civilian protected",
-		desc = "Changes the amount you recieve for protecting civilians (key = 'civilian_income')",
-	    type   = "number",
-		def    = 3,
-		min    = 0,
-		max    = 5,
-		section= '1balance',
-		step   = 0.25,
-	},
-	
 	
 	{
 		key = "zombie_count",
 		name = "how many zombies spawn in at once?",
 		desc = "how many zombies spawn in at once?? (key = 'zombie_count')",
 	    type   = "number",
-		def    = 5,
+		def    = 10,
 		min    = 0,
 		max    = 64,
 		section= '1balance',
