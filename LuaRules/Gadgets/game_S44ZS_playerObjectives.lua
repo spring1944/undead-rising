@@ -30,6 +30,7 @@ local GetGameRulesParam			=	Spring.GetGameRulesParam
 local GetTeamStartPosition		=	Spring.GetTeamStartPosition
 local GetTeamList				= 	Spring.GetTeamList
 local GetTeamUnits				=	Spring.GetTeamUnits
+local GetUnitDefID				=	Spring.GetUnitDefID
 
 local params = VFS.Include("LuaRules/header/sharedParams.lua")
 
@@ -66,7 +67,12 @@ local function teamWonObjRound(teamID)
 	if teamID ~= GG.zombieTeamID then
 		local teamUnits = GetTeamUnits(teamID)
 		for i=1, #teamUnits do
-			GG.Retreat(teamUnits[i], true)
+			local unitID = teamUnits[i]
+			local unitDefID = GetUnitDefID(unitID)
+			local ud = UnitDefs[unitDefID]
+			if not ud.customParams.flag then
+				GG.Retreat(teamUnits[i], true)
+			end
 		end
 	else
 		side = "zom"
