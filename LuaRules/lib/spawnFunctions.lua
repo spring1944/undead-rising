@@ -36,7 +36,6 @@ function GetStartUnit(teamID)
 end
 
 function unitSpawnRandomPos(unitname, x, z, message, count, teamID, delay, gradualSpawn)
-	Spring.Echo(unitname, "gradualSpawn?", gradualSpawn)
 	if gradualSpawn == nil then
 		gradualSpawn = false
 	end

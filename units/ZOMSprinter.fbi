@@ -13,12 +13,14 @@
   corpse=zombieCorpse;
   [customParams] {
 	undead=1;
+	canjump=1;
   }
+  explodeAs=zomDeathSmoke;
   footprintX=1;
   footprintZ=1;
   iconType=zombiea;
   mass=50;
-  maxDamage=350;
+  maxDamage=150;
   maxSlope=15;
   maxVelocity=2;
   maxWaterDepth=10;
