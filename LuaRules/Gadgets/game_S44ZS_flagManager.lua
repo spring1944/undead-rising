@@ -173,14 +173,16 @@ function gadget:GameFrame(n)
 end
 
 function gadget:UnitCreated(unitID, unitDefID, unitTeam, builderID)
-	local ud = UnitDefs[unitDefID]
-	local cp = ud.customParams
+	if unitTeam ~= GAIA_TEAM_ID then
+		local ud = UnitDefs[unitDefID]
+		local cp = ud.customParams
 
-	local flagCapRate = cp.flagcaprate or 1
-	local flagDefendRate = cp.flagdefendrate or flagCapRate
-	if flagCapRate and not (cp.flag) then
-		flagCappers[unitID] = (CAP_MULT * flagCapRate)
-		flagDefenders[unitID] = (DEF_MULT * flagCapRate)
+		local flagCapRate = cp.flagcaprate or 1
+		local flagDefendRate = cp.flagdefendrate or flagCapRate
+		if flagCapRate and not (cp.flag) then
+			flagCappers[unitID] = (CAP_MULT * flagCapRate)
+			flagDefenders[unitID] = (DEF_MULT * flagCapRate)
+		end
 	end
 
 end

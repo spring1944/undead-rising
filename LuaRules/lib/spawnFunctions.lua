@@ -61,7 +61,6 @@ function unitSpawnRandomPos(unitname, x, z, message, count, teamID, delay, gradu
 				if gradualSpawn == true then
 					--gradually spawn this over the course of the delay period
 					spawnDelay = (delay/count) * counter
-					Spring.Echo(unitname, "spawn delay:", spawnDelay)
 				end
 				GG.Delay.DelayCall(Spring.MarkerErasePosition, {x, y, z}, spawnDelay)
 				GG.Delay.DelayCall(CreateUnit, {unitname, xspwn, yspwn, zspwn, 0, teamID}, spawnDelay)

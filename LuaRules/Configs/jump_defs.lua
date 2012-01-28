@@ -26,7 +26,7 @@ local name
   
 jumpCategory = { 
 	baseclass = {
-		range = 300, height = 50, speed = 8,  reload = 10,  aaShootMe = true, delay = 0, cobscript = true,rotateMidAir = true},	
+		range = 350, height = 50, speed = 8,  reload = 5,  aaShootMe = true, delay = 0, cobscript = true,rotateMidAir = true},	
 	-- category containining only optional tags for testing error code only.
 	-- iammissingstuff ={
 	-- 	reload	= 10, aaShootMe	= false, },	
@@ -56,13 +56,6 @@ jumpClassGroups = {
 --		reload
 ------------------------------------------------------------------------------------------------------------------------------------------------	
 overCategory = {
-	is_chimera = { cobscript = false},
-	is_catapult = { cobscript = false},
-	is_osiris = { cobscript = false},
-	cl_mistlynx = { cobscript = false},
-	cl_nova = { cobscript = false},
-	cl_summoner = { cobscript = false},
-	cl_shadowcat = { cobscript = false},
  --[[noruas = {
     reload = 0,  },
 	

@@ -31,6 +31,7 @@ local GetTeamInfo							=	Spring.GetTeamInfo
 local CreateFeature							=	Spring.CreateFeature
 local CreateUnit							=	Spring.CreateUnit
 local SetUnitAlwaysVisible					=	Spring.SetUnitAlwaysVisible
+local SetUnitNoSelect						=	Spring.SetUnitNoSelect
 -- constants
 
 local BLOCK_SIZE							=	64	-- size of map to check at once
@@ -169,6 +170,7 @@ function gadget:GameFrame(n)
 				if sd.hasFlag ~= true then
 					local flagID = CreateUnit("flag", sd.x, GetGroundHeight(sd.x, sd.z), sd.z, 0, GAIA_TEAM_ID)
 					SetUnitAlwaysVisible(flagID, true)
+					SetUnitNoSelect(unitID, true)
 					sd.hasFlag = true
 					GG.flags[#GG.flags + 1] = {
 						unitID = flagID,
