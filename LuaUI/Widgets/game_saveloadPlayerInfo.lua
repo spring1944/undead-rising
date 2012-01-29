@@ -69,6 +69,8 @@ local okToSave = true
 --this is what lets tables be written to strings or files and read back again
 VFS.Include("LuaUI/lib/tableToString.lua")
 
+local morphDefs = VFS.Include("LuaRules/Configs/morph_defs.lua")
+
 ----------------------------------------------------------------
 --local functions
 ----------------------------------------------------------------
@@ -85,6 +87,15 @@ local function ProcessUnits(unitTable, playerName)
 			local unitDefID = GetUnitDefID(unitID)
 			local unitDef = UnitDefs[unitDefID]
 			local unitName = unitDef.name
+			if string.find(unitName, "stationary") or string.find(unitName, "sandbag") then
+				Spring.Echo("deployed unit!", unitName, unitDefID)
+				Spring.Echo(morphDefs[unitName])
+				unitName = morphDefs[unitName].into
+				local morphUD = UnitDefNames[unitName]
+				local morphMaxHealth = morphUD.health
+				local healthMult = health/maxHealth
+				health = healthMult * morphMaxHealth
+			end
 			local ammo = GetUnitRulesParam(unitID, "ammo") or -1
 			local isShop = string.find(unitName, "shop")
 			--while zombie teams don't get their units recorded, I guess they could try to give zombies to human players, so we check to make sure those don't get recorded
@@ -172,6 +183,7 @@ end
 ----------------------------------------------------------------
 
 function widget:Initialize()
+	Spring.Echo("Morph defs!", morphDefs)
 	--checks to see if we're good to go (right game, right info source)
 	if (Game.modShortName ~= REQUIRED_MOD_SHORT_NAME) then
 		okToSave = false

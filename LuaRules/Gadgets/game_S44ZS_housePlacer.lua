@@ -170,7 +170,7 @@ function gadget:GameFrame(n)
 				if sd.hasFlag ~= true then
 					local flagID = CreateUnit("flag", sd.x, GetGroundHeight(sd.x, sd.z), sd.z, 0, GAIA_TEAM_ID)
 					SetUnitAlwaysVisible(flagID, true)
-					SetUnitNoSelect(unitID, true)
+					SetUnitNoSelect(flagID, true)
 					sd.hasFlag = true
 					GG.flags[#GG.flags + 1] = {
 						unitID = flagID,
