@@ -44,15 +44,15 @@ local GAIA_TEAM_ID				= Spring.GetGaiaTeamID()
 
 --[[
 1 = civilian rescue
-2 = hot zone purging
-3 = territory control
+2 = territory control
+3 = hot zone purging
 ]]--
 
 local shortObjText = {"Civilian rescue!", "Hold flags!", "Purge hotzones!"}
 local objectiveText = {
 	[1] = "\255\255\001\001CIVILIAN RESCUE! Rescue "..CIVILIAN_SAVE_GOAL.." civilians!",
-	[3] = "\255\255\001\001HOTZONE PURGE! Destroy "..HOT_ZONE_GOAL.." hot zones!",
-	[2] = "\255\255\001\001SECURE TERRITORY! Hold the flags for "..FLAG_HOLD_GOAL.." combined seconds!"
+	[2] = "\255\255\001\001SECURE TERRITORY! Hold the flags for "..FLAG_HOLD_GOAL.." combined seconds!",
+	[3] = "\255\255\001\001HOTZONE PURGE! Destroy "..HOT_ZONE_GOAL.." hot zones!"
 }
 
 local function teamWonObjRound(teamID)
@@ -112,7 +112,7 @@ local objectiveCheckFunctions = {checkCivilianSaveObj, checkFlagControlObj, chec
 function gadget:GameStart()
 	--assign each team an objective
 	for playerName, playerData in pairs(GG.activeAccounts) do
-		playerData.objectiveID = math.random(1, 2) --replace this with 3 once last one is done
+		playerData.objectiveID = math.random(1, 3) --replace this with 3 once last one is done
 	end
 end
 

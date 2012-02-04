@@ -4,7 +4,6 @@ local GetTeamStartPosition		=	Spring.GetTeamStartPosition
 local GetSideData				=	Spring.GetSideData
 local GetTeamInfo				=	Spring.GetTeamInfo
 local GetTeamUnits				=	Spring.GetTeamUnits
---local GetGameRulesParam			=	Spring.GetGameRulesParam
 
 local CreateUnit				=	Spring.CreateUnit
 local GAIA_TEAM_ID				=	Spring.GetGaiaTeamID()

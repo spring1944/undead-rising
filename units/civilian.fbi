@@ -9,7 +9,7 @@
   buildCostMetal=50;
   buildTime=50;
   canMove=1;
-  category=MINE CIVILIAN; //so units don't chase them
+  category=MINE CIVILIAN; //MINE so units don't chase them
   corpse=civilian_dead;
   [customParams] {
  	civilian=1;

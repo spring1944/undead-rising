@@ -53,7 +53,6 @@ function GG.Reward(teamID, achievement, bounty)
 	--TODO make this big and shiny in the middle of the screen
 	if pd.teamID ~= "inactive" then		
 		if prizes[achievement] ~= nil then
-			--Spring.Echo("Reward for "..achievement.." for team "..teamID.."!")
 			local currentMoney = Spring.GetTeamResources(teamID, "metal")
 			Spring.SetTeamResource(teamID, "m", currentMoney + prizes[achievement] + bounty)
 			
@@ -63,12 +62,13 @@ function GG.Reward(teamID, achievement, bounty)
 				if pd.rescuedCivilians % 10 < 1 then
 					Spring.SendMessage("\255\255\001\001"..playerName.." has rescued "..pd.rescuedCivilians .." civvies!")
 				end
-				--Spring.Echo(saviorPlayerName, pd.rescuedCivilians)
 			elseif achievement == "flagcontrol" and pd.teamID ~= GG.zombieTeamID then
 				if pd.flagControlTime % 60 < 1 then
 					Spring.SendMessage("\255\255\001\001"..playerName.." has secured territory for "..pd.flagControlTime .." total seconds!")
 				end
-			else
+			elseif achievement == "hotzonepurge" then
+				pd.purgedHotzones = pd.purgedHotzones + 1 or 1
+				Spring.SendMessage("\255\255\001\001"..playerName.." has purged "..pd.purgedHotzones.." hot zones!")
 			end
 		else
 			Spring.Echo("BAD ACHIEVEMENT PARAM TO GG.Reward - "..achievement)

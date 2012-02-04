@@ -80,92 +80,96 @@ end
 function gadget:GameFrame(n)
 	-- FLAG CONTROL
 	if n == 1 then
-		for i=1, #GG.flags do
-			flagCapStatuses[GG.flags[i].unitID] = {}
+		for i=1, #GG.houseSpots do
+			if GG.houseSpots[i].hasFlag then
+				flagCapStatuses[GG.houseSpots[i].unitID] = {}
+			end
 		end
 	end
 	if n % 30 == 5 then -- every second with a 5 frame offset
-		for spotNum = 1, #GG.flags do
-			local fd = GG.flags[spotNum]
-			local flagID = fd.unitID
-			local flagTeamID = GetUnitTeam(fd.unitID)
-			local cappers = flagCappers
-			local defenders = flagDefenders
-			local defendTotal = 0
-			local unitsAtFlag = GetUnitsInCylinder(fd.x, fd.z, FLAG_RADIUS)
-			
-			--Reward flag owners
-			if flagTeamID ~= GAIA_TEAM_ID then
-				local ownerName = GG.teamIDToPlayerName[flagTeamID]
-				local pd = GG.activeAccounts[ownerName] --playerData
-				pd.flagControlTime = pd.flagControlTime + 1
-				--Spring.Echo(ownerName.." has "..pd.flagControlTime.." control points!")
-				if pd.flagControlTime % FLAG_CONTROL_REWARD_INTERVAL < 1 then
-					GG.Reward(flagTeamID, "flagcontrol")
-				end
-			end
-			
-			--Handle capturing/defending
-			if #unitsAtFlag == 1 then -- Only the flag, no other units
-				for teamID = 0, #teams-1 do
-					if teamID ~= flagTeamID then
-						if (flagCapStatuses[flagID][teamID] or 0) > 0 then
-							flagCapStatuses[flagID][teamID] = flagCapStatuses[flagID][teamID] - FLAG_REGEN
-							SetUnitRulesParam(flagID, "cap" .. tostring(teamID), flagCapStatuses[flagID][teamID], {public = true})
-						end
+		for spotNum = 1, #GG.houseSpots do
+			if GG.houseSpots[spotNum].hasFlag then
+				local fd = GG.houseSpots[spotNum]
+				local flagID = fd.unitID
+				local flagTeamID = GetUnitTeam(fd.unitID)
+				local cappers = flagCappers
+				local defenders = flagDefenders
+				local defendTotal = 0
+				local unitsAtFlag = GetUnitsInCylinder(fd.x, fd.z, FLAG_RADIUS)
+				
+				--Reward flag owners
+				if flagTeamID ~= GAIA_TEAM_ID then
+					local ownerName = GG.teamIDToPlayerName[flagTeamID]
+					local pd = GG.activeAccounts[ownerName] --playerData
+					pd.flagControlTime = pd.flagControlTime + 1
+					--Spring.Echo(ownerName.." has "..pd.flagControlTime.." control points!")
+					if pd.flagControlTime % FLAG_CONTROL_REWARD_INTERVAL < 1 then
+						GG.Reward(flagTeamID, "flagcontrol")
 					end
 				end
-			else -- Attackers or defenders (or both) present
-				for i = 1, #unitsAtFlag do
-					local unitID = unitsAtFlag[i]
-					local unitTeamID = GetUnitTeam(unitID)
-					if defenders[unitID] and (unitTeamID == flagTeamID) then
-						--Spring.Echo("Defender at flag " .. flagID .. " Value is: " .. defenders[unitID])
-						defendTotal = defendTotal + defenders[unitID]
-					end
-					if cappers[unitID] and (unitTeamID ~= flagTeamID) then
-							--Spring.Echo("Capper at flag " .. flagID .. " Value is: " .. cappers[unitID])
-							flagCapStatuses[flagID][unitTeamID] = (flagCapStatuses[flagID][unitTeamID] or 0) + cappers[unitID]
-					end
-				end
-				for j = 1, #teams do
-					teamID = teams[j]
-					local playerName = GG.teamIDToPlayerName[teamID]
-					if teamID ~= flagTeamID then
-						if (flagCapStatuses[flagID][teamID] or 0) > 0 then
-							--Spring.Echo("Capping: " .. flagCapStatuses[flagID][teamID] .. " Defending: " .. defendTotal)
-							flagCapStatuses[flagID][teamID] = flagCapStatuses[flagID][teamID] - defendTotal
-							if flagCapStatuses[flagID][teamID] < 0 then
-								flagCapStatuses[flagID][teamID] = 0
+				
+				--Handle capturing/defending
+				if #unitsAtFlag == 1 then -- Only the flag, no other units
+					for teamID = 0, #teams-1 do
+						if teamID ~= flagTeamID then
+							if (flagCapStatuses[flagID][teamID] or 0) > 0 then
+								flagCapStatuses[flagID][teamID] = flagCapStatuses[flagID][teamID] - FLAG_REGEN
+								SetUnitRulesParam(flagID, "cap" .. tostring(teamID), flagCapStatuses[flagID][teamID], {public = true})
 							end
-							SetUnitRulesParam(flagID, "cap" .. tostring(teamID), flagCapStatuses[flagID][teamID], {public = true})
 						end
 					end
-					if (flagCapStatuses[flagID][teamID] or 0) > CAP_THRESHOLD and teamID ~= flagTeamID then
-						-- Flag is ready to change team
-						if (flagTeamID == GAIA_TEAM_ID) then
-							-- Neutral flag being capped
-							--Spring.SendMessageToTeam(teamID, flagData.tooltip .. " Captured!")
-							TransferUnit(flagID, teamID, false)
-							SetTeamRulesParam(teamID, "Flags", (GetTeamRulesParam(teamID, "Flags") or 0) + 1, {public = true})
-						else
-							-- Team flag being neutralised
-							--Spring.SendMessageToTeam(teamID, flagData.tooltip .. " Neutralised!")
-							TransferUnit(flagID, GAIA_TEAM_ID, false)
-							SetTeamRulesParam(teamID, "Flags", (GetTeamRulesParam(teamID, "Flags") or 0) - 1, {public = true})
+				else -- Attackers or defenders (or both) present
+					for i = 1, #unitsAtFlag do
+						local unitID = unitsAtFlag[i]
+						local unitTeamID = GetUnitTeam(unitID)
+						if defenders[unitID] and (unitTeamID == flagTeamID) then
+							--Spring.Echo("Defender at flag " .. flagID .. " Value is: " .. defenders[unitID])
+							defendTotal = defendTotal + defenders[unitID]
 						end
-						-- Perform any flag specific behaviours
-						FlagSpecialBehaviour(flagID, flagTeamID, teamID)
-						-- Turn flag back on
-						GiveOrderToUnit(flagID, CMD.ONOFF, {1}, {})
-						-- Flag has changed team, reset capping statuses
-						for cleanTeamID = 0, #teams-1 do
-							flagCapStatuses[flagID][cleanTeamID] = 0
-							SetUnitRulesParam(flagID, "cap" .. tostring(cleanTeamID), 0, {public = true})
+						if cappers[unitID] and (unitTeamID ~= flagTeamID) then
+								--Spring.Echo("Capper at flag " .. flagID .. " Value is: " .. cappers[unitID])
+								flagCapStatuses[flagID][unitTeamID] = (flagCapStatuses[flagID][unitTeamID] or 0) + cappers[unitID]
 						end
 					end
-					-- cleanup defenders
-					flagCapStatuses[flagID][flagTeamID] = 0
+					for j = 1, #teams do
+						teamID = teams[j]
+						local playerName = GG.teamIDToPlayerName[teamID]
+						if teamID ~= flagTeamID then
+							if (flagCapStatuses[flagID][teamID] or 0) > 0 then
+								--Spring.Echo("Capping: " .. flagCapStatuses[flagID][teamID] .. " Defending: " .. defendTotal)
+								flagCapStatuses[flagID][teamID] = flagCapStatuses[flagID][teamID] - defendTotal
+								if flagCapStatuses[flagID][teamID] < 0 then
+									flagCapStatuses[flagID][teamID] = 0
+								end
+								SetUnitRulesParam(flagID, "cap" .. tostring(teamID), flagCapStatuses[flagID][teamID], {public = true})
+							end
+						end
+						if (flagCapStatuses[flagID][teamID] or 0) > CAP_THRESHOLD and teamID ~= flagTeamID then
+							-- Flag is ready to change team
+							if (flagTeamID == GAIA_TEAM_ID) then
+								-- Neutral flag being capped
+								--Spring.SendMessageToTeam(teamID, flagData.tooltip .. " Captured!")
+								TransferUnit(flagID, teamID, false)
+								SetTeamRulesParam(teamID, "Flags", (GetTeamRulesParam(teamID, "Flags") or 0) + 1, {public = true})
+							else
+								-- Team flag being neutralised
+								--Spring.SendMessageToTeam(teamID, flagData.tooltip .. " Neutralised!")
+								TransferUnit(flagID, GAIA_TEAM_ID, false)
+								SetTeamRulesParam(teamID, "Flags", (GetTeamRulesParam(teamID, "Flags") or 0) - 1, {public = true})
+							end
+							-- Perform any flag specific behaviours
+							FlagSpecialBehaviour(flagID, flagTeamID, teamID)
+							-- Turn flag back on
+							GiveOrderToUnit(flagID, CMD.ONOFF, {1}, {})
+							-- Flag has changed team, reset capping statuses
+							for cleanTeamID = 0, #teams-1 do
+								flagCapStatuses[flagID][cleanTeamID] = 0
+								SetUnitRulesParam(flagID, "cap" .. tostring(cleanTeamID), 0, {public = true})
+							end
+						end
+						-- cleanup defenders
+						flagCapStatuses[flagID][flagTeamID] = 0
+					end
 				end
 			end
 		end

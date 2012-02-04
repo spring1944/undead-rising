@@ -1,0 +1,29 @@
+[unitinfo] {
+  unitname=S44Farmhouse3;
+  name=S44Farmhouse3;
+  description=House;
+  buildCostEnergy=0;
+  buildCostMetal=15;
+  buildTime=15;
+  category=BUILDING;
+  corpse=S44Farmhouse1_Destroyed;
+  [customParams] {
+	hiddenbuilding=1;
+    dontCount=1;
+	house=1;
+  }
+  footprintX=3;
+  footprintZ=3;
+  maxDamage=5000;
+  maxSlope=20;
+  maxWaterDepth=50;
+  objectName=S44Farmhouse3.S3O;
+  [sfxtypes] {
+  }
+  script=null.cob;
+  showNanoFrame=0;
+  sightDistance=0;
+  smoothAnim=0;
+  stealth=1;
+  yardmap=o;
+}

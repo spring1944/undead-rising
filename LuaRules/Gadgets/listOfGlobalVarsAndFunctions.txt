@@ -1,12 +1,12 @@
 ----------------------
 -------------Functions
 ----------------------
-*GG.Retreat(num unitID, bool ignoreUnitPosition)
+GG.Retreat(num unitID, bool ignoreUnitPosition)
 --causes a unit to retreat from the battlefield and be saved in that player's data
 --this is specified in game_S44ZS_retreat.lua. the second argument is optional.
 
 
-*GG.Reward(num teamID, string achievement, num bounty)
+GG.Reward(num teamID, string achievement, num bounty)
 --Adds money to a player's account for accomplishing a task
 --(saving a civilian, killing a zombie, winning the game in various ways)
 --bounty is optional and will be set to 0 if not passed. 
@@ -15,32 +15,47 @@
 ----------------------
 -------------Vars
 ----------------------
-*GG.teamIDToPlayerName
+GG.teamIDToPlayerName
 --just what it says. associative array style table linking teamIDs to playerNames.
---for example, GG.teamIDToPlayerName[1] might equal "Bob"
+--Example value: GG.teamIDToPlayerName[1] might equal "Bob"
 
-*GG.activeAccounts
+GG.activeAccounts
 --an associative array linking player names to a variety of their data
 --including team ID (which flips to "inactive" when the team dies)
 --money, number of civilains saved, hotspots purged, time flags held.
---example: GG.activeAccounts["Bob"] = {
+--Initialized by: game_S44ZS_initialize.lua.
+--Updated by: rewards.lua, flagManager, moneyHandler
+--Read by: game_S44ZS_end.lua, playerObjectives
+--Example value: GG.activeAccounts["Bob"] = {
 --	money = 500,
 --	units = {},
---	savedCivilains = 3,
+--	savedCivilians = 3,
 --	purgedHotspots = 1,
 --	flagHoldTime = 50,
 }
 
 
-*GG.zombieTeamID
+GG.zombieTeamID
 --This is the team ID of the zombie player.
+--example: GG.zombieTeamID = 2
 
-*GG.flags
---Holds a numeric array of all the flag positions. 
---Example: GG.flags[1] = {
---	unitID = 452,
+GG.houseSpots
+--Holds an sequential numeric array of all the house positions. 
+--Initialized by: housePlacer.
+--Updated by: objectiveSpawner.
+--Read by: flagManager and objectiveSpawner.
+--Example value: GG.houseSpots[1] = {
 --	x = 500,
 --	y = -342,
+--	--if the spot has a flag, then it 
+--	--will have a hasFlag attribute and a unitID attribute
+--	hasFlag = true,
+--	unitID = 452,
+--	--if the spot is a HOT ZONE (ie where zombies spawn) then
+--	--it will have  
+--	hotZone = true,
+--	hotZoneHouseCount = 4, --updated on unitDestroyed
 --}
-*GG.side
+GG.teamSide
 --holds the side string for teams
+--Example value: GG.teamSide[1] = "ger"

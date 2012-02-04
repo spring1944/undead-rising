@@ -1,8 +1,10 @@
 //Farmhouse #1
 
 [S44Farmhouse1]
-	{
+{
+	name=S44Farmhouse1;
 	world=allworld;
+	name=S44Farmhouse1;
 	description=Farmhouse;
 	category=Rural;
 	object=S44Farmhouse1.S3O;
@@ -23,10 +25,14 @@
 	//flammable=1;
 	upright=1;
 	metal=1;
+	[customParams]
+	{
+		house=1;
 	}
+}
 
 [S44Farmhouse1_Destroyed]
-	{
+{
 	world=allworld;
 	description=Destroyed Farmhouse;
 	category=Rural;
@@ -46,17 +52,18 @@
 	BuildingGroundDecalSizeY=5;
 	upright=1;
 	metal=1;
-	}
+}
 
 //Farmhouse #2 -- Alluminum roof
 
 [S44Farmhouse2]
-	{
+{
+	name=S44Farmhouse2;
 	world=allworld;
 	description=Farmhouse;
 	category=Rural;
 	object=S44Farmhouse2.S3O;
-	//featuredead=S44Farmhouse2_Destroyed;
+	featuredead=S44Farmhouse1_Destroyed;
 	footprintx=5;
 	footprintz=5;
 	height=5;
@@ -73,17 +80,22 @@
 	//flammable=1;
 	upright=1;
 	metal=1;
+	[customParams]
+	{
+		house=1;
 	}
+}
 
 //Farmhouse #3; two story
 
 [S44Farmhouse3]
-	{
+{
+	name=S44Farmhouse3;
 	world=allworld;
 	description=Farmhouse;
 	category=Rural;
 	object=S44Farmhouse3.S3O;
-	//featuredead=S44Farmhouse3_Destroyed;
+	featuredead=S44Farmhouse1_Destroyed;
 	footprintx=4;
 	footprintz=4;
 	height=5;
@@ -100,17 +112,22 @@
 	//flammable=1;
 	upright=1;
 	metal=1;
+	[customParams]
+	{
+		house=1;
 	}
+}
 
 
 //Barn #1
 [S44Barn1]
-	{
+{
+	name=S44Barn1;
 	world=allworld;
 	description=Barn;
 	category=Rural;
 	object=S44Barn1.S3O;
-	//featuredead=S44Barn1_Destroyed;
+	featuredead=S44Farmhouse1_Destroyed;
 	footprintx=6;
 	footprintz=5;
 	height=5;
@@ -127,13 +144,19 @@
 	//flammable=1;
 	upright=1;
 	metal=1;
+	[customParams]
+	{
+		house=1;
 	}
+}
 
 //Old crappy farmhouses
 
 [OldFarmhouse1]
-	{
+{
+	name=OldFarmhouse1;
 	world=allworld;
+	name=OldFarmhouse1;
 	description=Farmhouse;
 	category=Rural;
 	object=OldFarmhouse1.S3O;
@@ -154,7 +177,11 @@
 	//flammable=1;
 	upright=1;
 	metal=1;
+	[customParams]
+	{
+		house=1;
 	}
+}
 
 [OldFarmhouse1_Destroyed]
 	{
@@ -180,8 +207,10 @@
 	}
 
 [OldFarmhouse2]
-	{
+{
+	name=OldFarmhouse2;
 	world=allworld;
+	name=OldFarmhouse2;
 	description=Farmhouse;
 	category=Rural;
 	object=OldFarmhouse2.S3O;
@@ -201,8 +230,12 @@
 	BuildingGroundDecalSizeY=5;
 	//flammable=1;
 	upright=1;
-	metal=1;	
+	metal=1;
+	[customParams]
+	{
+		house=1;
 	}
+}
 
 [OldFarmhouse2_Destroyed]
 	{
@@ -228,7 +261,8 @@
 	}
 
 [OldFarmhouse3]
-	{
+{
+	name=OldFarmhouse3;
 	world=allworld;
 	description=Farmhouse;
 	category=Rural;
@@ -250,7 +284,11 @@
 	//flammable=1;
 	upright=1;
 	metal=1;
+	[customParams]
+	{
+		house=1;
 	}
+}
 
 [OldFarmhouse3_Destroyed]
 	{
@@ -276,7 +314,8 @@
 	}
 
 [OldFarmhouse4]
-	{
+{
+	name=OldFarmhouse4;
 	world=allworld;
 	description=Farmhouse;
 	category=Rural;
@@ -298,7 +337,11 @@
 	//flammable=1;
 	upright=1;
 	metal=1;
+	[customParams]
+	{
+		house=1;
 	}
+}
 
 [OldFarmhouse4_Destroyed]
 	{

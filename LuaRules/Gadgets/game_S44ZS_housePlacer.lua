@@ -15,8 +15,13 @@ end
 if (not gadgetHandler:IsSyncedCode()) then
 	return false
 end
+
+--Library includes!
+--easymetal library for finding metal spots on the map.
 VFS.Include("LuaRules/lib/easyMetal.lua")
+--spawn function library, used here for its Distance function
 VFS.Include("LuaRules/lib/spawnFunctions.lua")
+
 
 -- function localisations
 -- Synced Read
@@ -34,8 +39,6 @@ local SetUnitAlwaysVisible					=	Spring.SetUnitAlwaysVisible
 local SetUnitNoSelect						=	Spring.SetUnitNoSelect
 -- constants
 
-local BLOCK_SIZE							=	64	-- size of map to check at once
-local METAL_THRESHOLD						=	1 -- Handy for creating profiles, set to just less than the lowest metal spot you want to include. ALWAYS REVERT TO 1
 local PROFILE_PATH							=	"maps/" .. string.sub(Game.mapName, 1, string.len(Game.mapName) - 4) .. "_profile.lua"
 
 local params = VFS.Include("LuaRules/header/sharedParams.lua")
@@ -44,15 +47,11 @@ local params = VFS.Include("LuaRules/header/sharedParams.lua")
 local GAIA_TEAM_ID							= Spring.GetGaiaTeamID()
 
 local HOUSE_FEATURE_CHECK_RADIUS			= params.HOUSE_FEATURE_CHECK_RADIUS
-local CIV_SPAWN_WARNINGTIME					= params.CIV_SPAWN_WARNINGTIME
-local OBJECTIVE_PHASE_LENGTH				= params.OBJECTIVE_PHASE_LENGTH
+local HSR									= params.HOUSE_SPOT_RADIUS
+
 local SPAWN_BUFFER							= params.SPAWN_BUFFER
 
 local FLAG_HOLD_POSITIONS					= params.FLAG_HOLD_POSITIONS
-
-local ZOMBIE_COUNT 							= params.ZOMBIE_COUNT
-local CIVILIAN_COUNT 						= params.CIVILIAN_COUNT
-local RESPAWN_PERIOD						= params.RESPAWN_PERIOD
 
 -- variables
 local spots 								=	{} -- table of house/flag locations
@@ -85,8 +84,8 @@ local function PlaceHouse(spotX, spotZ)
 	for num, featureID in pairs(Spring.GetFeaturesInCylinder(spotX, spotZ, HOUSE_FEATURE_CHECK_RADIUS)) do
 		local fdid = Spring.GetFeatureDefID(featureID)
 		local fd = FeatureDefs[fdid]
-		local civHouse = (fd.tooltip == "Farmhouse" or fd.tooltip == "Barn")
-		if civHouse ~= true then
+		local civHouse = (fd.customParams.house)
+		if civHouse == nil then
 			Spring.DestroyFeature(featureID)
 		end
 	end
@@ -95,10 +94,11 @@ local function PlaceHouse(spotX, spotZ)
 	end
 	
 	local otherHouseSpots = {
-		[0] = {x = spotX - 150, z = spotZ + 150}, 
-		[1] = {x = spotX + 150, z = spotZ - 150}, 
-		[2] = {x = spotX + 150, z = spotZ + 150}, 
-		[3] = {x = spotX - 150, z = spotZ - 150}, 
+		--HSR = HOUSE_SPAWN_RADIUS, from sharedParams.lua
+		[0] = {x = spotX - HSR, z = spotZ + HSR}, 
+		[1] = {x = spotX + HSR, z = spotZ - HSR}, 
+		[2] = {x = spotX + HSR, z = spotZ + HSR}, 
+		[3] = {x = spotX - HSR, z = spotZ - HSR}, 
 	}
 	for num, pos in ipairs(otherHouseSpots) do
 		if IsPositionValid(udid, pos.x, pos.z) then
@@ -117,7 +117,6 @@ function gadget:GameFrame(n)
 		for number, teamID in ipairs(Spring.GetTeamList()) do
 			if teamID ~= GAIA_TEAM_ID then
 				local x, _, z = Spring.GetTeamStartPosition(teamID)
-				--Spring.Echo("team"..tostring(teamID).."has a start position at "..tostring(x)..","..tostring(z))
 				teamStartPos[teamID] = {
 				x = x,
 				z = z,
@@ -131,19 +130,20 @@ function gadget:GameFrame(n)
 		end
 		if not VFS.FileExists(PROFILE_PATH) then
 			Spring.Echo("Map House Profile not found. Autogenerating house positions.")
+			--analyze metal map from easyMetal library, yields a table of metal spots
 			spots = AnalyzeMetalMap()
 			local spotsToRemove = {}
 			for i=1, #spots do
 				local notNearTeamStartCount = 0
 				local sd = spots[i] --spot data
 				for teamID, pos in pairs(teamStartPos) do
-					--Spring.Echo("teamID, pos!", teamID, pos)
+					--Distance from spawnFunctions library, just the 2d distance.
 					if Distance(pos.x, pos.z, sd.x, sd.z, "team startpos buffer") > SPAWN_BUFFER then
 						notNearTeamStartCount=notNearTeamStartCount+1
 					end
 				end
 
-				--+1 because # doesn't count zero index
+				-- +1 because # doesn't count zero index
 				if notNearTeamStartCount == #teamStartPos+1 then 
 					PlaceHouse(sd.x, sd.z)
 				else
@@ -158,10 +158,9 @@ function gadget:GameFrame(n)
 			--the "-(i-1)" is so that the saved indicies are updated as the size of the spots 
 			--table changes due to previous removals.
 			for i=1, #spotsToRemove do
-				--Spring.Echo("removing spot #", spotsToRemove[i], spots[spotsToRemove[i]-(i-1)])
-				--Spring.Echo("from position", spots[spotsToRemove[i]-(i-1)].x, spots[spotsToRemove[i]-(i-1)].z)
 				table.remove(spots, spotsToRemove[i]-(i-1))
 			end
+
 			
 			local spawnedFlags = 0
 			while spawnedFlags < FLAG_HOLD_POSITIONS do
@@ -172,11 +171,7 @@ function gadget:GameFrame(n)
 					SetUnitAlwaysVisible(flagID, true)
 					SetUnitNoSelect(flagID, true)
 					sd.hasFlag = true
-					GG.flags[#GG.flags + 1] = {
-						unitID = flagID,
-						x = sd.x,
-						z = sd.z,
-					}
+					sd.unitID = flagID
 					spawnedFlags = spawnedFlags + 1
 				end
 			end
@@ -187,18 +182,8 @@ function gadget:GameFrame(n)
 				PlaceHouse(spot)
 			end
 		end
-	end
-	--civilian and zombie periodical spawn
-	--unitSpawnRandomPos(unitName, x, z, message, number to spawn, teamID, delay-in-frames)
-	if n % RESPAWN_PERIOD < 0.1 and n < OBJECTIVE_PHASE_LENGTH then
-		local warningTimeInSeconds = CIV_SPAWN_WARNINGTIME/30
-		local civMessage = "Civilians coming out of hiding in "..warningTimeInSeconds.." seconds!"
-		local civSpawnSpot = math.random(1, #spots)
-		local civx, civz = spots[civSpawnSpot].x, spots[civSpawnSpot].z
-		unitSpawnRandomPos("civilian", civx, civz, civMessage, CIVILIAN_COUNT, GAIA_TEAM_ID, CIV_SPAWN_WARNINGTIME)
-		
-		local zomSpawnSpot = math.random(1, #spots)
-		local zomx, zomz = spots[zomSpawnSpot].x, spots[zomSpawnSpot].z
-		unitSpawnRandomPos("zomsprinter", zomx, zomz, false, ZOMBIE_COUNT, GG.zombieTeamID, 0)
+		--point the global houseSpots table to spots.
+		GG.houseSpots = spots
+		gadgetHandler:RemoveGadget()
 	end
 end

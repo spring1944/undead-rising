@@ -1,0 +1,29 @@
+[unitinfo] {
+  unitname=OldFarmhouse2;
+  name=OldFarmhouse2;
+  description=House;
+  buildCostEnergy=0;
+  buildCostMetal=15;
+  buildTime=15;
+  category=BUILDING;
+  corpse=OldFarmhouse2_Destroyed;
+  [customParams] {
+	hiddenbuilding=1;
+    dontCount=1;
+	house=1;
+  }
+  footprintX=3;
+  footprintZ=3;
+  maxDamage=5000;
+  maxSlope=20;
+  maxWaterDepth=50;
+  objectName=OldFarmhouse2.S3O;
+  [sfxtypes] {
+  }
+  script=null.cob;
+  showNanoFrame=0;
+  sightDistance=0;
+  smoothAnim=0;
+  stealth=1;
+  yardmap=o;
+}

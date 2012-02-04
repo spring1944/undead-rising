@@ -28,7 +28,7 @@ local params = {
 		--# civilians saved
 	CIVILIAN_SAVE_GOAL			= tonumber(modOptions.civilian_goal) or 50, 
 		--#hot zones destroyed
-	HOT_ZONE_GOAL				= tonumber(modOptions.hot_zone_goal) or 10, 
+	HOT_ZONE_GOAL				= tonumber(modOptions.hot_zone_goal) or 8, 
 		--#seconds of control
 	FLAG_HOLD_GOAL				= tonumber(modOptions.flag_hold_goal) or 480, 	
 		--number of flags to control on the map
@@ -57,7 +57,7 @@ local params = {
 		--for completing various mini-goals (saved civvie, purged a hot zone, killed a zombie)
 	PRIZE_CIVILIAN_SAVE			= 200,
 	PRIZE_FLAG_CONTROL			= 170,
-	PRIZE_HOT_ZONE_PURGE		= 200,
+	PRIZE_HOT_ZONE_PURGE		= 2000,
 	PRIZE_ZOMBIE_KILL			= 100,
 	
 	FLAG_CONTROL_REWARD_INTERVAL = 10, --every X seconds of flag control a team will get the above reward
@@ -81,7 +81,9 @@ local params = {
 	CIV_TEAM_FEAR_DURATION		= 15,
 	
 	--for house placer - probably don't need to touch unless something seems borked
-	HOUSE_FEATURE_CHECK_RADIUS	= 300,	
+	HOUSE_FEATURE_CHECK_RADIUS	= 300,
+		--how far away from the center spot coordinates houses can be spawned
+	HOUSE_SPOT_RADIUS			= 150,
 		--the minimum distance any house cluster will be from a team start point.
 	SPAWN_BUFFER				= 800,
 	

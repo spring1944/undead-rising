@@ -151,7 +151,7 @@ end
 
 function gadget:Initialize()
 	GG.activeAccounts = {}
-	GG.flags = {}
+	GG.houseSpots = {}
 	if modOptions.shop_mode == "1" then
 		SetGameRulesParam("shopmode", 1)
 	else

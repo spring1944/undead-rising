@@ -34,7 +34,6 @@ local DestroyUnit			=	Spring.DestroyUnit
 local InsertUnitCmdDesc		=	Spring.InsertUnitCmdDesc
 local RemoveUnitCmdDesc		=	Spring.RemoveUnitCmdDesc
 
-VFS.Include("LuaRules/header/S44_commandIDs.lua")
 local params = VFS.Include("LuaRules/header/sharedParams.lua")
 
 --variables
@@ -49,6 +48,8 @@ local NO_RETREAT_PERIOD_END		= NO_RETREAT_PERIOD_START + NO_RETREAT_PERIOD
 
 local RETREAT_CHECK_INTERVAL	= 2 --seconds
 
+--assign a CMDID to the retreat command
+local CMD_RETREAT				= GG.CustomCommands.GetCmdID("CMD_RETREAT")
 
 local retreatDesc = {
 	name	= "Retreat",
@@ -62,8 +63,7 @@ function GG.Retreat(unitID, ignoreUnitPosition)
 	local unitTeam = GetUnitTeam(unitID)
 	if ignoreUnitPosition == true then
 		unitsWhichCanRetreat[unitTeam][unitID] = true
-	end
-		
+	end		
 	GiveOrderToUnit(unitID, CMD_RETREAT, {}, {})
 end
 
@@ -95,7 +95,6 @@ function gadget:UnitDestroyed(unitID, unitDefID, teamID, attackerID)
 		if attackerID == nil then --retreated
 			--process all of the units the unit was transporting and retreat them too.
 			local transportedUnits = GetUnitIsTransporting(unitID)
-
 			if transportedUnits ~= nil then
 				for i=1, #transportedUnits do
 					local transportedUnit = transportedUnits[i]
@@ -134,6 +133,7 @@ function gadget:GameFrame(n)
 					--remove this unit from the list of units which can retreat.
 					unitsWhichCanRetreat[teamID][unitID] = nil
 				end
+				--TODO make this apparent to the player
 				if (n < NO_RETREAT_PERIOD_START or n > NO_RETREAT_PERIOD_END) then
 					local x, _, z = GetTeamStartPosition(teamID)
 					local unitsInRetreatZone = GetUnitsInCylinder(x, z, RETREAT_ZONE_RADIUS)
