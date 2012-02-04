@@ -29,6 +29,9 @@ local GetFeaturePosition		= Spring.GetFeaturePosition
 local CreateUnit				= Spring.CreateUnit
 local DestroyFeature			= Spring.DestroyFeature
 local SetUnitNoSelect			= Spring.SetUnitNoSelect
+
+	--synced read
+local GetGameRulesParam			= Spring.GetGameRulesParam
 --constants
 local GAIA_TEAM_ID				= Spring.GetGaiaTeamID()
 
@@ -90,8 +93,11 @@ function gadget:UnitDestroyed(unitID, unitDefID, teamID, attackerID, attackerDef
 end
 
 function gadget:GameFrame(n)
-	--civilian and zombie periodical spawn
-	
+	if GetGameRulesParam("shopmode") == 1 then
+		gadgetHandler:RemoveGadget()
+		return
+	end
+	--civilian and zombie periodical spawn	
 	if n % RESPAWN_PERIOD < 0.1 and n < OBJECTIVE_PHASE_LENGTH then
 		local warningTimeInSeconds = CIV_SPAWN_WARNINGTIME/30
 		local civMessage = "Civilians coming out of hiding in "..warningTimeInSeconds.." seconds!"

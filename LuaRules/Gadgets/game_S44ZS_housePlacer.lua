@@ -80,7 +80,7 @@ local function randomHouse()
 end
 
 local function PlaceHouse(spotX, spotZ)
-	local udid = UnitDefNames["civilian"].id 
+	local udid = UnitDefNames["s44barn1"].id 
 	for num, featureID in pairs(Spring.GetFeaturesInCylinder(spotX, spotZ, HOUSE_FEATURE_CHECK_RADIUS)) do
 		local fdid = Spring.GetFeatureDefID(featureID)
 		local fd = FeatureDefs[fdid]
@@ -89,9 +89,9 @@ local function PlaceHouse(spotX, spotZ)
 			Spring.DestroyFeature(featureID)
 		end
 	end
-	if IsPositionValid(udid, spotX, spotZ) == true then
+	--if IsPositionValid(udid, spotX, spotZ) == true then
 		CreateFeature(randomHouse(), spotX, 0, spotZ, 0)
-	end
+	--end
 	
 	local otherHouseSpots = {
 		--HSR = HOUSE_SPAWN_RADIUS, from sharedParams.lua

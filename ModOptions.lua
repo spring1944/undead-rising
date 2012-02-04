@@ -126,11 +126,11 @@ local options = {
 		name = "Flag control time goal",
 		desc = "Determines how # of flag-seconds of control are needed to achieve that obj (key = 'flag_hold_goal')",
 		type   = "number",
-		def    = 480,
+		def    = 600,
 		min    = 200,
-		max    = 900,
+		max    = 1600,
 		section= '4other',
-		step   = 20,
+		step   = 50,
 	},
 	
 	{
@@ -138,7 +138,7 @@ local options = {
 		name = "Hotzone purge goal",
 		desc = "how many hot zones need to be destroyed to achieve obj (key = 'hot_zone_goal')",
 		type   = "number",
-		def    = 7,
+		def    = 4,
 		min    = 2,
 		max    = 10,
 		section= '4other',

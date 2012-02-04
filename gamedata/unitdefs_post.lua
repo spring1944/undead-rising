@@ -63,7 +63,7 @@ for name, ud in pairs(UnitDefs) do
 		end
 	end
 	
-	if (ud.workertime and ud.maxvelocity and string.find(ud.name, "commando") == nil) then
+	if (ud.workertime and ud.maxvelocity and not ud.cloakcost) then
 		ud["buildoptions"] = {"apminesign", "atminesign", "tankobstacle"}
 	end
 	ud.idleautoheal = 0.001
