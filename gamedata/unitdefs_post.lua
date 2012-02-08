@@ -149,6 +149,13 @@ for name, ud in pairs(UnitDefs) do
 		--local seisSig = tonumber(ud.mass) / 1000 -- 10x smaller than default
 		--if seisSig < 1 then seisSig = 1 end
 		ud.seismicsignature = 1 --seisSig
+		
+			--set health
+		local powerBase = modOptions.power_base or 3.25
+		local scaleFactor = modOptions.scale_factor or 50
+		local logMass = math.log10(ud.mass) or 999 --a crazy default value so we see it when it happens
+		ud.maxdamage = (powerBase ^ logMass)*scaleFactor
+		Spring.Echo(name, "changed health to", ud.maxdamage)
 	end
 
 	local side = string.sub(name, 1, 2)
