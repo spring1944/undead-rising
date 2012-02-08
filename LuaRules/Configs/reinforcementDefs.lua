@@ -1,5 +1,7 @@
 local reinforcementDefs = {
 ["ger"] = {
+	["gertrucksupplies"] = 3,
+	["gerflak38_stationary"] = 4,
 	["gerrifle"] = 50,
 	["gertiger"] = 5,
 	["gertigerii"] = 2,
@@ -10,6 +12,8 @@ local reinforcementDefs = {
 	["gerpuma"] = 12,
 	},
 ["rus"] = {
+	["rustrucksupplies"] = 3,
+	["rus61k_stationary"] = 4,
 	["rusrifle"] = 100,
 	["rusppsh"] = 50,
 	["rust60"] = 15,
@@ -21,6 +25,8 @@ local reinforcementDefs = {
 	["rusba64"] = 10,
 	},
 ["us"] = {
+	["ustrucksupplies"] = 3,
+	["usm1bofors_stationary"] = 4,
 	["usgirifle"] = 60,
 	["usgibar"] = 30,
 	["usgithompson"] = 30,
@@ -32,6 +38,8 @@ local reinforcementDefs = {
 	["usm4a3105sherman"] = 4,
 	},
 ["gbr"] = {
+	["gbrtrucksupplies"] = 3,
+	["gbrbofors_stationary"] = 4,
 	["gbrrifle"] = 50,
 	["gbrsten"] = 30,
 	["gbrcommando"] = 20,
