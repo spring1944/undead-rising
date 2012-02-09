@@ -49,21 +49,21 @@ local params = {
 	
 	--prizes! What do players get for accomplishing various tasks
 		--lost the objective stage, but defeated the huge wave of reinforcements
-	PRIZE_EPIC_WIN				= 30000,
+	PRIZE_EPIC_WIN				= 50000,
 		--won the objective stage and then won the game with the reinforcements
-	PRIZE_OBJECTIVE_WIN			= 10000,
+	PRIZE_OBJECTIVE_WIN			= 20000,
 		--both human players were killed or retreated before the objective round ended
-	PRIZE_HUMANS_GONE			= 3000,
+	PRIZE_HUMANS_GONE			= 5000,
 		--for completing various mini-goals (saved civvie, purged a hot zone, killed a zombie)
-	PRIZE_CIVILIAN_SAVE			= 200,
-	PRIZE_FLAG_CONTROL			= 170,
-	PRIZE_HOT_ZONE_PURGE		= 2000,
-	PRIZE_ZOMBIE_KILL			= 100,
+	PRIZE_CIVILIAN_SAVE			= 100,
+	PRIZE_FLAG_CONTROL			= 85,
+	PRIZE_HOT_ZONE_PURGE		= 1000,
+	PRIZE_ZOMBIE_KILL			= 50,
 	
 	FLAG_CONTROL_REWARD_INTERVAL = 10, --every X seconds of flag control a team will get the above reward
 		--zombie income settings
 	PRIZE_HUMAN_KILL			= 0, --zombies get a 'bounty' added to this value for killing human units
-	ZOM_BOUNTY_MULT				= 1, --which is unit metal cost * this mult
+	ZOM_BOUNTY_MULT				= 0.35, --which is unit metal cost * this mult
 	
 	--initialize values
 		--these are the names that are allowed to save/send account info

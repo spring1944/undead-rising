@@ -26,6 +26,8 @@ local GetUnitTeam			=	Spring.GetUnitTeam
 local GetGameRulesParam		=	Spring.GetGameRulesParam
 local GetGameFrame			=	Spring.GetGameFrame
 
+local SetGameRulesParam		=	Spring.SetGameRulesParam
+
 local FindUnitCmdDesc		=	Spring.FindUnitCmdDesc
 
 local GiveOrderToUnit		=	Spring.GiveOrderToUnit
@@ -75,6 +77,7 @@ function gadget:Initialize()
 			unitsWhichCanRetreat[teamID] = {}
 		end
 	end
+	SetGameRulesParam("RETREAT_CMDID", CMD_RETREAT)
 	gadgetHandler:RegisterCMDID(CMD_RETREAT)
 end
 

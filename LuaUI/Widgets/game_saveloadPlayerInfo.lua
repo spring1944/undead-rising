@@ -70,7 +70,7 @@ local okToSave = true
 VFS.Include("LuaUI/lib/tableToString.lua")
 
 local morphDefs = VFS.Include("LuaRules/Configs/morph_defs.lua")
-
+local RETREAT_CMDID = GetGameRulesParam("RETREAT_CMDID")
 ----------------------------------------------------------------
 --local functions
 ----------------------------------------------------------------
@@ -262,7 +262,7 @@ function widget:Initialize()
 end
 
 function widget:UnitCommand(unitID, unitDefID, unitTeam, cmdID)
-	if cmdID == CMD_RETREAT and unitTeam ~= GetGaiaTeamID() then
+	if cmdID == RETREAT_CMDID and unitTeam ~= GetGaiaTeamID() then
 		ProcessUnits({[1] = unitID}, teamIDToName[unitTeam])	
 	end
 end
