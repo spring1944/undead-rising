@@ -93,7 +93,7 @@ local function checkFlagControlObj(playerData)
 	return false
 end
 
-local function checkHotspotPurgeObj(playerData)
+local function checkHotzonePurgeObj(playerData)
 	if playerData.purgedHotzones >= HOT_ZONE_GOAL then
 		return true
 	end

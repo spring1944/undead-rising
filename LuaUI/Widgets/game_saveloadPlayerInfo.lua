@@ -88,8 +88,6 @@ local function ProcessUnits(unitTable, playerName)
 			local unitDef = UnitDefs[unitDefID]
 			local unitName = unitDef.name
 			if string.find(unitName, "stationary") or string.find(unitName, "sandbag") then
-				Spring.Echo("deployed unit!", unitName, unitDefID)
-				Spring.Echo(morphDefs[unitName])
 				unitName = morphDefs[unitName].into
 				local morphUD = UnitDefNames[unitName]
 				local morphMaxHealth = morphUD.health
