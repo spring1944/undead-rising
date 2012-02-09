@@ -9,17 +9,18 @@
   collisionSize=1.5;
   coreThickness=0.00001;
   [customParams] {
-    armor_penetration_1000m=40;
-    armor_penetration_100m=40;
+    armor_penetration_1000m=10;
+    armor_penetration_100m=50;
     damagetype=kinetic;
   }
   [damage] {
-    default=1000;
+    default=750;
   }
   duration=0.000001;
   explosionGenerator=custom:nothing;
   fireStarter=0;
   id=5;
+  impulseFactor=0;
   impactOnly=1;
   lineofsight=1;
   range=60;
