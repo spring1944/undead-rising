@@ -116,11 +116,10 @@ function gadget:UnitDestroyed(unitID, unitDefID, teamID, attackerID, attackerDef
 		if teamUnitCounts[teamID] <= 0 then 
 			local removeTeam = true
 			local gameFrame = GetGameFrame()
-			local playerName = GG.teamIDToPlayerName[teamID]
-			local pd = GG.activeAccounts[playerName] --player data
+			local thisTeamWonObjRound = (GetGameRulesParam("obj_win_team") == teamID)
 			local OPL = OBJECTIVE_PHASE_LENGTH
 			local OPLRD = OBJECTIVE_PHASE_LENGTH + REINFORCEMENT_DELAY
-			if (teamID == GG.zombieTeamID and gameFrame < OPL) or (pd.objVictor and gameFrame < OPLRD + 5) then
+			if (teamID == GG.zombieTeamID and gameFrame < OPL) or (thisTeamWonObjRound and gameFrame < OPLRD + 5) then
 				removeTeam = false
 			end
 			if removeTeam == true then
@@ -144,8 +143,11 @@ function gadget:UnitDestroyed(unitID, unitDefID, teamID, attackerID, attackerDef
 end
 
 function gadget:UnitCreated(unitID, unitDefID, teamID)
-	teamUnitCounts[teamID] = teamUnitCounts[teamID] + 1
-	--Spring.Echo("unit created! team", teamID, "has", teamUnitCounts[teamID], "units!")
+	local ud = UnitDefs[unitDefID]
+	--houses shouldn't prevent the game from ending
+	if not ud.customParams.house then
+		teamUnitCounts[teamID] = teamUnitCounts[teamID] + 1
+	end
 end
 
 function gadget:Initialize()

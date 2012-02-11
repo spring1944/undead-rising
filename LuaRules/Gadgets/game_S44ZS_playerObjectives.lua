@@ -61,7 +61,6 @@ local function teamWonObjRound(teamID)
 	local side = GG.teamSide[teamID]
 	--mark them as winners of the objective round so they get rewarded properly in game_end.lua
 	--and so that game_end.lua doesn't try to remove this team once all their units get retreated
-	playerData.objVictor = true
 	SetGameRulesParam("obj_win_team", teamID)
 	--save and remove all of their normal units (if not zombies)
 	if teamID ~= GG.zombieTeamID then
