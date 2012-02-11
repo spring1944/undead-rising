@@ -45,6 +45,7 @@ local spGetUnitDefID           = Spring.GetUnitDefID
 local spGetUnitPosition        = Spring.GetUnitPosition
 local spTraceScreenRay         = Spring.TraceScreenRay
 
+local GetGameRulesParam		   = Spring.GetGameRulesParam
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
 
@@ -52,7 +53,7 @@ local pairs, ipairs = pairs, ipairs
 
 
 local glVertex = glVertex
-local CMD_JUMP = 38521
+local CMD_JUMP = GetGameRulesParam("CMD_JUMP")
 local green    = {0.5,   1, 0.5,   1}
 local yellow   = {  1,   1, 0.5,   1}
 local red      = {  1, 0.5, 0.5,   1}

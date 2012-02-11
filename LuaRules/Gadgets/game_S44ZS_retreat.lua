@@ -77,8 +77,6 @@ function gadget:Initialize()
 			unitsWhichCanRetreat[teamID] = {}
 		end
 	end
-	SetGameRulesParam("RETREAT_CMDID", CMD_RETREAT)
-	gadgetHandler:RegisterCMDID(CMD_RETREAT)
 end
 
 function gadget:AllowCommand(unitID, unitDefID, teamID, cmdID, cmdParams, cmdOptions)
