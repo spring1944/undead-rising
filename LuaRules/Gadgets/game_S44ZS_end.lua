@@ -117,6 +117,7 @@ function gadget:UnitDestroyed(unitID, unitDefID, teamID, attackerID, attackerDef
 			local removeTeam = true
 			local gameFrame = GetGameFrame()
 			local thisTeamWonObjRound = (GetGameRulesParam("obj_win_team") == teamID)
+			local playerName = GG.teamIDToPlayerName[teamID]
 			local OPL = OBJECTIVE_PHASE_LENGTH
 			local OPLRD = OBJECTIVE_PHASE_LENGTH + REINFORCEMENT_DELAY
 			if (teamID == GG.zombieTeamID and gameFrame < OPL) or (thisTeamWonObjRound and gameFrame < OPLRD + 5) then
