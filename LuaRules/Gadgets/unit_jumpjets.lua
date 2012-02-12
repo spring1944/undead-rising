@@ -9,7 +9,7 @@ function gadget:GetInfo()
     author    = "quantum",
     date      = "May 14, 2008",
     license   = "GNU GPL, v2 or later",
-    layer     = -2, --load before lusHelper
+    layer     = 1, 
     enabled   = true  --  loaded by default?
   }
 end
@@ -20,22 +20,9 @@ end
 
 Spring.SetGameRulesParam("jumpJets",1)
 
---------------------------------------------------------------------------------
---------------------------------------------------------------------------------
---
---  Proposed Command ID Ranges:
---
---    all negative:  Engine (build commands)
---       0 -   999:  Engine
---    1000 -  9999:  Group AI
---   10000 - 19999:  LuaUI
---   20000 - 29999:  LuaCob
---   30000 - 39999:  LuaRules
---
-
-local CMD_JUMP = 38521
+local CMD_JUMP = GG.CustomCommands.GetCmdID("CMD_JUMP")
 -- needed for checks
-local CMD_MORPH = 31210
+local CMD_MORPH = Spring.GetGameRulesParam("CMD_MORPH")
 
 local Spring      = Spring
 local MoveCtrl    = Spring.MoveCtrl
@@ -356,7 +343,6 @@ end
 function gadget:Initialize()
   Spring.SetCustomCommandDrawData(CMD_JUMP, "Attack", {0, 1, 0, 1})
   Spring.SendCommands({"bind j jump"})
-  gadgetHandler:RegisterCMDID(CMD_JUMP)
   for _, unitID in pairs(Spring.GetAllUnits()) do
     gadget:UnitCreated(unitID, Spring.GetUnitDefID(unitID))
   end
@@ -385,15 +371,6 @@ function gadget:AllowCommand(unitID, unitDefID, teamID,
       spTestBuildOrder(
           unitDefID, cmdParams[1], cmdParams[2], cmdParams[3], 1) == 0) then
       return true --false FIX ME!
-  end
-  -- do no allow morphing while jumping
-  if (jumping[unitID] and GG.MorphInfo and cmdID >= CMD_MORPH and cmdID < CMD_MORPH+GG.MorphInfo["MAX_MORPH"]) then
-    -- allow to queue
-    if cmdOptions.shift then
-      return true
-    else
-      return false
-    end
   end
   return true -- allowed
 end
