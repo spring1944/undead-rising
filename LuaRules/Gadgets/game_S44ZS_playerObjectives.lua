@@ -106,12 +106,13 @@ local function checkCivilianSaveObj(playerData)
 	return false
 end
 
+--first class functions, baby.
 local objectiveCheckFunctions = {checkCivilianSaveObj, checkFlagControlObj, checkHotzonePurgeObj}
 
 function gadget:GameStart()
 	--assign each team an objective
 	for playerName, playerData in pairs(GG.activeAccounts) do
-		playerData.objectiveID = math.random(1, 3) --replace this with 3 once last one is done
+		playerData.objectiveID = math.random(1, 3)
 	end
 end
 
@@ -126,6 +127,7 @@ function gadget:GameFrame(n)
 			local teamID = teams[i]
 			if teamID ~= GG.zombieTeamID and teamID ~= GAIA_TEAM_ID then
 				local playerName = GG.teamIDToPlayerName[teamID]
+				Spring.Echo(playerName)
 				local pd = GG.activeAccounts[playerName] --playerData
 				local x, y, z = GetTeamStartPosition(teamID)
 				MarkerAddPoint(x, y, z, shortObjText[pd.objectiveID])
@@ -139,10 +141,8 @@ function gadget:GameFrame(n)
 		for playerName, playerData in pairs(GG.activeAccounts) do
 			if playerData.teamID ~= GG.zombieTeamID then
 				local objID = playerData.objectiveID
-				local teamObjCheck = objectiveCheckFunctions[objID]
-				--Spring.Echo(playerName, objID, teamObjCheck)
-				local achievedObj = teamObjCheck(playerData)
-				--Spring.Echo(playerName, achievedObj)
+				local teamObjCheck = objectiveCheckFunctions[objID] --this is a function
+				local achievedObj = teamObjCheck(playerData) --see? a function!
 				if achievedObj == true then
 					table.insert(successfulTeams, playerData.teamID)
 				end

@@ -18,7 +18,7 @@ end
 
 --Library includes!
 --easymetal library for finding metal spots on the map.
-VFS.Include("LuaRules/lib/easyMetal.lua")
+local easyMetal = VFS.Include("LuaRules/lib/easyMetal.lua")
 --spawn function library, used here for its Distance function
 VFS.Include("LuaRules/lib/spawnFunctions.lua")
 
@@ -131,7 +131,7 @@ function gadget:GameFrame(n)
 		if not VFS.FileExists(PROFILE_PATH) then
 			Spring.Echo("Map House Profile not found. Autogenerating house positions.")
 			--analyze metal map from easyMetal library, yields a table of metal spots
-			spots = AnalyzeMetalMap()
+			spots = easyMetal.AnalyzeMetalMap()
 			local spotsToRemove = {}
 			for i=1, #spots do
 				local notNearTeamStartCount = 0

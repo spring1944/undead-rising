@@ -109,7 +109,11 @@ function gadget:TeamDied(deadTeamID)
 end
 
 function gadget:UnitDestroyed(unitID, unitDefID, teamID, attackerID, attackerDefID, attackerTeamID)
-	teamUnitCounts[teamID] = teamUnitCounts[teamID] - 1
+	local ud = UnitDefs[unitDefID]
+	--houses shouldn't be subtracted from zombie's unit count.
+	if not ud.customParams.house then
+		teamUnitCounts[teamID] = teamUnitCounts[teamID] - 1
+	end
 	--Spring.Echo("team", teamID, "has", teamUnitCounts[teamID], "units!")
 	if teamID ~= GAIA_TEAM_ID then
 		--Spring.Echo("unit died, team units remaining:", #teamUnits-1)

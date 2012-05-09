@@ -14,7 +14,7 @@ local params = {
 	RESPAWN_PERIOD				= (tonumber(modOptions.respawn_period) or 1)*framesPerMinute,
 	
 	--how much advance warning do players get for civilain spawns?
-	CIV_SPAWN_WARNINGTIME		= ((tonumber(modOptions.respawn_period)*60) or 60)*framesPerSecond,
+	CIV_SPAWN_WARNINGTIME		= (tonumber(modOptions.respawn_period) or 1)*framesPerMinute,
 	
 	--how many zombies/civilians are spawned each RESPAWN_PERIOD?
 	ZOMBIE_COUNT 				= tonumber(modOptions.zombie_count) or 3,
@@ -88,5 +88,6 @@ local params = {
 	SPAWN_BUFFER				= 800,
 	
 }
+
 
 return params

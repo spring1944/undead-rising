@@ -57,8 +57,9 @@ Otherwise it is the same (just with more player entries, probably)
 local playerTable	=	{} 
 local teamIDToName	=	{}
 
+local params = VFS.Include("LuaRules/header/sharedParams.lua")
 --these players are allowed to record data
-local TRUSTEDNAMES = "[S44]Nemo".." ".."[S44]Autohost"
+local TRUSTED_NAMES = params.TRUSTED_NAMES
 
 --decides if there's a trusted observer who is also a spec and allows data to be written if so
 --note, there's also gadget-side protection, so this isn't as horribly insecure as it might seem >_>
@@ -191,9 +192,18 @@ function widget:Initialize()
 	local myID = GetMyPlayerID()
 	local name, _, spec = GetPlayerInfo(myID)
 
-	if (string.find(TRUSTEDNAMES, name, 1, true) == nil) or (spec == false) then
+	--verify that we've got a name we can trust, and they're a spec
+	--yes, there's a potential problem with multiple trusted sources in the same game, which results in a race.
+	--ideally this will only ever run on a single autohost, thereby avoiding said issues.
+	okToSave = false
+	for i=1, #TRUSTED_NAMES do
+		local trustedName = TRUSTED_NAMES[i]
+		if (name == trustedName) and (spec == true) then
+			okToSave = true
+		end
+	end
+	if okToSave == false then
 		Spring.Echo("untrusted source of save info!")
-		okToSave = false
 		widgetHandler:RemoveWidget()
 		return
 	end

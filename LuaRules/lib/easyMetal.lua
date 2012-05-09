@@ -17,6 +17,8 @@ local metalSpotCount	= 0
 local metalData = {}
 local metalDataCount = 0
 
+local easyMetalLib = {}
+
 -- easymetal code starts
 local function round(num, idp)
   local mult = 10^(idp or 0)
@@ -58,7 +60,7 @@ local function NearSpot(px, pz, dist)
 end
 
 
-function AnalyzeMetalMap()	
+function easyMetalLib.AnalyzeMetalMap()	
 	for mx_i = 1, MAP_WIDTH do
 		metalMap[mx_i] = {}
 		for mz_i = 1, MAP_HEIGHT do
@@ -116,3 +118,4 @@ function AnalyzeMetalMap()
 	return metalSpots
 end
 -- easymetal code ends
+return easyMetalLib
