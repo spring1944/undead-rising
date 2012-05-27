@@ -20,9 +20,9 @@
   footprintZ=1;
   iconType=zombiea;
   mass=50;
-  maxDamage=200;
+  maxDamage=225;
   maxSlope=15;
-  maxVelocity=2;
+  maxVelocity=1.6;
   maxWaterDepth=10;
   movementClass=KBOT_Infantry;
   noChaseCategory=FLAG AIR;

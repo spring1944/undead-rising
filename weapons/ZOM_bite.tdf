@@ -23,7 +23,7 @@
   impulseFactor=0;
   impactOnly=1;
   lineofsight=1;
-  range=60;
+  range=80;
   reloadTime=1;
   rendertype=0;
   soundStart=zom_bite;
