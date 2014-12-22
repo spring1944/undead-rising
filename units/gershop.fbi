@@ -1,7 +1,7 @@
 [UNITINFO] {
   UnitName=gershop;
   name=Shop unit for GER;
-  description=Allows the player to buy new units for his army;
+  description=Allows the player to buy new units for his or her army;
   acceleration=0.5;
   airHoverFactor=0;
   airSightDistance=0;

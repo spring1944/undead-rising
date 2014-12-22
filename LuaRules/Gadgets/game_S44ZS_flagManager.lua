@@ -22,7 +22,6 @@ local GetTeamRulesParam			= Spring.GetTeamRulesParam
 local GetTeamUnitDefCount 		= Spring.GetTeamUnitDefCount
 
 -- Synced Ctrl
-local CallCOBScript				= Spring.CallCOBScript
 local CreateUnit				= Spring.CreateUnit
 local DestroyFeature			= Spring.DestroyFeature
 local GiveOrderToUnit			= Spring.GiveOrderToUnit
@@ -70,11 +69,6 @@ local DelayCall = GG.Delay.DelayCall
 -- this function is used to add any additional flag specific behaviour
 function FlagSpecialBehaviour(flagID, flagTeamID, teamID)
 	SetUnitRulesParam(flagID, "lifespan", 0)
-	if flagTeamID == GAIA_TEAM_ID then
-		CallCOBScript(flagID, "ShowFlag", 0, SIDES[GG.teamSide[teamID]] or 0)
-	else
-		CallCOBScript(flagID, "ShowFlag", 0, 0)
-	end
 end
 
 function gadget:GameFrame(n)

@@ -12,7 +12,7 @@ end
 
 --process ALL the units!
 
-local shopOptions = {["us"] = {}, ["gb"]= {}, ["ge"] = {}, ["ru"]= {}}
+local shopOptions = {["us"] = {}, ["gb"]= {}, ["ge"] = {}, ["ru"]= {}, ["it"] = {}, ["jp"] = {}}
 --local shopOptions = {}
 local SHOP_UD = {}
 

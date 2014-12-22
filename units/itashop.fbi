@@ -1,6 +1,6 @@
 [UNITINFO] {
-  UnitName=usshop;
-  name=Shop unit for US;
+  UnitName=itashop;
+  name=Shop unit for Italy;
   description=Allows the player to buy new units for his or her army;
   acceleration=0.5;
   airHoverFactor=0;
