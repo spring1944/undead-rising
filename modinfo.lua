@@ -1,13 +1,14 @@
 local modinfo = {
-		name					= "UNDEAD RISING: HORRORS OF THE FLESH: FEAR AND MYTH IN SPRING 1944",
-		shortName				= "A UNIQUE SHORTNAME",
-		game					= "Spring: 1944",
-		shortGame				= "S44",
-		mutator					= "Official",
-		description				= "Epic World War II RTS",
-		url						= "http://www.spring1944.com",
-		modtype					= "1",
-		depend					=	{"spring1944.sdd"},
+    name                = "UNDEAD RISING",
+    shortName           = "A UNIQUE SHORTNAME",
+    game                = "Spring: 1944",
+    version             = 'dev-$VERSION',
+    shortGame           = "S44",
+    mutator             = "zombies",
+    description         = "HORRORS OF THE FLESH: FEAR AND MYTH IN SPRING 1944",
+    url                 = "http://www.spring1944.com",
+    modtype             = "1",
+    depend              = {"Spring: 1944 dev-test-3596-2e6edd6"},
 }
 
 return modinfo
