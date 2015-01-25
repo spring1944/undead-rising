@@ -15,7 +15,13 @@ end
 local shopOptions = {["us"] = {}, ["gb"]= {}, ["ge"] = {}, ["ru"]= {}, ["it"] = {}, ["jp"] = {}}
 --local shopOptions = {}
 local SHOP_UD = {}
-
+local function canBuyInShop(name, ud)
+    local realCost = (ud.buildcostmetal and tonumber(ud.buildcostmetal) > 1)
+    local canBuy = realCost and (string.find(name, "sortie") == nil)
+    canBuy = canBuy and (string.find(name, "pontoon") == nil) 
+    canBuy = canBuy and (string.find(name, "scout") == nil)
+    return canBuy
+end
 for name, ud in pairs(UnitDefs) do
  
  --BEGIN UNIT PROCESSING
@@ -56,7 +62,7 @@ for name, ud in pairs(UnitDefs) do
 			end
 		end
 		if (isInf == false) then
-			local acceptableUnit = (string.find(name, "sortie") == nil) and (string.find(name, "pontoon") == nil) and (string.find(name, "scout") == nil)
+			local acceptableUnit = canBuyInShop(name, ud)
 			if acceptableUnit and side ~= "zo" and side ~= "ci" then
 				shopOptions[side][#shopOptions[side]+1] = name
 			end
