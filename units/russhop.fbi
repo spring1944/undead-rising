@@ -64,7 +64,7 @@
   TEDClass=VTOL;
   turnRate=500;
   badTargetCategory=BUILDING INFANTRY SOFTVEH OPENVEH HARDVEH SHIP DEPLOYED;
-  workerTime=2000;
+  workerTime=20000;
 
   weapon1=trenchmaker;
   onlyTargetCategory1=NONE;
