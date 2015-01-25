@@ -51,25 +51,30 @@ function GG.Reward(teamID, achievement, bounty)
 		Spring.Echo("BAD PD IN REWARDS.LUA!", playerName.."teamID ", teamID,"zombie teamID:",GG.zombieTeamID, achievement, bounty)
 	end
 	--TODO make this big and shiny in the middle of the screen
-	if pd.teamID ~= "inactive" then		
+    -- stop rewarding these after the objective phase is over
+    local teamThatWon = Spring.GetGameRulesParam("obj_win_team")
+	if pd.teamID ~= "inactive" then
 		if prizes[achievement] ~= nil then
-			local currentMoney = Spring.GetTeamResources(teamID, "metal")
-			Spring.SetTeamResource(teamID, "m", currentMoney + prizes[achievement] + bounty)
+            local amount = prizes[achievement] + bounty
+            GG.Money(teamID, amount)
 			
-			if achievement == "civiliansave" then
-				pd.rescuedCivilians = pd.rescuedCivilians + 1
-				--TODO add a proper display
-				if pd.rescuedCivilians % 10 < 1 then
-					Spring.SendMessage("\255\255\001\001"..playerName.." has rescued "..pd.rescuedCivilians .." civvies!")
-				end
-			elseif achievement == "flagcontrol" and pd.teamID ~= GG.zombieTeamID then
-				if pd.flagControlTime % 60 < 1 then
-					Spring.SendMessage("\255\255\001\001"..playerName.." has secured territory for "..pd.flagControlTime .." total seconds!")
-				end
-			elseif achievement == "hotzonepurge" then
-				pd.purgedHotzones = pd.purgedHotzones + 1 or 1
-				Spring.SendMessage("\255\255\001\001"..playerName.." has purged "..pd.purgedHotzones.." hot zones!")
-			end
+            -- stop announcing rewards after the objective phase ends
+            if teamThatWon == nil then
+                if achievement == "civiliansave" then
+                    pd.rescuedCivilians = pd.rescuedCivilians + 1
+                    --TODO add a proper display
+                    if pd.rescuedCivilians % 10 < 1 then
+                        Spring.SendMessage("\255\255\001\001"..playerName.." has rescued "..pd.rescuedCivilians .." civvies!")
+                    end
+                elseif achievement == "flagcontrol" and pd.teamID ~= GG.zombieTeamID then
+                    if pd.flagControlTime % 60 < 1 then
+                        Spring.SendMessage("\255\255\001\001"..playerName.." has secured territory for "..pd.flagControlTime .." total seconds!")
+                    end
+                elseif achievement == "hotzonepurge" then
+                    pd.purgedHotzones = pd.purgedHotzones + 1 or 1
+                    Spring.SendMessage("\255\255\001\001"..playerName.." has purged "..pd.purgedHotzones.." hot zones!")
+                end
+            end
 		else
 			Spring.Echo("BAD ACHIEVEMENT PARAM TO GG.Reward - "..achievement)
 		end

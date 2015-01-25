@@ -22,16 +22,8 @@ local SetTeamRulesParam			= Spring.SetTeamRulesParam
 
 local params = VFS.Include("LuaRules/header/sharedParams.lua")
 
-local MAX_MONEY					= params.MAX_MONEY
-local INITIAL_CASH				= params.INITIAL_CASH
-
 --vars
 local playerFinances = {}
-
-local function SetStartResources(teamID, amount)
-	SetTeamResource(teamID, "ms", MAX_MONEY)
-	SetTeamResource(teamID, "m", amount)
-end
 
 local function UpdatePlayerAccounts()
 	for playerName, playerData in pairs(GG.activeAccounts) do
@@ -41,29 +33,28 @@ local function UpdatePlayerAccounts()
 			playerData.money = currentMoney
 			SetTeamRulesParam(teamID, "money", currentMoney)
 		end
-	end	
-end
-
-function gadget:GameStart()
-	for playerName, playerData in pairs(GG.activeAccounts) do		
-		local playerMoney = playerData.money
-		local teamID = playerData.teamID
-		--Spring.Echo("moneyHandler teamID gameSTart", playerName, teamID)
-		--Spring.Echo("Setting up the player's ingame money!", teamID)			
-		local amount = 0
-		if playerMoney == "new player" then
-			amount = INITIAL_CASH
-		else
-			amount = playerMoney
-		end
-		--Spring.Echo("this player has this much money!", amount)
-		SetStartResources(teamID, amount)
-		SetTeamRulesParam(teamID, "money", amount)
 	end
 end
 
 --when the widget dies, it records the current money value from teamRulesParam
 function gadget:GameFrame(n)
+    if not GG.GameStarted then return end
+    if n == GG.GameStarted then
+        for playerName, playerData in pairs(GG.activeAccounts) do
+            local playerMoney = playerData.money
+            local teamID = playerData.teamID
+            --Spring.Echo("moneyHandler teamID gameSTart", playerName, teamID)
+            --Spring.Echo("Setting up the player's ingame money!", teamID)
+            local amount = 0
+            if playerMoney == "new player" then
+                amount = INITIAL_CASH
+            else
+                amount = playerMoney
+            end
+            --Spring.Echo("this player has this much money!", amount)
+        end
+    end
+
 	if n % (1*30) < 0.1 then
 		UpdatePlayerAccounts()
 	end
@@ -75,7 +66,5 @@ end
 
 
 else --unsynced
-
-
 
 end

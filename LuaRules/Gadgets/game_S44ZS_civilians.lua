@@ -57,7 +57,7 @@ local CIV_TEAM_FEAR_DURATION	=	params.CIV_TEAM_FEAR_DURATION
 
 --how long civvies run from zombies before reevaluating
 local CIV_FEAR_DURATION			=	params.CIV_FEAR_DURATION
---how close to the team's start point a civ needs to be to be considered 'rescued'. 
+--how close to the team's start point a civ needs to be to be considered 'rescued'.
 --THIS IS A PLACEHOLDER until retreat zones are properly done
 local SAFE_DIST					= 	400
 
@@ -85,12 +85,12 @@ local function Flee(scaryX, scaryZ, unitID, attackerTeam) --RUN AWWAAAAAY!
 	scaredUnits[unitID] = CIV_FEAR_DURATION
 	local civX,_,civZ = GetUnitPosition(unitID)
 	local xDest
-	local zDest	
+	local zDest
 	local x1
 	local x2
 	local z1
 	local z2
-	if (civX > scaryX) and (civZ > scaryZ) then 
+	if (civX > scaryX) and (civZ > scaryZ) then
 		local xMax = civX + scaryX
 		local zMax = civZ + scaryZ
 		x1 = math.min(xMax, civX)
@@ -99,7 +99,7 @@ local function Flee(scaryX, scaryZ, unitID, attackerTeam) --RUN AWWAAAAAY!
 		z2 = math.max(zMax, civZ)
 		--Spring.Echo("outcome #1, xMax:", xMax, "zMax", zMax)
 	end
-	if (civX < scaryX) and (civZ < scaryZ) then 
+	if (civX < scaryX) and (civZ < scaryZ) then
 		local xMin = scaryX - civX
 		local zMin = scaryZ - civZ
 		x1 = math.min(xMin, civX)
@@ -108,7 +108,7 @@ local function Flee(scaryX, scaryZ, unitID, attackerTeam) --RUN AWWAAAAAY!
 		z2 = math.max(zMin, civZ)
 		--Spring.Echo("outcome #2, xMin:", xMin, "zMin", zMin)
 	end
-	if (civX > scaryX) and (civZ < scaryZ) then 
+	if (civX > scaryX) and (civZ < scaryZ) then
 		local xMax = civX + scaryX
 		local zMin = scaryZ - civZ
 		x1 = math.min(xMax, civX)
@@ -117,7 +117,7 @@ local function Flee(scaryX, scaryZ, unitID, attackerTeam) --RUN AWWAAAAAY!
 		z2 = math.max(zMin, civZ)
 		--Spring.Echo("outcome #3, xMax:", xMax, "zMin", zMin)
 	end
-	if (civX < scaryX) and (civZ > scaryZ) then 
+	if (civX < scaryX) and (civZ > scaryZ) then
 		local xMin = scaryX - civX
 		local zMax = civZ + scaryZ
 		x1 = math.min(xMin, civX)
@@ -142,13 +142,15 @@ end
 ----------------------------
 ---Call ins
 ----------------------------
-function gadget:UnitDamaged(unitID, unitDefID, unitTeam, _, _, _, attackerID, _, attackerTeamID)
+function gadget:UnitDamaged(unitID, unitDefID, unitTeam, _, _, _, _, attackerID, _, attackerTeamID)
 	if (scaredUnits[unitID] ~= nil) then
 		--Spring.Echo("I've been hit, run my friends!")
 		if attackerID ~= nil then
-		local scaryX, _, scaryZ = GetUnitPosition(attackerID)
-		scaryTeams[attackerTeamID] = CIV_TEAM_FEAR_DURATION
-		Flee(scaryX, scaryZ, unitID, attackerTeamID)	
+            local scaryX, _, scaryZ = GetUnitPosition(attackerID)
+            if scaryX ~= nil and scaryZ ~= nil then
+                scaryTeams[attackerTeamID] = CIV_TEAM_FEAR_DURATION
+                Flee(scaryX, scaryZ, unitID, attackerTeamID)
+            end
 		end
 	end
 end
@@ -165,7 +167,7 @@ function gadget:UnitDestroyed(unitID, unitDefID, teamID, attackerID, attackerDef
 			if nearbyUD.customParams.civilian then
 				scaryTeams[attackerTeamID] = CIV_TEAM_FEAR_DURATION
 				Flee(x, z, nearbyUnit, attackerTeamID)
-			end			
+			end
 		end
 	end]]--
 	scaredUnits[unitID] = nil
@@ -195,7 +197,7 @@ function gadget:GameFrame(n)
 	if Spring.GetGameRulesParam("shopmode") == 1 then
 		gadgetHandler:RemoveGadget()
 		return
-	end	
+	end
 	if(n % 30 < 1) then
 		for teamID, duration in pairs(scaryTeams) do
 			--Spring.Echo("scary teamID:",teamID, "fear factor:", scaryTeams[teamID])
@@ -205,7 +207,7 @@ function gadget:GameFrame(n)
 				scaryTeams[teamID] = 0
 			end
 		end
-		
+
 		for unitID, fearTime in pairs(scaredUnits) do
 			if scaredUnits[unitID] > 0 then
 				scaredUnits[unitID] = scaredUnits[unitID] - 1
@@ -265,7 +267,6 @@ local function allytogaia()
 		sendCommands({'ally '.. GAIA_ALLY_ID ..' 1'})
 	end
 end
-
 
 function gadget:Initialize()
 	gadgetHandler:AddSyncAction("allytogaia", allytogaia)

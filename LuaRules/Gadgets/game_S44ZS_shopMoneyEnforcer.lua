@@ -100,11 +100,17 @@ function gadget:GameFrame(n)
 			end
 			--Spring.Echo("teamsdonebuying vs team list-1", teamsWhichAreDoneBuying, #Spring.GetTeamList()-1)
 			if (teamsWhichAreDoneBuying == #shopUnits) then
+                Spring.Echo("everyone is done buying!")
 				Spring.GameOver({})
 			end
 		end
 	end
 end
+
+function gadget:GameOver()
+    gadgetHandler:RemoveGadget()
+end
+
 
 else
 

@@ -85,7 +85,7 @@ function gadget:AllowCommand(unitID, unitDefID, teamID, cmdID, cmdParams, cmdOpt
 		if not unitsWhichCanRetreat[teamID][unitID] then
 			return false
 		end
-		DestroyUnit(unitID, false, true) --unitID, self-d, reclaimed (ie silent)
+		GG.LeaveBattlefield({[1] = unitID}, teamID)
 		return true
 	end
 	return true

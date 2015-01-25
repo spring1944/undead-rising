@@ -42,6 +42,7 @@ local REINFORCEMENT_DELAY		= params.REINFORCEMENT_DELAY --seconds
 
 local GAIA_TEAM_ID				= Spring.GetGaiaTeamID()
 
+local successfulTeams = {}
 --[[
 1 = civilian rescue
 2 = territory control
@@ -79,9 +80,18 @@ local function teamWonObjRound(teamID)
 	
 	--now spawn the huge flood of reinforcements
 	local x, _, z = GetTeamStartPosition(teamID)
-	for unitName, number in pairs(reinforcementDefs[side]) do
-		--takes unitname, x, z, message, count, teamID, delay (in frames!), spawn piecemeal or not
-		unitSpawnRandomPos(unitName, x, z, false, number, teamID, REINFORCEMENT_DELAY, true) --units arrive piecemeal over the course of the delay period.
+    -- drop the first wave in right away so you can't spawn camp
+	for unitName, number in pairs(reinforcementDefs[side].wave[1]) do
+		--takes unitname, x, z, message, count, teamID, delay (in frames!)
+		unitSpawnRandomPos(unitName, x, z, false, number, teamID, 0, true)
+	end
+
+	for unitName, number in pairs(reinforcementDefs[side].wave[2]) do
+        --gradually spawn this over the course of the delay period
+        for i = 1,number do 
+            local spawnDelay = (REINFORCEMENT_DELAY/number) * i
+            GG.Delay.DelayCall(unitSpawnRandomPos, {unitName, x, z, false, 1, teamID, spawnDelay, true})
+        end
 	end
 end
 
@@ -106,28 +116,37 @@ local function checkCivilianSaveObj(playerData)
 	return false
 end
 
---first class functions, baby.
+--first class functions, weeeeee.
 local objectiveCheckFunctions = {checkCivilianSaveObj, checkFlagControlObj, checkHotzonePurgeObj}
 
-function gadget:GameStart()
-	--assign each team an objective
-	for playerName, playerData in pairs(GG.activeAccounts) do
-		playerData.objectiveID = math.random(1, 3)
-	end
+function gadget:TeamDied(deadTeamID)
+    local filteredSuccessfulTeams = {}
+    for index, teamID in ipairs(successfulTeams) do
+        if teamID ~= deadTeamID then
+            table.insert(filteredSuccessfulTeams, teamID)
+        end
+    end
+    successfulTeams = filteredSuccessfulTeams
 end
 
 function gadget:GameFrame(n)
+    if not GG.GameStarted then return end 
+
 	if GetGameRulesParam("shopmode") == 1 then
 		gadgetHandler:RemoveGadget()
 		return
 	end
-	if n == 50 then
+	if n == GG.GameStarted + 50 then
+        --assign each team an objective
+        for playerName, playerData in pairs(GG.activeAccounts) do
+            playerData.objectiveID = math.random(1, 3)
+        end
+
 		local teams = GetTeamList()
 		for i=1, #teams do
 			local teamID = teams[i]
 			if teamID ~= GG.zombieTeamID and teamID ~= GAIA_TEAM_ID then
 				local playerName = GG.teamIDToPlayerName[teamID]
-				Spring.Echo(playerName)
 				local pd = GG.activeAccounts[playerName] --playerData
 				local x, y, z = GetTeamStartPosition(teamID)
 				MarkerAddPoint(x, y, z, shortObjText[pd.objectiveID])
@@ -136,25 +155,51 @@ function gadget:GameFrame(n)
 			end
 		end
 	end
-	if n == OBJECTIVE_PHASE_LENGTH then
-		local successfulTeams = {}
+
+    -- every five seconds
+	if n % (30*5) == 0 then
 		for playerName, playerData in pairs(GG.activeAccounts) do
-			if playerData.teamID ~= GG.zombieTeamID then
+			if playerData.teamID ~= GG.zombieTeamID and not playerData.achievedObjective then
 				local objID = playerData.objectiveID
 				local teamObjCheck = objectiveCheckFunctions[objID] --this is a function
 				local achievedObj = teamObjCheck(playerData) --see? a function!
 				if achievedObj == true then
+                    playerData.achievedObjective = true
 					table.insert(successfulTeams, playerData.teamID)
+
+                    local objectivePhaseEnd = GG.GameStarted + OBJECTIVE_PHASE_LENGTH
+                    local timeLeft = objectivePhaseEnd - n
+                    local humanTime = string.format("%.1f", timeLeft / (60*30))
+                    SendMessageToTeam(playerData.teamID, "\255\001\255\001You accomplished your objective! In order to win, prevent the other player from accomplishing their goal, and survive until the end of the objective phase: " .. humanTime .." minutes left!")
 				end
 			end
 		end
+
+    end
+
+	if n == GG.GameStarted + OBJECTIVE_PHASE_LENGTH then
+        Spring.Echo("OBJECTIVE OVER")
+        local allUnits = Spring.GetAllUnits()
+        -- game's over, take away the mystery
+        for index, unitID in ipairs(allUnits) do
+            Spring.SetUnitAlwaysVisible(unitID, true)
+        end
 		if #successfulTeams ~= 1 then --either both teams got the objective, or neither did.
 			teamWonObjRound(GG.zombieTeamID)
-			SendMessage("\255\255\001\001ZOMBIE TEAM HAS WON THE GAME! HORDE ARRIVING IN "..(REINFORCEMENT_DELAY/30).." SECONDS!")
+			SendMessage("\255\255\001\001ZOMBIES WIN! HORDE ARRIVING IN "..(REINFORCEMENT_DELAY/30).." SECONDS!")
 		else
 			local winningTeamID = successfulTeams[1]
 			teamWonObjRound(winningTeamID)
 			SendMessage("\255\255\001\001"..GG.teamIDToPlayerName[winningTeamID].." has won the objective round! Reinforcements arriving in "..(REINFORCEMENT_DELAY/30).." seconds.")
 		end
 	end
+end
+
+function gadget:UnitCreated(unitID)
+    local gameFrame = Spring.GetGameFrame()
+    if not GG.GameStarted then return end
+    -- newly spawned units need to be visible too, after game end
+    if gameFrame > (GG.GameStarted + OBJECTIVE_PHASE_LENGTH) then
+        Spring.SetUnitAlwaysVisible(unitID, true)
+    end
 end

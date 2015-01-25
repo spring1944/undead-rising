@@ -51,7 +51,7 @@ local houseIDToSpotIndex		= {}
 local function transformIntoHotzone(houseIndex)
 	GG.houseSpots[houseIndex].hotZone = true
 	local sd = GG.houseSpots[houseIndex]
-	
+
 	local hotZoneHouseCounter = 0
 	local nearbyFeatures = GetFeaturesInCylinder(sd.x, sd.z, HOUSE_SPOT_RADIUS + 100)
 	for i=1, #nearbyFeatures do
@@ -93,11 +93,12 @@ function gadget:UnitDestroyed(unitID, unitDefID, teamID, attackerID, attackerDef
 end
 
 function gadget:GameFrame(n)
+    if not GG.GameStarted then return end
 	if GetGameRulesParam("shopmode") == 1 then
 		gadgetHandler:RemoveGadget()
 		return
 	end
-	--civilian and zombie periodical spawn	
+	--civilian and zombie periodical spawn
 	if n % RESPAWN_PERIOD < 0.1 and n < OBJECTIVE_PHASE_LENGTH then
 		local warningTimeInSeconds = CIV_SPAWN_WARNINGTIME/30
 		local civMessage = "Civilians coming out of hiding in "..warningTimeInSeconds.." seconds!"
@@ -105,11 +106,11 @@ function gadget:GameFrame(n)
 		local civx, civz = GG.houseSpots[civSpawnSpot].x, GG.houseSpots[civSpawnSpot].z
 		--unitSpawnRandomPos(unitName, x, z, message, number to spawn, teamID, delay-in-frames)
 		unitSpawnRandomPos("civilian", civx, civz, civMessage, CIVILIAN_COUNT, GAIA_TEAM_ID, CIV_SPAWN_WARNINGTIME)
-		
+
 		local newPossibleHotzones = {}
 		for i=1, #GG.houseSpots do
 			local sd = GG.houseSpots[i]
-			if not sd.hotZone then 
+			if not sd.hotZone then
 				newPossibleHotzones[#newPossibleHotzones+1] = {
 					houseIndex = i,
 					spotData = sd,
@@ -118,15 +119,19 @@ function gadget:GameFrame(n)
 				unitSpawnRandomPos("zomsprinter", sd.x, sd.z, false, ZOMBIE_COUNT, GG.zombieTeamID, 0)
 			end
 		end
-		
+
 		--the new hotzone:
 		if #newPossibleHotzones > 0 then
 			local newHotzoneMessage = "New hotzone spotted!"
 			local zomSpawnSpot = math.random(1, #newPossibleHotzones)
 			local sd = newPossibleHotzones[zomSpawnSpot].spotData
 			local houseIndex = newPossibleHotzones[zomSpawnSpot].houseIndex
+            if GG.zombieTeamID == nil then
+                error("nil zombie team ID in objective spawner. bad~!")
+            end
+
 			unitSpawnRandomPos("zomsprinter", sd.x, sd.z, newHotzoneMessage, ZOMBIE_COUNT, GG.zombieTeamID, 0)
 			transformIntoHotzone(houseIndex)
-		end		
+		end
 	end
 end

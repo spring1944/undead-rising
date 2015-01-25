@@ -34,10 +34,19 @@ function GetStartUnit(teamID)
 	return startUnit
 end
 
-function unitSpawnRandomPos(unitname, x, z, message, count, teamID, delay, gradualSpawn)
-	if gradualSpawn == nil then
-		gradualSpawn = false
-	end
+local function SpawnUnit(unitname, x, y, z, teamID, ammo)
+    Spring.Echo('stuff', unitname, ammo)
+    local unitID = CreateUnit(unitname, x, y, z, 0, teamID)
+    if ammo > 0 then
+        Spring.SetUnitRulesParam(unitID, "ammo", tonumber(ammo))
+    end
+    return unitID
+end
+
+function unitSpawnRandomPos(unitname, x, z, message, count, teamID, delay, fillAmmo)
+    if fillAmmo == nil then
+        fillAmmo = false
+    end
 	local featureCheckRadius = 50
 	local searchLimit = 500
 	local SPREAD_MULT = 1.01
@@ -55,16 +64,18 @@ function unitSpawnRandomPos(unitname, x, z, message, count, teamID, delay, gradu
 		local udid = UnitDefNames[unitname].id
 		local featureClear = Spring.GetFeaturesInCylinder(xspwn, zspwn, featureCheckRadius)
 		if #featureClear == 0 and IsPositionValid(udid, xspwn, zspwn) == true then
+            local maxAmmo = UnitDefs[udid].customParams.maxammo
+            local ammo = 0
+            if fillAmmo and maxAmmo ~= nil then
+                ammo = maxAmmo
+            end
+
 			if delay > 0 then
 				local spawnDelay = delay
-				if gradualSpawn == true then
-					--gradually spawn this over the course of the delay period
-					spawnDelay = (delay/count) * counter
-				end
 				GG.Delay.DelayCall(Spring.MarkerErasePosition, {x, y, z}, spawnDelay)
-				GG.Delay.DelayCall(CreateUnit, {unitname, xspwn, yspwn, zspwn, 0, teamID}, spawnDelay)
+				GG.Delay.DelayCall(SpawnUnit, {unitname, xspwn, yspwn, zspwn, teamID, ammo}, spawnDelay)
 			else
-				local unitID = CreateUnit(unitname, xspwn, yspwn, zspwn, 0, teamID)	
+				local unitID = SpawnUnit(unitname, xspwn, yspwn, zspwn, teamID, ammo)
 				table.insert(unitIDList, unitID)
 			end
 			failsafe = 0
@@ -97,7 +108,7 @@ function SpawnStartUnit(teamID, side)
 		-- snap to 16x16 grid
 		x, z = 16*math.floor((x+8)/16), 16*math.floor((z+8)/16)
 		y = GetGroundHeight(x, z)
-		-- facing toward map center	
+		-- facing toward map center
 		local unitID = CreateUnit(startUnit, x, y, z, "south", teamID)
 	end
 end

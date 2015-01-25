@@ -48,8 +48,6 @@ local FLAG_REGEN = 1 -- how fast a flag with no defenders or attackers will redu
 local params = VFS.Include("LuaRules/header/sharedParams.lua")
 local FLAG_CONTROL_REWARD_INTERVAL = params.FLAG_CONTROL_REWARD_INTERVAL	
 		
-local SIDES	= {gbr = 1, ger = 2, rus = 3, us = 4, [""] = 2}
-
 local flagCappers = {} -- cappers[unitID] = true
 local flagDefenders	= {} -- defenders[unitID] = true
 
@@ -80,7 +78,7 @@ function gadget:GameFrame(n)
 			end
 		end
 	end
-	if n % 30 == 5 then -- every second with a 5 frame offset
+	if n % 30 == 5 and GG.GameStarted then -- every second with a 5 frame offset
 		for spotNum = 1, #GG.houseSpots do
 			if GG.houseSpots[spotNum].hasFlag then
 				local fd = GG.houseSpots[spotNum]
@@ -94,12 +92,14 @@ function gadget:GameFrame(n)
 				--Reward flag owners
 				if flagTeamID ~= GAIA_TEAM_ID then
 					local ownerName = GG.teamIDToPlayerName[flagTeamID]
-					local pd = GG.activeAccounts[ownerName] --playerData
-					pd.flagControlTime = pd.flagControlTime + 1
-					--Spring.Echo(ownerName.." has "..pd.flagControlTime.." control points!")
-					if pd.flagControlTime % FLAG_CONTROL_REWARD_INTERVAL < 1 then
-						GG.Reward(flagTeamID, "flagcontrol")
-					end
+					local playerData = GG.activeAccounts[ownerName] 
+                    if playerData and playerData.teamID ~= "inactive" then
+                        playerData.flagControlTime = playerData.flagControlTime + 1
+                        --Spring.Echo(ownerName.." has "..pd.flagControlTime.." control points!")
+                        if playerData.flagControlTime % FLAG_CONTROL_REWARD_INTERVAL < 1 then
+                            GG.Reward(flagTeamID, "flagcontrol")
+                        end
+                    end
 				end
 				
 				--Handle capturing/defending

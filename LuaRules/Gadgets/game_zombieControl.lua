@@ -63,7 +63,8 @@ function gadget:UnitCreated(unitID, unitDefID, teamID)
 end
 
 function gadget:GameFrame(n)
-	if n == 5 then
+    if not GG.GameStarted then return end
+	if n == GG.GameStarted + 5 then
 		SendToUnsynced('allytogaia')
 	end
 	
