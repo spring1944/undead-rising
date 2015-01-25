@@ -38,6 +38,7 @@ local GetGameRulesParam	= Spring.GetGameRulesParam
 local CMD_UNIT_SET_TARGET = GetGameRulesParam("CMD_UNIT_SET_TARGET") 
 local CMD_TURN = GetGameRulesParam("CMD_TURN") 
 local CMD_MORPH = GetGameRulesParam("CMD_MORPH")
+local CMD_CLEAR_PATH = GetGameRulesParam("CMD_CLEARPATH")
 local CMD_JUMP = GetGameRulesParam("CMD_JUMP")
 
 -- What commands are eligible for custom formations
@@ -49,8 +50,9 @@ local formationCmds = {
 	[CMD.UNLOAD_UNIT] = true,
 	[CMD_UNIT_SET_TARGET] = true,
 	[CMD_MORPH] = true,
-	[CMD_JUMP] = true,
-	[CMD_TURN] = true
+	[CMD_TURN] = true,
+    [CMD_CLEAR_PATH] = true,
+    [CMD_JUMP] = true,
 }
 
 -- What commands require alt to be held (Must also appear in formationCmds)
@@ -72,7 +74,7 @@ local positionCmds = {
 	[CMD.MOVE]=true,		[CMD.ATTACK]=true,		[CMD.RECLAIM]=true,		[CMD.RESTORE]=true,		[CMD.RESURRECT]=true,
 	[CMD.PATROL]=true,		[CMD.CAPTURE]=true,		[CMD.FIGHT]=true, 		[CMD.DGUN]=true,		[CMD_MORPH]=true,
 	[CMD.UNLOAD_UNIT]=true,	[CMD.UNLOAD_UNITS]=true,[CMD.LOAD_UNITS]=true,	[CMD.GUARD]=true,		[CMD.AREA_ATTACK] = true,
-	[CMD_JUMP] = true,
+    [CMD_CLEAR_PATH] = true,[CMD_JUMP]=true,
 }
 --------------------------------------------------------------------------------
 -- Globals
@@ -176,7 +178,7 @@ local function GetUnitFinalPosition(uID)
 	
 	local ux, uy, uz = spGetUnitPosition(uID)
 	
-	local cmds = spGetCommandQueue(uID)
+	local cmds = spGetCommandQueue(uID, -1)
 	for i = #cmds, 1, -1 do
 		
 		local cmd = cmds[i]

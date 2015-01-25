@@ -20,6 +20,8 @@ function widget:GetInfo()
   }
 end
 
+local reverseCompatibility = (Game.version:find('91.0') == 1) or (Game.version:find('94') and not Game.version:find('94.1.1'))
+
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
 
@@ -44,42 +46,38 @@ local spGetSelectedUnits       = Spring.GetSelectedUnits
 local spGetUnitDefID           = Spring.GetUnitDefID
 local spGetUnitPosition        = Spring.GetUnitPosition
 local spTraceScreenRay         = Spring.TraceScreenRay
+local spTestBuildOrder         = Spring.TestBuildOrder
 
-local GetGameRulesParam		   = Spring.GetGameRulesParam
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
+VFS.Include("LuaRules/Configs/customcmds.h.lua")
 
-local pairs, ipairs = pairs, ipairs
+local pairs = pairs
 
 
 local glVertex = glVertex
-local CMD_JUMP = GetGameRulesParam("CMD_JUMP")
 local green    = {0.5,   1, 0.5,   1}
 local yellow   = {  1,   1, 0.5,   1}
-local red      = {  1, 0.5, 0.5,   1}
+local orange   = {  1, 0.5,   0,   1}
+local pink     = {  1, 0.5, 0.5,   1}
+local red      = {  1,   0,   0,   1}
 
-local jumpDefNames  = VFS.Include"LuaRules/Configs/jump_defs.lua"
+local jumpDefs  = VFS.Include"LuaRules/Configs/jump_defs.lua"
 
 local function ListToSet(t)
   local new = {}
-  for k, v in ipairs(t) do
-    new[v] = true
-  end
+  for i=1,#t do
+    new[ t[i] ] = true
+  end 
   return new
-end
-
-
-local jumpDefs = {}
-for name, data in pairs(jumpDefNames) do
-  jumpDefs[UnitDefNames[name].id] = data
 end
 
 local ignore = {
   [CMD_SET_WANTED_MAX_SPEED] = true,
 }
 
-local curve = {CMD_MOVE, CMD_JUMP}
-local line = {CMD_FIGHT, CMD_ATTACK}
+local curve = {CMD_MOVE, CMD_JUMP, CMD_FIGHT}
+local line = {CMD_ATTACK}
 
 curve = ListToSet(curve)
 line  = ListToSet(line)
@@ -98,66 +96,73 @@ local function GetDist2(a, b)
   return ((a[1] - b[1])^2 + (a[3] - b[3])^2)^0.5
 end
 
-
 local function DrawLoop(start, vector, color, progress, step, height)
   glColor(color[1], color[2], color[3], color[4])
   for i=progress, 1, step do
-
     local x = start[1] + vector[1]*i
     local y = start[2] + vector[2]*i + (1-(2*i-1)^2)*height
     local z = start[3] + vector[3]*i
-
+    
     glVertex(x, y, z)
   end
+  
+  local x = start[1] + vector[1]
+  local y = start[2] + vector[2]
+  local z = start[3] + vector[3]
+    
+  glVertex(x, y, z)
 end
 
 
-local function DrawArc(unitID, start, finish, color, jumpFrame, range)
+local function DrawArc(unitID, start, finish, color, jumpFrame, range, isEstimate, quality)
 
   -- todo: display lists
-
+  
+  quality = quality or 1
+  
   local step
   local progress
   local vector       = {}
-
+  
   local unitDefID    = spGetUnitDefID(unitID)
   local height       = jumpDefs[unitDefID].height
-
+  
   for i=1, 3 do
     vector[i]        = finish[i] - start[i]
   end
-
+  
   if (range) then
-    glColor(yellow[1], yellow[2], yellow[3], yellow[4])
-    glDrawGroundCircle(start[1], start[2], start[3], range, 100)
+    local col = isEstimate and orange or yellow
+    glColor(col[1], col[2], col[3], col[4])
+    glDrawGroundCircle(start[1], start[2], start[3], range, 100*quality)
   end
-
+  
   if (jumpFrame) then
     local vertex     = {}
-
+    
     vertex[1]        = start[1] + vector[1]*0.5
     vertex[2]        = start[2] + vector[2]*0.5 + (1-(2*0.5-1)^2)*height
     vertex[3]        = start[3] + vector[3]*0.5
-
+    
     local lineDist   = GetDist3(start, finish)
     local flightDist = GetDist2(start, vertex) + GetDist3(vertex, finish)
-
+    
     local speed      = jumpDefs[unitDefID].speed * lineDist/flightDist
     step             = speed/lineDist
-
+    
     local frame      = spGetGameFrame()
-
+    
     progress         = (frame - jumpFrame) * step
-
+    
   else
     progress         = 0
-    step             = 0.01
+    step             = 0.01/quality
   end
-
+  
   glLineStipple('')
   glBeginEnd(GL_LINE_STRIP, DrawLoop, start, vector, color, progress, step, height)
   glLineStipple(false)
-
+  
 end
 
 
@@ -173,8 +178,9 @@ local function DrawLine(a, b, color)
   glBeginEnd(GL_LINE_STRIP, Line, a, b, color)
   glLineStipple(false)
 end
-
-
+ 
+-- unused
+--[[
 local function DrawQueue(unitID)
   local queue = spGetCommandQueue(unitID)
   if (not queue or not jumpDefs[spGetUnitDefID(unitID)]) then
@@ -199,31 +205,47 @@ local function DrawQueue(unitID)
     end
   end
 end
+--]]
 
+local function DrawMouseArc(unitID, shift, groundPos, quality)
+    local unitDefID = spGetUnitDefID(unitID)
+    if (not groundPos or not jumpDefs[unitDefID]) then
+        return
+    end
 
-local function  DrawMouseArc(unitID, shift, groundPos)
-  local unitDefID = spGetUnitDefID(unitID)
-  if (not groundPos or not jumpDefs[unitDefID]) then
-    return
-  end
-  local queue = spGetCommandQueue(unitID)
-  local range = jumpDefs[unitDefID].range
-  if (not queue or #queue == 0 or not shift) then
-    local unitPos = {spGetUnitPosition(unitID)}
-    local dist = GetDist2(unitPos, groundPos)
-    local color = range > dist and green or red
-    DrawArc(unitID, unitPos, groundPos, color, nil, range)
-  elseif (shift) then
-    local i = #queue
-    while (ignore[queue[i].id] and i > 0) do
-      i = i - 1
+    local passIf
+    if reverseCompatibility then
+        local queue = spGetCommandQueue(unitID, 1)
+        passIf = (not queue or #queue == 0 or not shift)
+    else
+        local queueCount = spGetCommandQueue(unitID, 0)
+        passIf = (not queueCount or queueCount == 0 or not shift)
     end
-    if (curve[queue[i].id]) then
-      local dist  = GetDist2(queue[i].params, groundPos)
-      local color = range > dist and green or red
-      DrawArc(unitID, queue[i].params, groundPos, color, nil, range)
+
+    local canJumpThere = (spTestBuildOrder(unitDefID, groundPos[1], groundPos[2], groundPos[3], 1) ~= 0)
+    
+    local range = jumpDefs[unitDefID].range
+    if passIf then
+        local _,_,_,ux,uy,uz = spGetUnitPosition(unitID,true)
+        local unitPos = {ux,uy,uz}
+        local dist = GetDist2(unitPos, groundPos)
+        local color = canJumpThere and (range > dist and green or pink) or red
+        DrawArc(unitID, unitPos, groundPos, color, nil, range, false, quality)
+    elseif (shift) then
+        local queue = spGetCommandQueue(unitID, -1)
+        local i = #queue
+        while (ignore[queue[i].id] and i > 0) do
+            i = i - 1
+        end
+        if (curve[queue[i].id]) or (queue[i].id < 0) or (#queue[i].params == 3) or (#queue[i].params == 4) then
+            local isEstimate = not curve[queue[i].id]
+            local dist  = GetDist2(queue[i].params, groundPos)
+            local cGood = isEstimate and yellow or green
+            local cBad = isEstimate and orange or pink
+            local color = canJumpThere and ((range > dist and cGood) or cBad) or red
+            DrawArc(unitID, queue[i].params, groundPos, color, nil, range, isEstimate, quality)
+        end
     end
-  end
 end
 
 
@@ -235,11 +257,14 @@ function widget:CommandNotify(id, params, options)
   if (id ~= CMD_JUMP) then
     return
   end
-  for _, unitID in ipairs(spGetSelectedUnits()) do
+  local units = spGetSelectedUnits()
+  for i=1,#units do
+    unitID = units[i]
     local _, _, _, shift   = spGetModKeyState()
-    if (#spGetCommandQueue(unitID) == 0 or not shift) then
+    if (#spGetCommandQueue(unitID, 1) == 0 or not shift) then
+      local _,_,_,ux,uy,uz = spGetUnitPosition(unitID,true)
       lastJump[unitID] = {
-        pos   = {spGetUnitPosition(unitID)},
+        pos   = {ux,uy,uz},
         frame = spGetGameFrame(),
       }
     end
@@ -248,12 +273,15 @@ end
 
 
 function widget:UnitCmdDone(unitID, unitDefID, unitTeam, cmdID, cmdTag)
-  local cmd = spGetCommandQueue(unitID, 3)[2]
-  if (cmd and cmd.id == CMD_JUMP) then
-      lastJump[unitID] = {
-        pos = {spGetUnitPosition(unitID)},
-        frame = spGetGameFrame(),
-      }
+  if jumpDefs[unitDefID] then
+    local cmd = spGetCommandQueue(unitID, 2)[2] 
+    if (cmd and cmd.id == CMD_JUMP) then
+        local _,_,_,ux,uy,uz = spGetUnitPosition(unitID,true)
+        lastJump[unitID] = {
+          pos = {ux,uy,uz},
+          frame = spGetGameFrame(),
+        }
+    end
   end
 end
 
@@ -263,42 +291,33 @@ function widget:UnitDestroyed(unitID)
 end
 
 
+--[[
+function widget:Initialize()
+  -- check for custom key bind, bind jump if does not exist
+  local hotkeys = Spring.GetActionHotKeys("jump")
+  if #hotkeys == 0 then
+    Spring.SendCommands("unbind any+j mouse2")  
+    Spring.SendCommands("bind any+j jump")
+  end
+end 
+]]--
+
 function widget:DrawWorld()
   local _, activeCommand = spGetActiveCommand()
   if (activeCommand == CMD_JUMP) then
     local mouseX, mouseY   = spGetMouseState()
     local category, arg    = spTraceScreenRay(mouseX, mouseY)
     local _, _, _, shift   = spGetModKeyState()
-    for _, unitID in ipairs(spGetSelectedUnits()) do
-      DrawMouseArc(unitID, shift, category == 'ground' and arg)
+    local units = spGetSelectedUnits()
+    local quality = 1
+    if #units > 50 then
+        quality = 0.5
+    end
+    for i=1,#units do
+      DrawMouseArc(units[i], shift, category == 'ground' and arg, quality)
     end
   end
 end
 
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
