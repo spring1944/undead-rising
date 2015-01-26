@@ -35,7 +35,6 @@ function GetStartUnit(teamID)
 end
 
 local function SpawnUnit(unitname, x, y, z, teamID, ammo)
-    Spring.Echo('stuff', unitname, ammo)
     local unitID = CreateUnit(unitname, x, y, z, 0, teamID)
     if ammo > 0 then
         Spring.SetUnitRulesParam(unitID, "ammo", tonumber(ammo))
