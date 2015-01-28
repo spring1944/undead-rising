@@ -115,8 +115,9 @@ local function SpawnArmies(shopMode)
 				local unitStats = playerUnits[i]
 				local name = unitStats.name
 				local health = unitStats.health
-				local xp = unitStats.xp
+				local xp = unitStats.experience
 				local ammo = unitStats.ammo
+				local hqID = unitStats.hqID
 				--Spring.Echo(name, health, xp, ammo)
 				local udid = UnitDefNames[name].id
 				local unitID = unitSpawnRandomPos(name, px, pz, false, 1, teamID, 0)
@@ -126,6 +127,9 @@ local function SpawnArmies(shopMode)
 					SetUnitExperience(unitID, xp)
 					if ammo ~= -1 then
 						SetUnitRulesParam(unitID, "ammo", ammo)
+					end
+					if hqID ~= -1 then
+						SetUnitRulesParam(unitID, "hqID", hqID)
 					end
 				end
 			end
@@ -257,12 +261,19 @@ local function processUnitsForExport(units)
 			local isShop = string.find(unitName, "shop")
 			--while zombie teams don't get their units recorded, I guess they could try to give zombies to human players, so we check to make sure those don't get recorded
 			local isZombie = string.find(unitName, "zom")
+			local hqID = Spring.GetUnitRulesParam(unitID, "hqID") or -1
 			if unitName ~= "flag" and isShop == nil and isZombie == nil then
 				ret[#ret+1] = {
-						name = unitName,
-						xp = xp,
-						health = health,
-						ammo = ammo,
+                        -- unitID is included so that the message
+                        -- de-duplication logic doesn't eliminate identical
+                        -- units (ie, I have 5 Tiger IIs that all retreat at once)
+                        uid = unitID,
+                        hid = hqID,
+						n = unitName,
+                        -- no point adding precision to 0
+						x = not xp and string.format('%.3f', xp) or 0,
+						h = string.format('%.0f', health),
+						a = ammo,
 					}
 			end
 		end
@@ -277,11 +288,6 @@ function GG.Money(teamID, amount)
     Spring.SendCommands('wbynum 255 reward ' .. json.encode({name = playerName, amount = amount}))
 end
 
-local function round(num, idp)
-  local mult = 10^(idp or 0)
-  return math.floor(num * mult + 0.5) / mult
-end
-
 function GG.LeaveBattlefield(units, teamID, survive)
     local info = {}
     local unitsForExport = processUnitsForExport(units)
@@ -289,8 +295,6 @@ function GG.LeaveBattlefield(units, teamID, survive)
     for i=1, #unitsForExport do
         local unitInfo = unitsForExport[i]
         --ffffffffffffuuuuu??????
-        --unitInfo.health = round(unitInfo.health, 2)
-        --unitInfo.xp = round(unitInfo.xp, 2)
         Spring.SendCommands('wbynum 255 save-unit ' .. json.encode({name = playerName, unit = unitInfo}))
     end
 
@@ -303,16 +307,17 @@ function GG.LeaveBattlefield(units, teamID, survive)
 end
 
 function gadget:GameOver(winningAllyTeams)
-    --[[
-    local teams = Spring.GetTeamList()
-    for i=1, #teams do
-        local teamID = teams[i]
-        if teamID ~= GAIA_TEAM_ID then
-            local units = Spring.GetTeamUnits(teamID)
-            #GG.LeaveBattlefield(units, teamID)
+    local shopMode = (GetGameRulesParam("shopmode") == 1)
+    if shopMode then
+        local teams = Spring.GetTeamList()
+        for i=1, #teams do
+            local teamID = teams[i]
+            if teamID ~= GAIA_TEAM_ID then
+                local units = Spring.GetTeamUnits(teamID)
+                GG.LeaveBattlefield(units, teamID)
+            end
         end
     end
-    ]]--
 end
 
 
