@@ -129,8 +129,9 @@ function gadget:TeamDied(deadTeamID)
     successfulTeams = filteredSuccessfulTeams
 end
 
+local assignedObjectives = false
 function gadget:GameFrame(n)
-    if not GG.GameStarted then return end 
+    if (not GG.GameStarted) or (n < GG.GameStarted) then return end 
 
 	if GetGameRulesParam("shopmode") == 1 then
 		gadgetHandler:RemoveGadget()
@@ -141,6 +142,7 @@ function gadget:GameFrame(n)
         for playerName, playerData in pairs(GG.activeAccounts) do
             playerData.objectiveID = math.random(1, 3)
         end
+        assignedObjectives = true
 
 		local teams = GetTeamList()
 		for i=1, #teams do
@@ -155,6 +157,9 @@ function gadget:GameFrame(n)
 			end
 		end
 	end
+
+    -- gross gross gross!
+    if not assignedObjectives then return end
 
     -- every five seconds
 	if n % (30*5) == 0 then
