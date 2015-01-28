@@ -63,7 +63,7 @@ function unitSpawnRandomPos(unitname, x, z, message, count, teamID, delay, fillA
 		local udid = UnitDefNames[unitname].id
 		local featureClear = Spring.GetFeaturesInCylinder(xspwn, zspwn, featureCheckRadius)
 		if #featureClear == 0 and IsPositionValid(udid, xspwn, zspwn) == true then
-            local maxAmmo = UnitDefs[udid].customParams.maxammo
+            local maxAmmo = tonumber(UnitDefs[udid].customParams.maxammo)
             local ammo = 0
             if fillAmmo and maxAmmo ~= nil then
                 ammo = maxAmmo
