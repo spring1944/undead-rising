@@ -284,8 +284,10 @@ end
 function GG.Money(teamID, amount)
     local currentMoney = Spring.GetTeamResources(teamID, "metal")
     local playerName = GG.teamIDToPlayerName[teamID]
+    -- need to differentiate otherwise identical messages
+    local gameFrame = Spring.GetGameFrame()
     Spring.SetTeamResource(teamID, "m", currentMoney + amount)
-    Spring.SendCommands('wbynum 255 reward ' .. json.encode({name = playerName, amount = amount}))
+    Spring.SendCommands('wbynum 255 reward ' .. json.encode({name = playerName, amount = amount, n = gameFrame}))
 end
 
 function GG.LeaveBattlefield(units, teamID, survive)
