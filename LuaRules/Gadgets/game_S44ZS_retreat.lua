@@ -120,10 +120,6 @@ function gadget:UnitDestroyed(unitID, unitDefID, teamID, attackerID)
 end
 
 function gadget:GameFrame(n)
-	if Spring.GetGameRulesParam("shopmode") == 1  then
-		gadgetHandler:RemoveGadget()
-		return
-	end
 	if n % (30*RETREAT_CHECK_INTERVAL) < 0.1 then
 		local teams = GetTeamList()
 		for i=1,#teams do

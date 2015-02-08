@@ -108,10 +108,6 @@ local function PlaceHouse(spotX, spotZ)
 end
 
 function gadget:GameFrame(n)
-	if Spring.GetGameRulesParam("shopmode") == 1 then
-		gadgetHandler:RemoveGadget()
-		return
-	end
 	if n == 0 then
 		local teamStartPos = {}
 		for number, teamID in ipairs(Spring.GetTeamList()) do

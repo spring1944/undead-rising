@@ -22,9 +22,6 @@ local dominationScoreTime = 30 --Time needed holding all points to score in mult
 local GAIA_TEAM_ID = Spring.GetGaiaTeamID()
 --Spring.Echo("+++++++++++++++++++++++++++++++++++++++++++++++++++++++ "..(Spring.GetModOptions().scoremode or "nil!"))
 
-local shopModeActive = false
-
-
 local limitScore = tonumber(Spring.GetModOptions().limitscore) or 200
 local initFrame
 local scoreModes = {
@@ -82,14 +79,6 @@ function gadget:Initialize()
    _G.points = points
    _G.score = score
    _G.dom = dom
-end
-
-function gadget:GameStart()
-	--nuke it in shop mode
-	if GetGameRulesParam("shopmode") == 1 then
-		Spring.Echo("nuking control victory")
-		gadgetHandler:RemoveGadget()	
-	end
 end
 
 function gadget:GameFrame(f)
@@ -287,9 +276,6 @@ end
 local name={}
 
 function gadget:DrawScreen(vsx, vsy)
-if GetGameRulesParam("shopmode") == 1 then
-	gadgetHandler:RemoveGadget()
-end
    local frame = Spring.GetGameFrame()
    if frame / 1800 > startTime then
       local me = Spring.GetLocalAllyTeamID()

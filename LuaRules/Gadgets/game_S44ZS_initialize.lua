@@ -49,7 +49,7 @@ local function calculateNetWorth(playerName)
 	local pd = GG.activeAccounts[playerName]
 	netWorth = pd.money
 	for i=1,#pd.units do
-		local unitName = pd.units[i].name
+		local unitName = pd.units[i].stats.name
 		local ud = UnitDefNames[unitName]
 		netWorth = netWorth + ud.metalCost
 	end
@@ -88,30 +88,11 @@ local function SetStartResources(teamID, amount)
 end
 
 
-local function ShopModeSpawn(playerData)
-	local teamID = playerData.teamID
-	--do they have at least one unit in their table? 
-	if playerData.units[1] then
-		local unitData = playerData.units[1].stats
-		local unitName = unitData.name
-		local side = string.sub(unitName, 1, 3)
-		if string.sub(side, 1, 2) == "us" then
-			side = "us"
-		end
-		SpawnStartUnit(teamID, side)
-	else
-		SpawnStartUnit(teamID)
-	end
-end
-
 --goes through each player in (synced side of) active players, spawns their units and wipes their unit tables
 --(we don't care about what happens to units during the game, only what condition they're in at 
 --the end, and the widget will record that)
-local function SpawnArmies(shopMode)
+local function SpawnArmies()
 	for playerName, playerData in pairs(GG.activeAccounts) do
-        if shopMode then
-            ShopModeSpawn(playerData)
-        end
 		local playerUnits = playerData.units
 		local teamID = playerData.teamID
 		local px, py, pz = GetTeamStartPosition(teamID)
@@ -147,17 +128,13 @@ local function SpawnArmies(shopMode)
 	end
 end
 
-local function StartGame(shopMode)
-	if shopMode == false then
-		--the player with the lowest net worth (army value + money in the bank) is always zombies
-        local poorestPlayerTeamID = findPoorestPlayer()
-		GG.zombieTeamID = poorestPlayerTeamID
-		SetGameRulesParam("zombieteam", poorestPlayerTeamID)
-	else
-		GG.zombieTeamID = "shop mode active, no zombies"
-	end
+local function StartGame()
+    --the player with the lowest net worth (army value + money in the bank) is always zombies
+    local poorestPlayerTeamID = findPoorestPlayer()
+    GG.zombieTeamID = poorestPlayerTeamID
+    SetGameRulesParam("zombieteam", poorestPlayerTeamID)
     GG.GameStarted = Spring.GetGameFrame()
-	SpawnArmies(shopMode)
+	SpawnArmies()
 end
 
 
@@ -203,12 +180,12 @@ local function SpawnTeam(cmd, line, wordlist, playerID)
     SetStartResources(teamID, playerData.money)
     readyPlayers = readyPlayers + 1
     if readyPlayers == numPlayers then
-        local shopMode = (GetGameRulesParam("shopmode") == 1)
         if unitlessPlayers > 1 then
-            shopMode = true
-            SetGameRulesParam("shopmode", 1)
+            Spring.Echo("hey! the game started but more than one person totally lacks units. this is a bug, should never happen, is awful, etc., please leave an issue at: https://github.com/spring1944/ud-spads-plugin");
+            Spring.GameOver({})
+        else 
+            StartGame()
         end
-        StartGame(shopMode)
     end
 
 end
@@ -225,12 +202,6 @@ function gadget:GameStart()
 	GG.teamIDToPlayerName = {}
 	GG.activeAccounts = {}
 	GG.houseSpots = {}
-
-	if modOptions.shop_mode == "1" then
-		SetGameRulesParam("shopmode", 1)
-	else
-		SetGameRulesParam("shopmode", 0)
-	end
 
 	for index, teamID in ipairs(Spring.GetTeamList()) do
         local _, leader, isDead, isAiTeam = GetTeamInfo(teamID)
@@ -267,11 +238,10 @@ local function processUnitsForExport(units)
 				health = healthMult * morphMaxHealth
 			end
 			local ammo = Spring.GetUnitRulesParam(unitID, "ammo") or -1
-			local isShop = string.find(unitName, "shop")
 			--while zombie teams don't get their units recorded, I guess they could try to give zombies to human players, so we check to make sure those don't get recorded
 			local isZombie = string.find(unitName, "zom")
 			local hqID = Spring.GetUnitRulesParam(unitID, "hqID") or -1
-			if unitName ~= "flag" and isShop == nil and isZombie == nil then
+			if unitName ~= "flag" and isZombie == nil then
 				ret[#ret+1] = {
                         -- unitID is included so that the message
                         -- de-duplication logic doesn't eliminate identical
@@ -316,20 +286,5 @@ function GG.LeaveBattlefield(units, teamID, survive)
         end
     end
 end
-
-function gadget:GameOver(winningAllyTeams)
-    local shopMode = (GetGameRulesParam("shopmode") == 1)
-    if shopMode then
-        local teams = Spring.GetTeamList()
-        for i=1, #teams do
-            local teamID = teams[i]
-            if teamID ~= GAIA_TEAM_ID then
-                local units = Spring.GetTeamUnits(teamID)
-                GG.LeaveBattlefield(units, teamID)
-            end
-        end
-    end
-end
-
 
 end

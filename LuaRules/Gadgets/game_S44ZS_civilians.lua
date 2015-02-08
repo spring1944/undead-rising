@@ -188,16 +188,10 @@ function gadget:Initialize()
 end
 
 function gadget:GameStart()
-	if Spring.GetGameRulesParam("shopmode") == 0 then
-		SendToUnsynced('allytogaia')
-	end
+    SendToUnsynced('allytogaia')
 end
 
 function gadget:GameFrame(n)
-	if Spring.GetGameRulesParam("shopmode") == 1 then
-		gadgetHandler:RemoveGadget()
-		return
-	end
 	if(n % 30 < 1) then
 		for teamID, duration in pairs(scaryTeams) do
 			--Spring.Echo("scary teamID:",teamID, "fear factor:", scaryTeams[teamID])

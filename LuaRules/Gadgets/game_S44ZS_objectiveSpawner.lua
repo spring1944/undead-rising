@@ -94,10 +94,6 @@ end
 
 function gadget:GameFrame(n)
     if not GG.GameStarted then return end
-	if GetGameRulesParam("shopmode") == 1 then
-		gadgetHandler:RemoveGadget()
-		return
-	end
 	--civilian and zombie periodical spawn
 	if n % RESPAWN_PERIOD < 0.1 and n < OBJECTIVE_PHASE_LENGTH then
 		local warningTimeInSeconds = CIV_SPAWN_WARNINGTIME/30

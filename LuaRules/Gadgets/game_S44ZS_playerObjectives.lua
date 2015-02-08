@@ -133,10 +133,6 @@ local assignedObjectives = false
 function gadget:GameFrame(n)
     if (not GG.GameStarted) or (n < GG.GameStarted) then return end 
 
-	if GetGameRulesParam("shopmode") == 1 then
-		gadgetHandler:RemoveGadget()
-		return
-	end
 	if n == GG.GameStarted + 50 then
         --assign each team an objective
         for playerName, playerData in pairs(GG.activeAccounts) do
