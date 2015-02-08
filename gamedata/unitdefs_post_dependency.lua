@@ -12,9 +12,10 @@ end
 
 --process ALL the units!
 
+local json = VFS.Include("LuaRules/lib/dkjson.lua")
+
 local shopOptions = {["us"] = {}, ["gb"]= {}, ["ge"] = {}, ["ru"]= {}, ["it"] = {}, ["jp"] = {}}
 --local shopOptions = {}
-local SHOP_UD = {}
 local function canBuyInShop(name, ud)
     local realCost = (ud.buildcostmetal and tonumber(ud.buildcostmetal) > 1)
     local canBuy = realCost and (string.find(name, "sortie") == nil)
@@ -63,32 +64,43 @@ for name, ud in pairs(UnitDefs) do
 		end
 		if (isInf == false) then
 			local acceptableUnit = canBuyInShop(name, ud)
-			if acceptableUnit and side ~= "zo" and side ~= "ci" then
-				shopOptions[side][#shopOptions[side]+1] = name
-			end
-		end
-	end
-	if (ud.customparams) then
-		if ud.customparams.shop then
-			SHOP_UD[side] = ud
-		end
-	end	
-	--MODOPTION UNIT EFFECTS
-	if (modOptions) then
-		if (modOptions.shop_mode or 0) == "1" then
-			if ud.extractsmetal then
-				ud.extractsmetal = 0
-			end
-			ud.sightdistance = 0
-			ud.airsightdistance = 0
-			ud.radardistance = 0
-		end
-	end
+            local exportDef = {
+                name = name,
+                unitpic = ud.buildpic or name .. ".png",
+                description = ud.description,
+                cost = ud.buildcostmetal,
+            }
 
-	--END MODOPTION UNIT EFFECTS
-	
+            if ud.customparams then
+                if ud.customparams.maxammo then
+                    exportDef.ammo = ud.customparams.maxammo
+                end
+
+                if ud.customparams.armor_front then
+                    exportDef.armor_front = ud.customparams.armor_front
+                end
+
+                if ud.customparams.armor_side then
+                    exportDef.armor_side = ud.customparams.armor_side
+                end
+
+                if ud.customparams.armor_rear then
+                    exportDef.armor_rear = ud.customparams.armor_rear
+                end
+
+                if ud.customparams.armor_top then
+                    exportDef.armor_top = ud.customparams.armor_top
+                end
+            end
+
+			if acceptableUnit and side ~= "zo" and side ~= "ci" then
+				shopOptions[side][#shopOptions[side]+1] = exportDef
+			end
+		end
+	end
 end
 
-for side, ud in pairs(SHOP_UD) do
-  ud["buildoptions"] = shopOptions[side]
+-- TODO: automate this at some point? one in X games set the option and update DB?
+if false then
+    Spring.Echo(json.encode(shopOptions));
 end
