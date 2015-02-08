@@ -70,6 +70,11 @@ local function findPoorestPlayer()
 	return poorestPlayerTeamID
 end
 
+local function sendToAutohost(command, data)
+    --Spring.SendCommands('wbynum 255 ' .. command .. ' ' .. json.encode(data))
+    Spring.SendLuaRulesMsg(json.encode( { command = command, data = data }))
+end
+
 local function SetStartResources(teamID, amount)
 	SetTeamResource(teamID, "es", LOGISTICS_RESERVE)
 	SetTeamResource(teamID, "e", LOGISTICS_RESERVE)
@@ -87,7 +92,7 @@ local function ShopModeSpawn(playerData)
 	local teamID = playerData.teamID
 	--do they have at least one unit in their table? 
 	if playerData.units[1] then
-		local unitData = playerData.units[1]
+		local unitData = playerData.units[1].stats
 		local unitName = unitData.name
 		local side = string.sub(unitName, 1, 3)
 		if string.sub(side, 1, 2) == "us" then
@@ -112,12 +117,14 @@ local function SpawnArmies(shopMode)
 		local px, py, pz = GetTeamStartPosition(teamID)
 		if teamID ~= GG.zombieTeamID then
 			for i=1, #playerUnits do
+                -- TODO: factor this bit out to a chunk that's clearly only
+                -- dealing with massaging data from the server
 				local unitStats = playerUnits[i]
-				local name = unitStats.name
-				local health = unitStats.health
-				local xp = unitStats.experience
-				local ammo = unitStats.ammo
-				local hqID = unitStats.hqID
+				local name = unitStats.stats.name
+				local health = unitStats.stats.health
+				local xp = unitStats.stats.experience
+				local ammo = unitStats.stats.ammo
+				local hqID = unitStats.id
 				--Spring.Echo(name, health, xp, ammo)
 				local udid = UnitDefNames[name].id
 				local unitID = unitSpawnRandomPos(name, px, pz, false, 1, teamID, 0)
@@ -186,8 +193,10 @@ local function SpawnTeam(cmd, line, wordlist, playerID)
     GG.teamSide[teamID] = side
     GG.teamIDToPlayerName[teamID] = player.name
     local unitCount = 0
-    for _, unitInfo in pairs(player.units) do
-        unitCount = unitCount + 1
+    if player.units then
+        for _, unitInfo in pairs(player.units) do
+            unitCount = unitCount + 1
+        end
     end
     if unitCount == 0 then unitlessPlayers = unitlessPlayers + 1 end
 
@@ -235,7 +244,7 @@ function gadget:GameStart()
         if (not spectator or isAiTeam) and teamID ~= GAIA_TEAM_ID then
             numPlayers = numPlayers + 1
             if not GG.activeAccounts[playerName] then
-                Spring.SendCommands('wbynum 255 team-ready ' .. playerName .. '|' .. teamID)
+                sendToAutohost('team-ready', {name = playerName, teamID = teamID})
             end
         end
     end
@@ -267,13 +276,13 @@ local function processUnitsForExport(units)
                         -- unitID is included so that the message
                         -- de-duplication logic doesn't eliminate identical
                         -- units (ie, I have 5 Tiger IIs that all retreat at once)
-                        uid = unitID,
-                        hid = hqID,
-						n = unitName,
+                        spring_unitID = unitID,
+                        hq_id = hqID,
+						name = unitName,
                         -- no point adding precision to 0
-						x = not xp and string.format('%.3f', xp) or 0,
-						h = string.format('%.0f', health),
-						a = ammo,
+						experience = not xp and string.format('%.3f', xp) or 0,
+						health = string.format('%.0f', health),
+						ammo = ammo,
 					}
 			end
 		end
@@ -287,7 +296,7 @@ function GG.Money(teamID, amount)
     -- need to differentiate otherwise identical messages
     local gameFrame = Spring.GetGameFrame()
     Spring.SetTeamResource(teamID, "m", currentMoney + amount)
-    Spring.SendCommands('wbynum 255 reward ' .. json.encode({name = playerName, amount = amount, n = gameFrame}))
+    sendToAutohost('reward', {name = playerName, amount = amount, n = gameFrame})
 end
 
 function GG.LeaveBattlefield(units, teamID, survive)
@@ -297,7 +306,7 @@ function GG.LeaveBattlefield(units, teamID, survive)
     for i=1, #unitsForExport do
         local unitInfo = unitsForExport[i]
         --ffffffffffffuuuuu??????
-        Spring.SendCommands('wbynum 255 save-unit ' .. json.encode({name = playerName, unit = unitInfo}))
+        sendToAutohost('save-unit', {name = playerName, unit = unitInfo})
     end
 
     for i=1, #units do
