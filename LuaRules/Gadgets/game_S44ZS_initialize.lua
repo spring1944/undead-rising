@@ -113,7 +113,7 @@ local function SpawnArmies()
 				if unitID ~= nil then
 					SetUnitHealth(unitID, health)
 					SetUnitExperience(unitID, xp)
-					if ammo ~= -1 then
+					if ammo and ammo ~= -1 then
 						SetUnitRulesParam(unitID, "ammo", ammo)
 					end
 					if hqID ~= -1 then
