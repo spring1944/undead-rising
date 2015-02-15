@@ -13,6 +13,7 @@ end
 --process ALL the units!
 
 local json = VFS.Include("LuaRules/lib/dkjson.lua")
+local squadDefs = VFS.Include("luarules/configs/squad_defs_loader.lua")
 
 local sideUnits = {["us"] = {}, ["gb"]= {}, ["ge"] = {}, ["ru"]= {}, ["it"] = {}, ["jp"] = {}}
 --local shopOptions = {}
@@ -69,6 +70,7 @@ for name, ud in pairs(UnitDefs) do
 	local side = string.sub(name, 1, 2)
 	-- add the unit to gamemaster buildoptions
     local availableInShop = canBuyInShop(name, ud)
+     
     local exportDef = {
         name = name,
         human_name = ud.name,
@@ -79,6 +81,13 @@ for name, ud in pairs(UnitDefs) do
         cost = ud.buildcostmetal,
         available_in_shop  = availableInShop
     }
+
+    if squadDefs[name] then
+        exportDef.human_name = squadDefs[name].name
+        exportDef.squad_members = squadDefs[name].members
+        --exportDef.unitpic = squadDefs[name].buildPic
+        --exportDef.cost = squadDefs[name].buildCostMetal
+    end
 
     if ud.customparams then
         if ud.customparams.maxammo then
