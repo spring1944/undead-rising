@@ -187,11 +187,11 @@ function gadget:Initialize()
 	end
 end
 
-function gadget:GameStart()
-    SendToUnsynced('allytogaia')
-end
-
 function gadget:GameFrame(n)
+    if not GG.GameStarted then return end
+    if n == GG.GameStarted then
+        SendToUnsynced('allytogaia')
+    end
 	if(n % 30 < 1) then
 		for teamID, duration in pairs(scaryTeams) do
 			--Spring.Echo("scary teamID:",teamID, "fear factor:", scaryTeams[teamID])
