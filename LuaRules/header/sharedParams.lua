@@ -17,7 +17,7 @@ local params = {
 	CIV_SPAWN_WARNINGTIME		= (tonumber(modOptions.respawn_period) or 1)*framesPerMinute,
 	
 	--how many zombies/civilians are spawned each RESPAWN_PERIOD?
-	ZOMBIE_COUNT 				= tonumber(modOptions.zombie_count) or 3,
+	ZOMBIE_COUNT 				= tonumber(modOptions.zombie_count) or 5,
 	CIVILIAN_COUNT				= tonumber(modOptions.civilian_count) or 15,
 	
 	--money settings (shockingly, max_money should be > initial cash, or players will only get max_money)

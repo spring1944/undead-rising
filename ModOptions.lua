@@ -158,7 +158,7 @@ local options = {
 		name = "how many zombies spawn in at once?",
 		desc = "how many zombies spawn in at once?? (key = 'zombie_count')",
 	    type   = "number",
-		def    = 3,
+		def    = 5,
 		min    = 1,
 		max    = 20,
 		section= '1balance',
