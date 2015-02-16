@@ -59,10 +59,19 @@ end
 local function findPoorestPlayer()
 	local lowestNetWorthSeen = MAX_MONEY + 1
 	local poorestPlayerTeamID = 0
+
 	for playerName, playerData in pairs(GG.activeAccounts) do
 		local playerNetWorth = calculateNetWorth(playerName)
+
+        local unitCount = 0
+        if playerData.units then
+            for _, unitInfo in pairs(playerData.units) do
+                unitCount = unitCount + 1
+            end
+        end
+
         -- activeAccounts are randomly ordered, so <= works out fine
-		if playerNetWorth <= lowestNetWorthSeen then
+		if playerNetWorth <= lowestNetWorthSeen or unitCount == 0 then
 			poorestPlayerTeamID = playerData.teamID
 			lowestNetWorthSeen = playerNetWorth
 		end
@@ -116,7 +125,8 @@ local function SpawnArmies()
 					if ammo and ammo ~= -1 then
 						SetUnitRulesParam(unitID, "ammo", ammo)
 					end
-					if hqID ~= -1 then
+					if hqID then
+                        --Spring.Echo('spawning a unit with HQID!!', hqID, unitID, name)
 						SetUnitRulesParam(unitID, "hqID", hqID)
 					end
 				end
@@ -221,6 +231,15 @@ function gadget:GameStart()
     end
 end
 
+function gadget:UnitDestroyed(unitID, unitDefID, unitTeam, _, _, _, _, attackerID)
+    local hqID = Spring.GetUnitRulesParam(unitID, 'hqID')
+    local playerName = GG.teamIDToPlayerName[unitTeam]
+    -- don't kill morph units (hence attacker ID) (TODO: handle morphs better)
+    if hqID ~= '' and playerName and attackerID then
+        sendToAutohost('remove-unit', {owner = playerName, hq_id = hqID})
+    end
+end
+
 local function processUnitsForExport(units)
     local ret = {}
 	for index, unitID in ipairs(units) do
@@ -282,6 +301,7 @@ function GG.LeaveBattlefield(units, teamID, survive)
     for i=1, #units do
         local unitID = units[i]
         if not survive then
+            SetUnitRulesParam(unitID, 'hqID', '')
             Spring.DestroyUnit(unitID, false, true) --unitID, self-d, reclaimed (ie silent)
         end
     end
