@@ -231,11 +231,11 @@ function gadget:GameStart()
     end
 end
 
-function gadget:UnitDestroyed(unitID, unitDefID, unitTeam, _, _, _, _, attackerID)
+function gadget:UnitDestroyed(unitID, unitDefID, unitTeam)
     local hqID = Spring.GetUnitRulesParam(unitID, 'hqID')
     local playerName = GG.teamIDToPlayerName[unitTeam]
     -- don't kill morph units (hence attacker ID) (TODO: handle morphs better)
-    if hqID ~= '' and playerName and attackerID then
+    if hqID ~= -1 and playerName then
         sendToAutohost('remove-unit', {owner = playerName, hq_id = hqID})
     end
 end
@@ -292,17 +292,20 @@ function GG.LeaveBattlefield(units, teamID, survive)
     local info = {}
     local unitsForExport = processUnitsForExport(units)
     local playerName = GG.teamIDToPlayerName[teamID]
-    for i=1, #unitsForExport do
-        local unitInfo = unitsForExport[i]
-        --ffffffffffffuuuuu??????
-        sendToAutohost('save-unit', {name = playerName, unit = unitInfo})
-    end
+    -- skip saving civilians
+    if teamID ~= GAIA_TEAM_ID then
+        for i=1, #unitsForExport do
+            local unitInfo = unitsForExport[i]
+            --ffffffffffffuuuuu??????
+            sendToAutohost('save-unit', {name = playerName, unit = unitInfo})
+        end
 
-    for i=1, #units do
-        local unitID = units[i]
-        if not survive then
-            SetUnitRulesParam(unitID, 'hqID', '')
-            Spring.DestroyUnit(unitID, false, true) --unitID, self-d, reclaimed (ie silent)
+        for i=1, #units do
+            local unitID = units[i]
+            if not survive then
+                SetUnitRulesParam(unitID, 'hqID', -1)
+                Spring.DestroyUnit(unitID, false, true) --unitID, self-d, reclaimed (ie silent)
+            end
         end
     end
 end
