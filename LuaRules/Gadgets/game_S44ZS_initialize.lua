@@ -42,6 +42,7 @@ local GAIA_TEAM_ID				=	Spring.GetGaiaTeamID()
 
 local modOptions = Spring.GetModOptions()
 
+local messageQueue = {}
 --------------------------------------------------------------------------- 
 
 local function calculateNetWorth(playerName)
@@ -80,8 +81,9 @@ local function findPoorestPlayer()
 end
 
 local function sendToAutohost(command, data)
-    --Spring.SendCommands('wbynum 255 ' .. command .. ' ' .. json.encode(data))
-    Spring.SendLuaRulesMsg(json.encode( { command = command, data = data }))
+    local message = json.encode( { command = command, data = data })
+    -- these are processed in GameFrame
+    table.insert(messageQueue, message)
 end
 
 local function SetStartResources(teamID, amount)
@@ -200,6 +202,14 @@ local function SpawnTeam(cmd, line, wordlist, playerID)
 
 end
 
+function gadget:GameFrame(n)
+    if n % 10 == 0 then
+        if messageQueue[1] then
+            Spring.SendLuaRulesMsg(table.remove(messageQueue, 1))
+        end
+    end
+end
+
 function gadget:Initialize()
     local success = gadgetHandler:AddChatAction('spawn-team', SpawnTeam, '')
 end
@@ -249,13 +259,15 @@ local function processUnitsForExport(units)
 			local unitDefID = Spring.GetUnitDefID(unitID)
 			local unitDef = UnitDefs[unitDefID]
 			local unitName = unitDef.name
-			if string.find(unitName, "stationary") or string.find(unitName, "sandbag") then
-				unitName = morphDefs[unitName].into
-				local morphUD = UnitDefNames[unitName]
-				local morphMaxHealth = morphUD.health
-				local healthMult = health/maxHealth
-				health = healthMult * morphMaxHealth
-			end
+            if morphDefs and morphDefs[unitName] then
+                if string.find(unitName, "stationary") or string.find(unitName, "sandbag") then
+                    unitName = morphDefs[unitName].into
+                    local morphUD = UnitDefNames[unitName]
+                    local morphMaxHealth = morphUD.health
+                    local healthMult = health/maxHealth
+                    health = healthMult * morphMaxHealth
+                end
+            end
 			local ammo = Spring.GetUnitRulesParam(unitID, "ammo") or -1
 			--while zombie teams don't get their units recorded, I guess they could try to give zombies to human players, so we check to make sure those don't get recorded
 			local isZombie = string.find(unitName, "zom")
@@ -299,13 +311,13 @@ function GG.LeaveBattlefield(units, teamID, survive)
             --ffffffffffffuuuuu??????
             sendToAutohost('save-unit', {name = playerName, unit = unitInfo})
         end
+    end
 
-        for i=1, #units do
-            local unitID = units[i]
-            if not survive then
-                SetUnitRulesParam(unitID, 'hqID', -1)
-                Spring.DestroyUnit(unitID, false, true) --unitID, self-d, reclaimed (ie silent)
-            end
+    for i=1, #units do
+        local unitID = units[i]
+        if not survive then
+            SetUnitRulesParam(unitID, 'hqID', -1)
+            Spring.DestroyUnit(unitID, false, true) --unitID, self-d, reclaimed (ie silent)
         end
     end
 end

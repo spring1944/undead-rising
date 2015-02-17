@@ -8,7 +8,7 @@ local modinfo = {
     description         = "HORRORS OF THE FLESH: FEAR AND MYTH IN SPRING 1944",
     url                 = "http://www.spring1944.com",
     modtype             = "1",
-    depend              = {"Spring: 1944 dev-test-3630-ed3a5da"},
+    depend              = {"Spring: 1944 dev-$VERSION"},
 }
 
 return modinfo
