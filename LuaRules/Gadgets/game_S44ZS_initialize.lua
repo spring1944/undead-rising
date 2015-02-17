@@ -245,7 +245,7 @@ function gadget:UnitDestroyed(unitID, unitDefID, unitTeam)
     local hqID = Spring.GetUnitRulesParam(unitID, 'hqID')
     local playerName = GG.teamIDToPlayerName[unitTeam]
     -- don't kill morph units (hence attacker ID) (TODO: handle morphs better)
-    if hqID ~= -1 and playerName then
+    if hqID ~= -1 and playerName and unitTeam ~= GG.zombieTeamID then
         sendToAutohost('remove-unit', {owner = playerName, hq_id = hqID})
     end
 end
