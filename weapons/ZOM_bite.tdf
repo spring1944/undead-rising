@@ -1,10 +1,10 @@
 [bite] {
   name=Bite - MUNCH MUNCH;
   areaOfEffect=15;
-  avoidFeature=1;
+  avoidFeature=0;
   avoidFriendly=0;
   beamweapon=1;
-  collideFeature=1;
+  collideFeature=0;
   collideFriendly=0;
   collisionSize=1.5;
   coreThickness=0.00001;
