@@ -43,7 +43,7 @@ local GAIA_TEAM_ID				=	Spring.GetGaiaTeamID()
 local modOptions = Spring.GetModOptions()
 
 local messageQueue = {}
---------------------------------------------------------------------------- 
+---------------------------------------------------------------------------
 
 local function calculateNetWorth(playerName)
 	local netWorth = 0
@@ -100,7 +100,7 @@ end
 
 
 --goes through each player in (synced side of) active players, spawns their units and wipes their unit tables
---(we don't care about what happens to units during the game, only what condition they're in at 
+--(we don't care about what happens to units during the game, only what condition they're in at
 --the end, and the widget will record that)
 local function SpawnArmies()
 	for playerName, playerData in pairs(GG.activeAccounts) do
@@ -134,7 +134,7 @@ local function SpawnArmies()
 				end
 			end
 		else
-			CreateUnit("zomsprinter", px, py, pz, 0, teamID)		
+			CreateUnit("zomsprinter", px, py, pz, 0, teamID)
 		end
 		playerData.units = nil
 	end
@@ -168,10 +168,10 @@ local function SpawnTeam(cmd, line, wordlist, playerID)
     local teamID = tonumber(player.teamID)
     local side = select(5, GetTeamInfo(teamID))
 
-    GG.activeAccounts[player.name] = { 
-        teamID = tonumber(player.teamID), 
-        name = player.name, 
-        money = tonumber(player.money), 
+    GG.activeAccounts[player.name] = {
+        teamID = tonumber(player.teamID),
+        name = player.name,
+        money = tonumber(player.money),
         units = player.units,
         rescuedCivilians = 0,
 		flagControlTime = 0,
@@ -195,7 +195,7 @@ local function SpawnTeam(cmd, line, wordlist, playerID)
         if unitlessPlayers > 1 then
             Spring.Echo("hey! the game started but more than one person totally lacks units. this is a bug, should never happen, is awful, etc., please leave an issue at: https://github.com/spring1944/ud-spads-plugin");
             Spring.GameOver({})
-        else 
+        else
             StartGame()
         end
     end
@@ -291,13 +291,15 @@ local function processUnitsForExport(units)
     return ret
 end
 
+local rewardID = 0
 function GG.Money(teamID, amount)
     local currentMoney = Spring.GetTeamResources(teamID, "metal")
     local playerName = GG.teamIDToPlayerName[teamID]
     -- need to differentiate otherwise identical messages
-    local gameFrame = Spring.GetGameFrame()
+    rewardID = rewardID + 1
+    local id = rewardID
     Spring.SetTeamResource(teamID, "m", currentMoney + amount)
-    sendToAutohost('reward', {name = playerName, amount = amount, n = gameFrame})
+    sendToAutohost('reward', {name = playerName, amount = amount, id = id})
 end
 
 function GG.LeaveBattlefield(units, teamID, survive)
