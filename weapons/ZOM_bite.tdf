@@ -9,12 +9,12 @@
   collisionSize=1.5;
   coreThickness=0.00001;
   [customParams] {
-    armor_penetration_1000m=10;
-    armor_penetration_100m=50;
+    armor_penetration_1000m=40;
+    armor_penetration_100m=100;
     damagetype=kinetic;
   }
   [damage] {
-    default=1000;
+    default=100;
   }
   duration=0.000001;
   explosionGenerator=custom:nothing;
@@ -25,7 +25,7 @@
   leadlimit=0;
   lineofsight=1;
   range=110;
-  reloadTime=1;
+  reloadTime=0.25;
   rendertype=0;
   soundStart=zom_bite;
   thickness=0.00001;
