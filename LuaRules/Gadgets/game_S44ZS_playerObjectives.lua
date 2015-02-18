@@ -183,7 +183,7 @@ function gadget:GameFrame(n)
         local allUnits = Spring.GetAllUnits()
         -- game's over, take away the mystery
         for index, unitID in ipairs(allUnits) do
-            Spring.SetUnitAlwaysVisible(unitID, true)
+            --Spring.SetUnitAlwaysVisible(unitID, true)
         end
 		if #successfulTeams ~= 1 then --either both teams got the objective, or neither did.
 			teamWonObjRound(GG.zombieTeamID)
@@ -201,6 +201,6 @@ function gadget:UnitCreated(unitID)
     if not GG.GameStarted then return end
     -- newly spawned units need to be visible too, after game end
     if gameFrame > (GG.GameStarted + OBJECTIVE_PHASE_LENGTH) then
-        Spring.SetUnitAlwaysVisible(unitID, true)
+        --Spring.SetUnitAlwaysVisible(unitID, true)
     end
 end
