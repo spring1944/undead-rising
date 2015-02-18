@@ -60,31 +60,35 @@ function unitSpawnRandomPos(unitname, x, z, message, count, teamID, delay, fillA
 		local xspwn = x + dx
 		local zspwn = z + dz
 		local yspwn = GetGroundHeight(xspwn, zspwn)
-		local udid = UnitDefNames[unitname].id
-		local featureClear = Spring.GetFeaturesInCylinder(xspwn, zspwn, featureCheckRadius)
-		if #featureClear == 0 and IsPositionValid(udid, xspwn, zspwn) == true then
-            local maxAmmo = tonumber(UnitDefs[udid].customParams.maxammo)
-            local ammo = 0
-            if fillAmmo and maxAmmo ~= nil then
-                ammo = maxAmmo
-            end
+        if UnitDefNames[unitname] then
+            local udid = UnitDefNames[unitname].id
+            local featureClear = Spring.GetFeaturesInCylinder(xspwn, zspwn, featureCheckRadius)
+            if #featureClear == 0 and IsPositionValid(udid, xspwn, zspwn) == true then
+                local maxAmmo = tonumber(UnitDefs[udid].customParams.maxammo)
+                local ammo = 0
+                if fillAmmo and maxAmmo ~= nil then
+                    ammo = maxAmmo
+                end
 
-			if delay > 0 then
-				local spawnDelay = delay
-				GG.Delay.DelayCall(Spring.MarkerErasePosition, {x, y, z}, spawnDelay)
-				GG.Delay.DelayCall(SpawnUnit, {unitname, xspwn, yspwn, zspwn, teamID, ammo}, spawnDelay)
-			else
-				local unitID = SpawnUnit(unitname, xspwn, yspwn, zspwn, teamID, ammo)
-				table.insert(unitIDList, unitID)
-			end
-			failsafe = 0
-			counter = counter + 1
-		end
-		failsafe = failsafe + 1
-		spawnSpread = spawnSpread * SPREAD_MULT
+                if delay > 0 then
+                    local spawnDelay = delay
+                    GG.Delay.DelayCall(Spring.MarkerErasePosition, {x, y, z}, spawnDelay)
+                    GG.Delay.DelayCall(SpawnUnit, {unitname, xspwn, yspwn, zspwn, teamID, ammo}, spawnDelay)
+                else
+                    local unitID = SpawnUnit(unitname, xspwn, yspwn, zspwn, teamID, ammo)
+                    table.insert(unitIDList, unitID)
+                end
+                failsafe = 0
+                counter = counter + 1
+            end
+            failsafe = failsafe + 1
+            spawnSpread = spawnSpread * SPREAD_MULT
+        else
+            Spring.Echo("bad unitname in reinforcement defs! ", unitname)
+        end
 	end
 	if failsafe == searchLimit then
-		Spring.Echo("SPAWNER FAILED TO SPAWN UNIT: "..unitname)
+		Spring.Echo("SPAWNER FAILED TO SPAWN UNIT: ", unitname)
 	end
 	if message ~= false then
 		Spring.MarkerAddPoint(x, y, z, message)
