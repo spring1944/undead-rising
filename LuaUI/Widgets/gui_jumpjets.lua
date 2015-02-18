@@ -50,7 +50,6 @@ local spTestBuildOrder         = Spring.TestBuildOrder
 
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
-VFS.Include("LuaRules/Configs/customcmds.h.lua")
 
 local pairs = pairs
 
@@ -63,6 +62,7 @@ local pink     = {  1, 0.5, 0.5,   1}
 local red      = {  1,   0,   0,   1}
 
 local jumpDefs  = VFS.Include"LuaRules/Configs/jump_defs.lua"
+local CMD_JUMP = Spring.GetGameRulesParam("CMD_JUMP")
 
 local function ListToSet(t)
   local new = {}

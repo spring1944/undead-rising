@@ -14,7 +14,7 @@
     damagetype=kinetic;
   }
   [damage] {
-    default=750;
+    default=1000;
   }
   duration=0.000001;
   explosionGenerator=custom:nothing;
@@ -22,8 +22,9 @@
   id=5;
   impulseFactor=0;
   impactOnly=1;
+  leadlimit=0;
   lineofsight=1;
-  range=80;
+  range=110;
   reloadTime=1;
   rendertype=0;
   soundStart=zom_bite;

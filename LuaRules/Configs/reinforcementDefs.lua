@@ -141,7 +141,7 @@ local reinforcementDefs = {
                 ["zomsprinter"] = 70,
             },
             [2] = {
-                ["zomsprinter"] = 400,
+                ["zomsprinter"] = 200,
             }
         },
     }

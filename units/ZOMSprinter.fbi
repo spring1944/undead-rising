@@ -2,7 +2,7 @@
   unitname=ZOMSprinter;
   name=Sprinter;
   description=FAST Inevitable Doom;
-  acceleration=0.575;
+  acceleration=0.72;
   airSightDistance=2500;
   brakeRate=0.9;
   buildCostEnergy=0;
@@ -20,9 +20,9 @@
   footprintZ=1;
   iconType=zombiea;
   mass=50;
-  maxDamage=280;
+  maxDamage=420;
   maxSlope=15;
-  maxVelocity=1.6;
+  maxVelocity=2;
   maxWaterDepth=10;
   movementClass=KBOT_Infantry;
   noChaseCategory=FLAG AIR;

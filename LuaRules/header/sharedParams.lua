@@ -17,7 +17,7 @@ local params = {
 	CIV_SPAWN_WARNINGTIME		= (tonumber(modOptions.respawn_period) or 1)*framesPerMinute,
 	
 	--how many zombies/civilians are spawned each RESPAWN_PERIOD?
-	ZOMBIE_COUNT 				= tonumber(modOptions.zombie_count) or 5,
+	ZOMBIE_COUNT 				= tonumber(modOptions.zombie_count) or 3,
 	CIVILIAN_COUNT				= tonumber(modOptions.civilian_count) or 15,
 	
 	--money settings (shockingly, max_money should be > initial cash, or players will only get max_money)
@@ -43,7 +43,7 @@ local params = {
 	--corpse settings 
 		--what's the upper limit for infantry corpses spawned from a wrecked veh/tank
 		--min possible is 0 atm
-	MAX_VEH_CORPSES				= 5, 
+	MAX_VEH_CORPSES				= 3, 
 		--what's the radius where zombies can raise the dead
 	ZOMBIFICATION_RADIUS		= 60,
 	
@@ -57,8 +57,8 @@ local params = {
 		--for completing various mini-goals (saved civvie, purged a hot zone, killed a zombie)
 	PRIZE_CIVILIAN_SAVE			= 100,
 	PRIZE_FLAG_CONTROL			= 85,
-	PRIZE_HOT_ZONE_PURGE		= 1000,
-	PRIZE_ZOMBIE_KILL			= 50,
+	PRIZE_HOT_ZONE_PURGE		= 1500,
+	PRIZE_ZOMBIE_KILL			= 200,
 	
 	FLAG_CONTROL_REWARD_INTERVAL = 10, --every X seconds of flag control a team will get the above reward
 		--zombie income settings
@@ -66,8 +66,6 @@ local params = {
 	ZOM_BOUNTY_MULT				= 0.35, --which is unit metal cost * this mult
 	
 	--initialize values
-		--these are the names that are allowed to save/send account info
-	TRUSTED_NAMES				= {"[S44]ZombieHost", "[S44]Nemo", "Nemo"},
 		--a player's logistics at the start of a game
 	LOGISTICS_RESERVE			= tonumber(modOptions.logistics_reserve) or 5000,
 	
