@@ -48,7 +48,7 @@ function GG.Reward(teamID, achievement, bounty)
 	local playerName = GG.teamIDToPlayerName[teamID]
 	local pd = GG.activeAccounts[playerName]
 	if pd == nil then
-		Spring.Echo("BAD PD IN REWARDS.LUA!", playerName.."teamID ", teamID,"zombie teamID:",GG.zombieTeamID, achievement, bounty)
+		Spring.Echo("BAD PD IN REWARDS.LUA!", playerName, "teamID ", teamID,"zombie teamID:", GG.zombieTeamID, achievement, bounty)
 	end
 	--TODO make this big and shiny in the middle of the screen
     -- stop rewarding these after the objective phase is over
