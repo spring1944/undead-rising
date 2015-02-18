@@ -44,9 +44,8 @@ function widget:Shutdown()
 end
 
 function widget:UnitCreated(uid, udid, tid)
-	local ud = UnitDefs[udid]
 	if (ud.weapons[1] ~= nil) then
-		if(ud.canFly == true) and (not ud.customParams.undead) then
+		if ud.customParams.undead then
 			GiveOrderToUnit(uid, CMD.MOVE_STATE, { 1 }, 0)	--{0} = holdpos, {1} = maneuver, {2} = roam
 		else
 			GiveOrderToUnit(uid, CMD.MOVE_STATE, { 0 }, 0)
