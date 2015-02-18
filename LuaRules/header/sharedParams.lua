@@ -67,7 +67,7 @@ local params = {
 	
 	--initialize values
 		--a player's logistics at the start of a game
-	LOGISTICS_RESERVE			= tonumber(modOptions.logistics_reserve) or 5000,
+	LOGISTICS_RESERVE			= tonumber(modOptions.logistics_reserve) or 1500,
 	
 	--civilian behavior settings
 		--how far around them civilians are aware of things happening 

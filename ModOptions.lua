@@ -94,7 +94,7 @@ local options = {
 		name = "Logistics reserve",
 		desc = "Determines how much Logistics players have to work with in each game (key = 'logistics_reserve')",
 		type   = "number",
-		def    = 5000,
+		def    = 1500,
 		min    = 1000,
 		max    = 20000,
 		section= '4other',
