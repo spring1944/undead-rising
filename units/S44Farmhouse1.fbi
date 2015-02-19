@@ -22,7 +22,7 @@
   }
   script=null.cob;
   showNanoFrame=0;
-  sightDistance=0;
+  sightDistance=500;
   smoothAnim=0;
   stealth=1;
   yardmap=o;
