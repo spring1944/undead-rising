@@ -17,7 +17,7 @@ local params = {
 	CIV_SPAWN_WARNINGTIME		= (tonumber(modOptions.respawn_period) or 1)*framesPerMinute,
 	
 	--how many zombies/civilians are spawned each RESPAWN_PERIOD?
-	ZOMBIE_COUNT 				= tonumber(modOptions.zombie_count) or 3,
+	ZOMBIE_COUNT 				= tonumber(modOptions.zombie_count) or 5,
 	CIVILIAN_COUNT				= tonumber(modOptions.civilian_count) or 15,
 	
 	--money settings (shockingly, max_money should be > initial cash, or players will only get max_money)
@@ -43,27 +43,27 @@ local params = {
 	--corpse settings 
 		--what's the upper limit for infantry corpses spawned from a wrecked veh/tank
 		--min possible is 0 atm
-	MAX_VEH_CORPSES				= 3, 
+	MAX_VEH_CORPSES				= 5, 
 		--what's the radius where zombies can raise the dead
-	ZOMBIFICATION_RADIUS		= 60,
+	ZOMBIFICATION_RADIUS		= 80,
 	
 	--prizes! What do players get for accomplishing various tasks
 		--lost the objective stage, but defeated the huge wave of reinforcements
 	PRIZE_EPIC_WIN				= 75000,
 		--won the objective stage and then won the game with the reinforcements
-	PRIZE_OBJECTIVE_WIN			= 25000,
+	PRIZE_OBJECTIVE_WIN			= 35000,
 		--both human players were killed or retreated before the objective round ended
-	PRIZE_HUMANS_GONE			= 5000,
+	PRIZE_HUMANS_GONE			= 15000,
 		--for completing various mini-goals (saved civvie, purged a hot zone, killed a zombie)
-	PRIZE_CIVILIAN_SAVE			= 100,
+	PRIZE_CIVILIAN_SAVE			= 150,
 	PRIZE_FLAG_CONTROL			= 85,
 	PRIZE_HOT_ZONE_PURGE		= 1500,
-	PRIZE_ZOMBIE_KILL			= 200,
+	PRIZE_ZOMBIE_KILL			= 100,
 	
 	FLAG_CONTROL_REWARD_INTERVAL = 10, --every X seconds of flag control a team will get the above reward
 		--zombie income settings
 	PRIZE_HUMAN_KILL			= 0, --zombies get a 'bounty' added to this value for killing human units
-	ZOM_BOUNTY_MULT				= 0.35, --which is unit metal cost * this mult
+	ZOM_BOUNTY_MULT				= 0.50, --which is unit metal cost * this mult
 	
 	--initialize values
 		--a player's logistics at the start of a game
