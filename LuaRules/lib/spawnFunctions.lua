@@ -81,11 +81,12 @@ function unitSpawnRandomPos(unitname, x, z, message, count, teamID, delay, fillA
                 failsafe = 0
                 counter = counter + 1
             end
-            failsafe = failsafe + 1
             spawnSpread = spawnSpread * SPREAD_MULT
         else
             Spring.Echo("bad unitname in reinforcement defs! ", unitname)
+            break
         end
+        failsafe = failsafe + 1
 	end
 	if failsafe == searchLimit then
 		Spring.Echo("SPAWNER FAILED TO SPAWN UNIT: ", unitname)
