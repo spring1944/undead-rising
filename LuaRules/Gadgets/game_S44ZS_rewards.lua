@@ -85,7 +85,7 @@ end
 function gadget:UnitDestroyed(unitID, unitDefID, teamID, attackerID, attackerDefID, attackerTeamID)
 	local ud = UnitDefs[unitDefID]
     -- make sure we're interested in a valid player to reward
-    local playerName = GG.teamIDToPlayerName[teamID]
+    local playerName = GG.teamIDToPlayerName[attackerTeamID]
     if not GG.activeAccounts[playerName] then return end
 
 	--This check covers self destructs
