@@ -28,9 +28,9 @@ local params = VFS.Include("LuaRules/header/sharedParams.lua")
 
 local prizes = {
 	["epicwin"] = params.PRIZE_EPIC_WIN,
-	["wongame"] = params.PRIZE_OBJECTIVE_WIN, 
+	["wongame"] = params.PRIZE_OBJECTIVE_WIN,
 	["humansgone"] = params.PRIZE_HUMANS_GONE,
-	["civiliansave"] = params.PRIZE_CIVILIAN_SAVE, 
+	["civiliansave"] = params.PRIZE_CIVILIAN_SAVE,
 	["flagcontrol"] = params.PRIZE_FLAG_CONTROL,
 	["hotzonepurge"] = params.PRIZE_HOT_ZONE_PURGE,
 	["zombiekill"] = params.PRIZE_ZOMBIE_KILL,
@@ -41,14 +41,15 @@ local ZOM_BOUNTY_MULT = params.ZOM_BOUNTY_MULT
 
 function GG.Reward(teamID, achievement, bounty)
 	local bounty = bounty
-	if bounty == nil then 
-		bounty = 0 
+	if bounty == nil then
+		bounty = 0
 	end
-	
+
 	local playerName = GG.teamIDToPlayerName[teamID]
 	local pd = GG.activeAccounts[playerName]
 	if pd == nil then
 		Spring.Echo("BAD PD IN REWARDS.LUA!", playerName, "teamID ", teamID,"zombie teamID:", GG.zombieTeamID, achievement, bounty)
+        return
 	end
 	--TODO make this big and shiny in the middle of the screen
     -- stop rewarding these after the objective phase is over
@@ -57,7 +58,7 @@ function GG.Reward(teamID, achievement, bounty)
 		if prizes[achievement] ~= nil then
             local amount = prizes[achievement] + bounty
             GG.Money(teamID, amount)
-			
+
             -- stop announcing rewards after the objective phase ends
             if teamThatWon == nil then
                 if achievement == "civiliansave" then
@@ -83,6 +84,10 @@ end
 
 function gadget:UnitDestroyed(unitID, unitDefID, teamID, attackerID, attackerDefID, attackerTeamID)
 	local ud = UnitDefs[unitDefID]
+    -- make sure we're interested in a valid player to reward
+    local playerName = GG.teamIDToPlayerName[teamID]
+    if not GG.activeAccounts[playerName] then return end
+
 	--This check covers self destructs
 	if attackerTeamID then
 		if ud.customParams then
