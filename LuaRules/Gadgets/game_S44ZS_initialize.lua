@@ -281,7 +281,7 @@ local function processUnitsForExport(units)
                         hq_id = hqID,
 						name = unitName,
                         -- no point adding precision to 0
-						experience = not xp and string.format('%.3f', xp) or 0,
+						experience = xp > 0 and string.format('%.3f', xp) or 0,
 						health = string.format('%.0f', health),
 						ammo = ammo,
 					}
