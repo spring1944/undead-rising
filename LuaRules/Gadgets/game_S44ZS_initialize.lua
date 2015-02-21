@@ -166,7 +166,6 @@ local function SpawnTeam(cmd, line, wordlist, playerID)
 
     -- serialization is a blast
     local teamID = tonumber(player.teamID)
-    local side = select(5, GetTeamInfo(teamID))
 
     GG.activeAccounts[player.name] = {
         teamID = tonumber(player.teamID),
@@ -179,7 +178,7 @@ local function SpawnTeam(cmd, line, wordlist, playerID)
     }
 
     local playerData = GG.activeAccounts[player.name]
-    GG.teamSide[teamID] = side
+    GG.teamSide[teamID] = player.side
     GG.teamIDToPlayerName[teamID] = player.name
     local unitCount = 0
     if player.units then
