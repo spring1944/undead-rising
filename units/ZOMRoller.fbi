@@ -1,0 +1,44 @@
+[unitinfo] {
+  autoHeal=50;
+  unitname=ZOMSprinter;
+  name=Sprinter;
+  description=Roly-poly explosive zombie;
+  acceleration=0.04;
+  airSightDistance=2500;
+  brakeRate=0.9;
+  buildCostEnergy=0;
+  buildCostMetal=50;
+  buildTime=50;
+  canMove=1;
+  category=INFANTRY MINETRIGGER;
+  corpse=zombieCorpse;
+  [customParams] {
+	undead=1;
+  }
+  explodeAs=zomDeath;
+  footprintX=1;
+  footprintZ=1;
+  iconType=zombiea;
+  mass=50;
+  maxDamage=5700;
+  maxReverseVelocity=1.405;
+  maxSlope=2;
+  maxVelocity=2.81;
+  maxWaterDepth=10;
+  movementClass=KBOT_Infantry;
+  noChaseCategory=FLAG AIR;
+  objectName=GERTiger.S3O;
+  repairable=0;
+  seismicSignature=0;
+  showNanoFrame=0;
+  side=ZOM;
+  sightDistance=840;
+  smoothAnim=0;
+  soundcategory=zom;
+  stealth=1;
+  TEDClass=KBOT;
+  turnRate=1010;
+  turnInPlace=0;
+  upright=1;
+}
+
